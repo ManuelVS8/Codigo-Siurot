@@ -286,7 +286,7 @@ document.addEventListener('click',e=>{ if(e.target.closest('#bsalir')){ auth.sig
 
 /* ---------- pantallas ---------- */
 function vLogin(msg){
-  vista.innerHTML=`<section class="panel login"><img src="${BIT}" alt=""><h1>Administración</h1><p>Código Siurot · CEIP Manuel Siurot</p>
+  vista.innerHTML=`<section class="panel login"><img src="iconos/logo-cole.png" alt="Logo del CEIP Manuel Siurot" width="120" height="120"><h1>Administración</h1><p>Código Siurot · CEIP Manuel Siurot</p>
     ${msg?`<div class="aviso rojo">${esc(msg)}</div>`:''}
     <div class="campo"><label for="le">Correo</label><input id="le" type="email" autocomplete="username"></div>
     ${campoClave('lp','','Contraseña')}
