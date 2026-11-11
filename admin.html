@@ -178,7 +178,13 @@ function errorTexto(e){
   if(/network|unavailable/.test(c)) return 'Sin conexión con Firebase.';
   if(/weak-password/.test(c)) return 'La clave debe tener al menos 6 caracteres.';
   if(/invalid-credential|wrong-password|user-not-found|invalid-login/.test(c)) return 'Correo o contraseña incorrectos.';
-  return (e&&e.message)||String(e);
+  if(/operation-not-allowed/.test(c)) return 'El acceso con correo y contraseña no está activado en Firebase (Authentication > Método de acceso).';
+  if(/invalid-email/.test(c)) return 'El correo no es válido.';
+  if(/user-disabled/.test(c)) return 'Esta cuenta está deshabilitada en Firebase.';
+  if(/invalid-api-key|api-key/.test(c)) return 'La clave de API de Firebase no es válida o está restringida.';
+  if(/unauthorized-domain/.test(c)) return 'Este dominio no está autorizado en Firebase (Authentication > Configuración > Dominios autorizados).';
+  if(/operation-not-supported|web-storage/.test(c)) return 'Abre el panel desde su dirección de internet, no haciendo doble clic en el archivo.';
+  return (c?'['+c+'] ':'')+((e&&e.message)||String(e));
 }
 
 /* ---------- Firebase ---------- */
