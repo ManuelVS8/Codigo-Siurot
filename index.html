@@ -1735,6 +1735,7 @@ function actualizarSonido(){
    APP INSTALABLE (PWA)
    ========================================================= */
 let avisoInstalar=null;
+const esIOS=()=>{ const ua=navigator.userAgent||''; return /iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); };
 const esApp=()=>{ try{ return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true; }catch(e){ return false; } };
 window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); avisoInstalar=e; const b=$('#binst'); if(b) b.hidden=false; });
 window.addEventListener('appinstalled',()=>{ avisoInstalar=null; const b=$('#binst'); if(b) b.hidden=true; toast('¡App instalada! Búscala en tus aplicaciones 🎉'); });
@@ -1767,7 +1768,7 @@ function vHome(){
         <button class="btn btn-pri" data-acc="login">${ICO.llave}<span>Entrar con mi usuario</span></button>
         <button class="btn btn-oro" data-acc="hof">${ICO.trofeo}<span>Salón de la fama</span></button>
         <p class="nota">Si juegas sin entrar, tu progreso se guarda solo en este ordenador y no apareces en el Salón de la fama.</p>`}
-      <button class="btn btn-gris" data-acc="instalar" id="binst"${esApp()?' hidden':''}>📲<span>Instalar la app</span></button>
+      <button class="btn btn-gris" data-acc="instalar" id="binst"${(esApp()||!(avisoInstalar||esIOS()))?' hidden':''}>📲<span>Instalar la app</span></button>
     </div>
   </div>
   <div class="firma">CEIP Manuel Siurot · La Palma del Condado</div>`;
@@ -2220,12 +2221,8 @@ const ACC = {
   async instalar(){
     SND.fx('tap');
     if(avisoInstalar){ const ev=avisoInstalar; ev.prompt(); try{ await ev.userChoice; }catch(e){} avisoInstalar=null; return; }
-    // el navegador no ofrece el diálogo automático (iPhone/iPad, Firefox, ya instalada…): se explica cómo hacerlo a mano
-    const ua=navigator.userAgent||'', ios=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1), movil=/Android/.test(ua);
-    const pasos=ios?'<p>En <b>Safari</b>: pulsa el botón <b>Compartir</b> (el cuadrado con una flecha hacia arriba) y elige <b>«Añadir a pantalla de inicio»</b>.</p>'
-      :movil?'<p>Abre el menú <b>⋮</b> de tu navegador y elige <b>«Instalar aplicación»</b> o <b>«Añadir a pantalla de inicio»</b>.</p>'
-      :'<p>En <b>Chrome</b> o <b>Edge</b>: pulsa el icono de instalar que aparece a la derecha de la barra de direcciones, o abre el menú <b>⋮</b> y busca <b>«Instalar Código Siurot»</b> (en Chrome, dentro de «Guardar y compartir»).</p>';
-    modal({titulo:'Instalar la app',robot:'feliz',cancelable:true,html:pasos+'<p class="ayuda">Si ya la tienes instalada, ábrela desde tus aplicaciones. Con Firefox o Safari de ordenador no se puede instalar.</p>',botones:[{txt:'Entendido',cls:'btn-ok'}]});
+    // iPhone y iPad no permiten el diálogo automático: solo allí se explica cómo añadirla a la pantalla de inicio
+    if(esIOS()) modal({titulo:'Instalar la app',robot:'feliz',cancelable:true,html:'<p>En <b>Safari</b>: pulsa el botón <b>Compartir</b> (el cuadrado con una flecha hacia arriba) y elige <b>«Añadir a pantalla de inicio»</b>.</p>',botones:[{txt:'Entendido',cls:'btn-ok'}]});
   },
   login(){ SND.fx('tap'); ir('login'); },
   entrar(){ hacerLogin(); },
