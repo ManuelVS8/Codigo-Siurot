@@ -1740,6 +1740,17 @@ const esApp=()=>{ try{ return matchMedia('(display-mode: standalone)').matches||
 window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); avisoInstalar=e; const b=$('#binst'); if(b) b.hidden=false; });
 window.addEventListener('appinstalled',()=>{ avisoInstalar=null; const b=$('#binst'); if(b) b.hidden=true; toast('¡App instalada! Búscala en tus aplicaciones 🎉'); });
 if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostname==='localhost')) window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+// Diagnóstico de la instalación: abre la página añadiendo ?diag al final de la dirección (…/index.html?diag)
+if(/[?&]diag\b/.test(location.search)) window.addEventListener('load',async()=>{
+  await new Promise(r=>setTimeout(r,2500));
+  const f=async u=>{ try{ const r=await fetch(u,{cache:'no-store'}); return r.ok?'✅ '+u:'❌ '+u+'  (error '+r.status+')'; }catch(e){ return '❌ '+u+'  (no carga)'; } };
+  const l=['Dirección: '+location.href,'HTTPS: '+(location.protocol==='https:'||location.hostname==='localhost'?'✅':'❌ '+location.protocol),'Abierta como app instalada: '+(esApp()?'sí':'no'),'Aviso de instalación de Chrome recibido: '+(avisoInstalar?'✅ sí':'❌ no')];
+  for(const u of ['manifest.json','sw.js','iconos/icon-192.png','iconos/icon-512.png']) l.push(await f(u));
+  try{ const r=await navigator.serviceWorker.getRegistration(); l.push('Service worker: '+(r?(r.active?'✅ activo ('+r.scope+')':'⏳ instalándose'):'❌ no registrado')); }catch(e){ l.push('Service worker: ❌ '+e.message); }
+  try{ const m=await (await fetch('manifest.json',{cache:'no-store'})).json(); l.push('Manifiesto: start_url '+m.start_url+' · '+(m.icons||[]).length+' iconos'); }catch(e){ l.push('Manifiesto: ❌ no se puede leer'); }
+  const d=document.createElement('pre'); d.style.cssText='position:fixed;inset:8px;z-index:9999;background:#fff;color:#111;border:3px solid #6d4aff;border-radius:14px;padding:14px;font:14px/1.5 system-ui,sans-serif;white-space:pre-wrap;word-break:break-all;overflow:auto;margin:0';
+  d.textContent='DIAGNÓSTICO DE INSTALACIÓN (toca para cerrar)\n\n'+l.join('\n'); d.onclick=()=>d.remove(); document.body.appendChild(d);
+});
 
 /* =========================================================
    PANTALLA DE INICIO
