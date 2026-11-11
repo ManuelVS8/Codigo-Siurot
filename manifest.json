@@ -3,7 +3,7 @@
   "short_name": "Código Siurot",
   "description": "Aprende a programar guiando a Bit por mundos llenos de retos. CEIP Manuel Siurot.",
   "lang": "es",
-  "start_url": "./codigo-siurot.html",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",

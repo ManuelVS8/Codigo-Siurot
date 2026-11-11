@@ -124,7 +124,7 @@ const ADMINS = ['o7RrLEPeYfZfbVIA6y1Hz8NjVC43','2AY1PTrrwPd0lOAqubDgsEsula83','U
 const SUPER = ['o7RrLEPeYfZfbVIA6y1Hz8NjVC43','2AY1PTrrwPd0lOAqubDgsEsula83']; // solo estos pueden borrar clases, reiniciar y pasar de curso
 function esSuper(){ return SUPER.includes(auth.currentUser?.uid); }
 function soloSuper(){ toast('Solo el superadmin puede hacer esto', true); }
-const URL_JUEGO = new URL('codigo-siurot.html', location.href).href;
+const URL_JUEGO = new URL('index.html', location.href).href;
 const MUNDOS_N = 3;          // mundos con puntuación
 const LIMITE_HORA = 100;     // Firebase: cuentas nuevas por hora desde un mismo ordenador
 
