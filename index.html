@@ -1883,17 +1883,22 @@ function pintarHofBase(){
   ${S.user?'':'<p class="nota">Para aparecer aquí tienes que entrar con tu usuario.</p>'}`;
 }
 // Salón de la fama: «todo el cole» lee 10 documentos por tabla; «mi clase» lee la clase una vez (≈25) y sirve para todas las tablas
+// La clase «Admin» es la del profesorado (pruebas): el alumnado y el modo libre no la ven en el Salón de la fama; los usuarios de esa clase lo ven todo
+const esClaseAdmin=c=>String(c||'').trim().toLowerCase()==='admin';
 async function datosHof(clase,n,tipo){
   const campo=(tipo==='est'?'e':'r')+n, fresco=k=>hofCache[k]&&Date.now()-hofCache[k].t<60000;
+  const veTodo=!!(S.user&&esClaseAdmin(S.user.clase));
   if(!iniciarFirebase()) throw new Error('sin_firebase');
   if(clase){
+    if(esClaseAdmin(clase)&&!veTodo) return [];
     const k='c|'+clase;
     if(!fresco(k)){ const q=await FB.db.collection('publico').where('c','==',clase).get(); hofCache[k]={t:Date.now(),filas:q.docs.map(d=>d.data())}; }
     return hofCache[k].filas.filter(r=>(r[campo]|0)>0).sort((a,b)=>b[campo]-a[campo]).slice(0,10).map(r=>({u:r.u,c:r.c,v:r[campo]}));
   }
+  // se piden 25 por si entre los mejores hay usuarios de la clase Admin, que se descartan para el alumnado
   const k='t|'+campo;
-  if(!fresco(k)){ const q=await FB.db.collection('publico').where(campo,'>',0).orderBy(campo,'desc').limit(10).get(); hofCache[k]={t:Date.now(),filas:q.docs.map(d=>{ const r=d.data(); return {u:r.u,c:r.c,v:r[campo]}; })}; }
-  return hofCache[k].filas;
+  if(!fresco(k)){ const q=await FB.db.collection('publico').where(campo,'>',0).orderBy(campo,'desc').limit(25).get(); hofCache[k]={t:Date.now(),filas:q.docs.map(d=>{ const r=d.data(); return {u:r.u,c:r.c,v:r[campo]}; })}; }
+  return hofCache[k].filas.filter(r=>veTodo||!esClaseAdmin(r.c)).slice(0,10);
 }
 async function cargarHof(){
   const clase=(hofSt.a==='clase'&&S.user)?S.user.clase:'', pedido=JSON.stringify(hofSt);
