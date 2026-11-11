@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#4527c9">
+<title>Código Siurot · Administración</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='10' y='16' width='44' height='40' rx='13' fill='%238b6bff' stroke='%235133d6' stroke-width='3'/%3E%3Crect x='16' y='24' width='32' height='20' rx='7' fill='%231d1a3a'/%3E%3Crect x='22' y='29' width='6' height='10' rx='3' fill='%237cf6ff'/%3E%3Crect x='36' y='29' width='6' height='10' rx='3' fill='%237cf6ff'/%3E%3Cpath d='M32 16V7' stroke='%235133d6' stroke-width='3'/%3E%3Ccircle cx='32' cy='6' r='4' fill='%23ffd23f'/%3E%3C/svg%3E">
+<style>
+:root{--ink:#1f1b4d;--ink2:#5b5788;--linea:#e7e3ff;--pri:#6d4aff;--priD:#4527c9;--ok:#22c55e;--okD:#15803d;--bad:#f43f5e;--badD:#be123c;--oro:#fbbf24;
+  --font:'Fredoka','Nunito','Trebuchet MS',system-ui,sans-serif;--sombra:0 10px 30px rgba(31,27,77,.14)}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font-family:var(--font);color:var(--ink);font-size:17px;background:linear-gradient(160deg,#ece8ff,#e0f2ff 60%,#eafbef);background-attachment:fixed}
+button,input,select{font-family:inherit;color:inherit}
+svg{display:block}
+#app{max-width:1200px;margin:0 auto;padding:14px 16px 40px}
+h1,h2,h3{margin:0}
+.panel{background:#fff;border-radius:22px;box-shadow:var(--sombra)}
+.barra{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.barra .tit{flex:1;min-width:200px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.3rem}
+.barra .tit img{width:44px;height:44px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:#fff;border-radius:999px;padding:7px 14px;font-weight:600;box-shadow:0 3px 10px rgba(31,27,77,.1);font-size:.95rem}
+.redondo{width:48px;height:48px;border-radius:50%;border:0;background:#fff;color:var(--priD);cursor:pointer;display:grid;place-items:center;box-shadow:0 4px 0 #d4ccff,0 8px 16px rgba(31,27,77,.12);flex:none}
+.redondo:active{transform:translateY(3px);box-shadow:0 1px 0 #d4ccff}
+.redondo svg{width:24px;height:24px}
+.btn{--bg:#fff;--bd:#d4ccff;--fg:var(--priD);display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 16px;border:0;border-radius:14px;cursor:pointer;
+  background:var(--bg);color:var(--fg);font:600 1rem var(--font);box-shadow:0 4px 0 var(--bd),0 8px 16px rgba(31,27,77,.1);transition:transform .08s,filter .15s;white-space:nowrap}
+.btn:hover{filter:brightness(1.04)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--bd)}
+.btn[disabled]{opacity:.5;pointer-events:none}
+.btn svg{width:20px;height:20px}
+.btn-pri{--bg:linear-gradient(#9378ff,#6d4aff);--bd:#4527c9;--fg:#fff}
+.btn-ok{--bg:linear-gradient(#3ee07f,#1fb455);--bd:#138a3f;--fg:#fff}
+.btn-rojo{--bg:linear-gradient(#ff7088,#f43f5e);--bd:#be123c;--fg:#fff}
+.btn-gris{--bd:#cbd5e1;--fg:#475569}
+.btn.grande{width:100%;padding:15px;font-size:1.15rem}
+.acciones{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 16px}
+/* login */
+.login{max-width:430px;margin:8vh auto 0;padding:26px 24px;text-align:center}
+.login img{width:110px;height:110px;margin:-74px auto 4px}
+.login h1{font-size:1.6rem;color:var(--priD)}
+.login p{color:var(--ink2);margin:6px 0 14px}
+.campo{text-align:left;margin:12px 0}
+.campo label{display:block;font-weight:600;margin:0 0 5px 4px;font-size:.95rem}
+.campo input,.campo select{width:100%;font-size:1.1rem;padding:12px 14px;border:3px solid var(--linea);border-radius:14px;background:#faf9ff}
+.campo input:focus,.campo select:focus{outline:none;border-color:var(--pri)}
+.con-ojo{position:relative}
+.con-ojo input{padding-right:58px}
+.ojo{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:44px;height:40px;border:0;border-radius:10px;background:#efeaff;color:var(--priD);cursor:pointer;display:grid;place-items:center}
+.ojo svg{width:24px;height:24px}
+.fila2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ayuda{font-size:.88rem;color:var(--ink2);margin:4px 0 0 4px}
+/* clases */
+.clases{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.clase{border:0;cursor:pointer;text-align:left;padding:18px;border-radius:22px;background:#fff;box-shadow:0 6px 0 #d4ccff,0 14px 24px rgba(31,27,77,.12);transition:transform .15s;font:inherit}
+.clase:hover{transform:translateY(-3px)}
+.clase .n{font-size:2.2rem;font-weight:700;color:var(--priD);line-height:1}
+.clase .d{color:var(--ink2);margin-top:6px;font-weight:500}
+.vacio{text-align:center;color:var(--ink2);padding:30px 10px}
+/* tabla */
+.herr{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:14px 16px;border-bottom:2px dashed var(--linea)}
+.herr input{flex:1;min-width:180px;font-size:1rem;padding:10px 14px;border:3px solid var(--linea);border-radius:12px}
+.tabla-c{overflow:auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #f0eefb;white-space:nowrap}
+th{font-size:.85rem;color:var(--ink2);text-transform:uppercase;letter-spacing:.04em;background:#faf9ff;position:sticky;top:0}
+td.nombre{white-space:normal;min-width:180px;font-weight:500}
+td .mono{font-family:ui-monospace,Consolas,monospace;font-weight:600;background:#f4f2ff;border-radius:8px;padding:2px 8px}
+td .oculta{letter-spacing:2px;color:#a5a2c8}
+.mini{width:38px;height:38px;border-radius:10px;border:0;background:#f4f2ff;color:var(--priD);cursor:pointer;display:inline-grid;place-items:center;margin-left:4px}
+.mini svg{width:20px;height:20px}
+.mini.rojo{background:#ffe4e6;color:var(--badD)}
+.mini:hover{filter:brightness(.96)}
+/* modal y avisos */
+#capa{position:fixed;inset:0;z-index:50;background:rgba(24,20,60,.5);backdrop-filter:blur(4px);display:grid;place-items:center;padding:16px}
+#capa[hidden]{display:none}
+#modal{width:min(620px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:26px;padding:24px 22px 18px;box-shadow:0 30px 60px rgba(0,0,0,.35);animation:entra .3s cubic-bezier(.2,.9,.3,1.3)}
+#modal h2{color:var(--priD);margin-bottom:8px}
+#modal .botones{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:18px}
+@keyframes entra{from{opacity:0;transform:translateY(20px) scale(.95)}}
+#toasts{position:fixed;left:0;right:0;bottom:18px;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:60;pointer-events:none;padding:0 12px}
+.toast{background:var(--ink);color:#fff;padding:11px 18px;border-radius:999px;font-weight:600;box-shadow:0 8px 20px rgba(0,0,0,.3);animation:entra .3s;max-width:92vw;text-align:center}
+.toast.mal{background:var(--badD)}
+.prev{max-height:300px;overflow:auto;border:2px solid var(--linea);border-radius:14px;margin-top:10px}
+.prev td,.prev th{padding:6px 10px;font-size:.92rem}
+.est-ok{color:var(--okD);font-weight:600}.est-mal{color:var(--badD);font-weight:600}.est-av{color:#b45309;font-weight:600}
+.progreso{height:16px;background:#efeef8;border-radius:99px;overflow:hidden;margin:14px 0 6px}
+.progreso i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8b6bff,#3ee07f);transition:width .3s}
+.log{font-size:.88rem;color:var(--ink2);max-height:160px;overflow:auto;background:#faf9ff;border-radius:12px;padding:8px 12px;margin-top:8px}
+.aviso{background:#fff7d6;border-radius:14px;padding:10px 14px;color:#7a4a00;font-size:.95rem;margin:10px 0}
+.aviso.rojo{background:#ffe4e6;color:var(--badD)}
+.uso{padding:18px 20px;line-height:1.5}
+.uso table td{white-space:normal}
+@media (max-width:640px){ .fila2{grid-template-columns:1fr} th:nth-child(4),td:nth-child(4),th:nth-child(5),td:nth-child(5),th:nth-child(6),td:nth-child(6){display:none} }
+</style>
+</head>
+<body>
+<div id="app"><main id="vista"><p class="vacio">Cargando…</p></main></div>
+<div id="toasts" aria-live="polite"></div>
+<div id="capa" hidden><div id="modal" role="dialog" aria-modal="true"></div></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+'use strict';
+/* =========================================================
+   CÓDIGO SIUROT · Panel de administración
+   ========================================================= */
+const FIREBASE = {
+  apiKey: "AIzaSyCrrYW28k3UC0-Qdg-4bS-JB-NV08_V54I",
+  authDomain: "codigo-siurot.firebaseapp.com",
+  projectId: "codigo-siurot",
+  storageBucket: "codigo-siurot.firebasestorage.app",
+  messagingSenderId: "553376245361",
+  appId: "1:553376245361:web:c302ffded7b3e9ad06ddd0"
+};
+const DOMINIO = 'codigo-siurot.firebaseapp.com';
+const ADMINS = ['o7RrLEPeYfZfbVIA6y1Hz8NjVC43','2AY1PTrrwPd0lOAqubDgsEsula83','Ut79f3XpMyPgCEFP6h0yuXUO1Pr2'];
+const SUPER = ['o7RrLEPeYfZfbVIA6y1Hz8NjVC43','2AY1PTrrwPd0lOAqubDgsEsula83']; // solo estos pueden borrar clases, reiniciar y pasar de curso
+function esSuper(){ return SUPER.includes(auth.currentUser?.uid); }
+function soloSuper(){ toast('Solo el superadmin puede hacer esto', true); }
+const URL_JUEGO = new URL('codigo-siurot.html', location.href).href;
+const MUNDOS_N = 3;          // mundos con puntuación
+const LIMITE_HORA = 100;     // Firebase: cuentas nuevas por hora desde un mismo ordenador
+
+/* ---------- utilidades ---------- */
+const $ = (s,r)=>(r||document).querySelector(s);
+const $$ = (s,r)=>Array.from((r||document).querySelectorAll(s));
+const esc = s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm = s=>String(s==null?'':s).trim().toLowerCase();
+const espera = ms=>new Promise(r=>setTimeout(r,ms));
+const USUARIO_OK = /^[a-z0-9][a-z0-9._-]{1,29}$/;
+const CLASE_OK = /^[A-Za-z0-9ÁÉÍÓÚÜÑáéíóúüñºª .-]{1,15}$/;
+const correo = u=>u+'@'+DOMINIO;
+const ICO = {
+  atras:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
+  mas:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  subir:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>',
+  imprimir:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>',
+  lapiz:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M14 6l4 4"/></svg>',
+  papelera:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/><path d="M10 10v6M14 10v6"/></svg>',
+  llave:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.5 11.5 20 3M17 6l3 3M14.5 8.5l2 2"/></svg>',
+  mover:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h14l-4-4M20 16H6l4 4"/></svg>',
+  ojo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3.2"/></svg>',
+  ojoNo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.4 10.4 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4M6.6 6.6C3.9 8.4 2 12 2 12s3.6 7 10 7c1.8 0 3.4-.5 4.8-1.3"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>',
+  salir:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>',
+  reiniciar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>',
+  grafica:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>'
+};
+const BIT = 'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><ellipse cx="50" cy="93" rx="22" ry="5" fill="#1f1b4d" opacity=".18"/><rect x="38" y="80" width="24" height="7" rx="3.5" fill="#5133d6"/><rect x="14" y="44" width="8" height="18" rx="4" fill="#5133d6"/><rect x="78" y="44" width="8" height="18" rx="4" fill="#5133d6"/><rect x="22" y="34" width="56" height="48" rx="16" fill="#8b6bff" stroke="#5133d6" stroke-width="3"/><rect x="29" y="41" width="42" height="27" rx="9" fill="#1d1a3c"/><rect x="36" y="47" width="7" height="12" rx="3.5" fill="#7cf6ff"/><rect x="57" y="47" width="7" height="12" rx="3.5" fill="#7cf6ff"/><path d="M45 62q5 4 10 0" stroke="#7cf6ff" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M50 34V20" stroke="#4a4470" stroke-width="3"/><circle cx="50" cy="17" r="5" fill="#ffd23f"/></svg>');
+
+function toast(msg,mal){ const t=document.createElement('div'); t.className='toast'+(mal?' mal':''); t.textContent=msg; $('#toasts').appendChild(t); setTimeout(()=>t.remove(),mal?5000:3200); }
+let modalCancel=true;
+function modal(o){
+  const m=$('#modal');
+  m.innerHTML=`<h2>${o.titulo||''}</h2><div class="cuerpo">${o.html||''}</div><div class="botones"></div>`;
+  (o.botones||[]).forEach(b=>{ const el=document.createElement('button'); el.className='btn '+(b.cls||''); el.innerHTML=b.txt; if(b.id) el.id=b.id;
+    el.onclick=async()=>{ if(b.fn){ const r=await b.fn(el); if(r===false) return; } if(!b.mantener) cerrarModal(); }; $('.botones',m).appendChild(el); });
+  modalCancel=o.cancelable!==false; $('#capa').hidden=false;
+  setTimeout(()=>{ const f=m.querySelector('input,select'); if(f) f.focus(); },60);
+}
+function cerrarModal(){ $('#capa').hidden=true; }
+$('#capa').addEventListener('click',e=>{ if(e.target.id==='capa'&&modalCancel) cerrarModal(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&!$('#capa').hidden&&modalCancel) cerrarModal(); });
+function campoClave(id,valor,etq){ return `<div class="campo"><label for="${id}">${etq||'Clave'}</label><div class="con-ojo"><input id="${id}" type="password" value="${esc(valor||'')}" autocomplete="off" autocapitalize="none" spellcheck="false"><button type="button" class="ojo" data-ojo="${id}" aria-label="Mostrar u ocultar">${ICO.ojo}</button></div></div>`; }
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-ojo]'); if(!b) return; const i=document.getElementById(b.dataset.ojo); const ver=i.type==='password'; i.type=ver?'text':'password'; b.innerHTML=ver?ICO.ojoNo:ICO.ojo; });
+function generarClave(){ const L='abcdefghjkmnpqrstuvwxyz'; let s=''; for(let i=0;i<3;i++) s+=Math.floor(Math.random()*10); for(let i=0;i<3;i++) s+=L[Math.floor(Math.random()*L.length)]; return s; }
+function errorTexto(e){
+  const c=e&&e.code||'';
+  if(c==='permission-denied') return 'Permiso denegado. Revisa que las reglas estén publicadas con tu UID.';
+  if(/too-many-requests|quota/.test(c)) return 'Firebase ha frenado las peticiones (máximo '+LIMITE_HORA+' cuentas nuevas por hora). Espera un rato y vuelve a intentarlo.';
+  if(/network|unavailable/.test(c)) return 'Sin conexión con Firebase.';
+  if(/weak-password/.test(c)) return 'La clave debe tener al menos 6 caracteres.';
+  if(/invalid-credential|wrong-password|user-not-found|invalid-login/.test(c)) return 'Correo o contraseña incorrectos.';
+  return (e&&e.message)||String(e);
+}
+
+/* ---------- Firebase ---------- */
+let auth=null, db=null, sec=null;
+try{
+  firebase.initializeApp(FIREBASE);
+  auth=firebase.auth(); db=firebase.firestore();
+  auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).catch(()=>{});
+}catch(e){ console.error(e); }
+const TS = ()=>firebase.firestore.FieldValue.serverTimestamp();
+// segunda conexión para crear/borrar cuentas del alumnado sin cerrar tu sesión
+function auth2(){
+  if(!sec){ const app=firebase.initializeApp(FIREBASE,'secundaria'); sec=app.auth(); sec.setPersistence(firebase.auth.Auth.Persistence.NONE).catch(()=>{}); }
+  return sec;
+}
+
+/* ---------- datos en memoria ---------- */
+const D = {clases:{}, alumnos:{}, claves:{}, cargado:false, creadasHora:[]};
+const alumnosDe = c=>Object.entries(D.alumnos).filter(([,a])=>a.clase===c).map(([uid,a])=>Object.assign({uid},a)).sort((a,b)=>a.nombre.localeCompare(b.nombre,'es'));
+function listaClases(){ const s=new Set(Object.keys(D.clases)); Object.values(D.alumnos).forEach(a=>s.add(a.clase)); return [...s].sort((a,b)=>a.localeCompare(b,'es',{numeric:true})); }
+const usuarioExiste = u=>Object.entries(D.alumnos).find(([,a])=>a.usuario===u);
+async function cargarTodo(){
+  const [c,a]=await Promise.all([db.collection('clases').get(),db.collection('alumnos').get()]);
+  D.clases={}; c.forEach(d=>D.clases[d.id]=d.data());
+  D.alumnos={}; a.forEach(d=>D.alumnos[d.id]=d.data());
+  D.claves={}; D.cargado=true;
+}
+async function cargarClaves(clase){
+  const q=await db.collection('claves').where('clase','==',clase).get();
+  q.forEach(d=>D.claves[d.id]=d.data().clave);
+}
+async function claveDe(uid){ if(D.claves[uid]==null){ const d=await db.doc('claves/'+uid).get(); if(d.exists) D.claves[uid]=d.data().clave; } return D.claves[uid]; }
+function estrellas(a){ let e=0,r=0; const p=a.prog||{}; for(const k in p){ const s=p[k]&&p[k].s||[]; e+=s.reduce((x,y)=>x+(y|0),0); r=Math.max(r,p[k]&&p[k].r|0); } return {e,r}; }
+function fecha(ts){ if(!ts||!ts.toDate) return '—'; const d=ts.toDate(), hoy=new Date(); const dias=Math.floor((new Date(hoy.toDateString())-new Date(d.toDateString()))/864e5);
+  return dias===0?'hoy':dias===1?'ayer':dias<7?'hace '+dias+' días':d.toLocaleDateString('es-ES'); }
+async function lotes(ops){ for(let i=0;i<ops.length;i+=400){ const b=db.batch(); ops.slice(i,i+400).forEach(f=>f(b)); await b.commit(); } }
+
+/* ---------- operaciones con cuentas ---------- */
+function anotarAlta(){ const ahora=Date.now(); D.creadasHora=D.creadasHora.filter(t=>ahora-t<3600e3); D.creadasHora.push(ahora); }
+async function cuenta(usuario,clave){
+  const a=auth2();
+  try{ const c=await a.createUserWithEmailAndPassword(correo(usuario),clave); anotarAlta(); const uid=c.user.uid; await a.signOut(); return {uid,nueva:true}; }
+  catch(e){
+    if(e.code!=='auth/email-already-in-use') throw e;
+    try{ const c=await a.signInWithEmailAndPassword(correo(usuario),clave); const uid=c.user.uid; await a.signOut(); return {uid,nueva:false}; }
+    catch(e2){ const err=new Error('El usuario «'+usuario+'» ya existe con otra clave.'); err.code='existe-otra-clave'; throw err; }
+  }
+}
+async function alta({nombre,usuario,clave,clase}){
+  const ex=usuarioExiste(usuario); if(ex) return {estado:'ya',clase:ex[1].clase};
+  const r=await cuenta(usuario,clave);
+  const ficha={usuario,nombre,clase,prog:{},act:null,rv:0,creado:TS()};
+  await lotes([
+    b=>b.set(db.doc('alumnos/'+r.uid),ficha),
+    b=>b.set(db.doc('claves/'+r.uid),{usuario,clave,clase}),
+    b=>b.set(db.doc('publico/'+r.uid),{u:usuario,c:clase,t:TS()}),
+    ...(D.clases[clase]?[]:[b=>b.set(db.doc('clases/'+clase),{nombre:clase,creada:TS()})])
+  ]);
+  D.alumnos[r.uid]=Object.assign({},ficha,{creado:null}); D.claves[r.uid]=clave;
+  if(!D.clases[clase]) D.clases[clase]={nombre:clase};
+  return {estado:r.nueva?'nuevo':'recuperado'};
+}
+async function baja(uid){
+  const a=D.alumnos[uid]; let cuentaBorrada=false;
+  const clave=await claveDe(uid);
+  if(clave){ try{ const c=await auth2().signInWithEmailAndPassword(correo(a.usuario),clave); await c.user.delete(); cuentaBorrada=true; }catch(e){ try{ await auth2().signOut(); }catch(_){} } }
+  await lotes([b=>b.delete(db.doc('alumnos/'+uid)),b=>b.delete(db.doc('claves/'+uid)),b=>b.delete(db.doc('publico/'+uid))]);
+  delete D.alumnos[uid]; delete D.claves[uid];
+  return cuentaBorrada;
+}
+async function cambiarClave(uid,nueva){
+  const a=D.alumnos[uid], vieja=await claveDe(uid);
+  if(!vieja) throw new Error('No se conoce la clave actual de este alumno.');
+  const c=await auth2().signInWithEmailAndPassword(correo(a.usuario),vieja);
+  await c.user.updatePassword(nueva); await auth2().signOut();
+  await db.doc('claves/'+uid).update({clave:nueva}); D.claves[uid]=nueva;
+}
+async function moverA(uids,clase){
+  await lotes([
+    ...uids.flatMap(uid=>[b=>b.update(db.doc('alumnos/'+uid),{clase}),b=>b.set(db.doc('claves/'+uid),{clase},{merge:true}),b=>b.set(db.doc('publico/'+uid),{u:D.alumnos[uid].usuario,c:clase,t:TS()},{merge:true})]),
+    ...(D.clases[clase]?[]:[b=>b.set(db.doc('clases/'+clase),{nombre:clase,creada:TS()})])
+  ]);
+  uids.forEach(uid=>D.alumnos[uid].clase=clase); if(!D.clases[clase]) D.clases[clase]={nombre:clase};
+}
+
+/* ---------- navegación (Atrás va pantalla a pantalla) ---------- */
+const vista=$('#vista');
+function ir(p,params,reemplazar){ const st={p,params:params||{}}; if(reemplazar) history.replaceState(st,''); else history.pushState(st,''); mostrar(st); }
+function mostrar(st){
+  cerrarModal();
+  const u=auth&&auth.currentUser;
+  if(!u||!ADMINS.includes(u.uid)||!D.cargado){ vLogin(); return; }
+  if(st.p==='clase'&&st.params.c) vClase(st.params.c);
+  else if(st.p==='uso') vUso();
+  else vPanel();
+  window.scrollTo(0,0);
+}
+window.addEventListener('popstate',e=>mostrar(e.state||{p:'panel',params:{}}));
+function barra(titulo,atras){
+  const u=auth.currentUser;
+  return `<header class="barra">${atras?`<button class="redondo" onclick="history.back()" aria-label="Volver">${ICO.atras}</button>`:''}
+    <div class="tit"><img src="${BIT}" alt="">${titulo}</div><span class="chip">${esc(u.email)}</span>
+    <button class="redondo" id="bsalir" title="Cerrar sesión" aria-label="Cerrar sesión">${ICO.salir}</button></header>`;
+}
+document.addEventListener('click',e=>{ if(e.target.closest('#bsalir')){ auth.signOut(); D.cargado=false; history.replaceState({p:'panel',params:{}},''); vLogin(); } });
+
+/* ---------- pantallas ---------- */
+function vLogin(msg){
+  vista.innerHTML=`<section class="panel login"><img src="${BIT}" alt=""><h1>Administración</h1><p>Código Siurot · CEIP Manuel Siurot</p>
+    ${msg?`<div class="aviso rojo">${esc(msg)}</div>`:''}
+    <div class="campo"><label for="le">Correo</label><input id="le" type="email" autocomplete="username"></div>
+    ${campoClave('lp','','Contraseña')}
+    <button class="btn btn-pri grande" id="bent">Entrar</button></section>`;
+  const go=()=>entrar(); $('#bent').onclick=go;
+  ['#le','#lp'].forEach(s=>$(s).addEventListener('keydown',e=>{ if(e.key==='Enter') go(); }));
+  $('#lp').setAttribute('autocomplete','current-password');
+  setTimeout(()=>$('#le')&&$('#le').focus(),50);
+}
+async function entrar(){
+  const em=$('#le').value.trim(), pw=$('#lp').value, b=$('#bent');
+  if(!em||!pw){ toast('Escribe tu correo y tu contraseña',true); return; }
+  if(!auth){ toast('No se pudo cargar Firebase. Revisa la conexión.',true); return; }
+  b.disabled=true; b.textContent='Entrando…';
+  try{ await auth.signInWithEmailAndPassword(em,pw); }
+  catch(e){ toast(errorTexto(e),true); b.disabled=false; b.textContent='Entrar'; }
+}
+let avisoLogin='';
+async function alEntrar(u){
+  if(!ADMINS.includes(u.uid)){ avisoLogin='Esta cuenta no tiene permiso de administración.'; await auth.signOut(); return; }
+  vista.innerHTML='<p class="vacio">Cargando datos…</p>';
+  try{ await cargarTodo(); }catch(e){ avisoLogin=errorTexto(e); await auth.signOut(); return; }
+  mostrar(history.state||{p:'panel',params:{}});
+}
+function vPanel(){
+  const cl=listaClases(), n=Object.keys(D.alumnos).length;
+  vista.innerHTML=barra('Administración')+`
+  <div class="acciones">
+    <span class="chip">🏫 ${cl.length} ${cl.length===1?'clase':'clases'}</span><span class="chip">👦 ${n} alumnos</span>
+    <span style="flex:1"></span>
+    <button class="btn btn-pri" id="bnueva">${ICO.mas}Nueva clase</button>
+    <button class="btn btn-ok" id="bimp">${ICO.subir}Importar CSV</button>
+    <button class="btn" id="breset" ${esSuper()?'':'style="display:none"'}>${ICO.reiniciar}Reiniciar progreso</button>
+    <button class="btn btn-gris" id="buso">${ICO.grafica}Uso</button>
+  </div>
+  ${cl.length?`<div class="clases">${cl.map(c=>{ const al=alumnosDe(c), act=al.filter(a=>a.act).length;
+    return `<button class="clase" data-c="${esc(c)}"><div class="n">${esc(c)}</div><div class="d">${al.length} alumnos · ${act} han jugado</div></button>`; }).join('')}</div>`
+  :`<div class="panel vacio"><p><b>Aún no hay clases.</b></p><p>Pulsa «Importar CSV» y sube el archivo de una clase (Nombre;usuario;clave).</p></div>`}`;
+  $('#bnueva').onclick=nuevaClase; $('#bimp').onclick=()=>importar(); $('#breset').onclick=()=>reiniciar(); $('#buso').onclick=()=>ir('uso');
+  $$('.clase').forEach(b=>b.onclick=()=>ir('clase',{c:b.dataset.c}));
+}
+let verClaves=false, filtro='';
+async function vClase(c){
+  vista.innerHTML=barra('Clase '+esc(c),true)+'<p class="vacio">Cargando claves…</p>';
+  try{ await cargarClaves(c); }catch(e){ toast(errorTexto(e),true); }
+  pintarClase(c);
+}
+function pintarClase(c){
+  const al=alumnosDe(c);
+  vista.innerHTML=barra('Clase '+esc(c),true)+`
+  <div class="acciones">
+    <span class="chip">👦 ${al.length} alumnos</span><span style="flex:1"></span>
+    <button class="btn btn-pri" id="balta">${ICO.mas}Alumno</button>
+    <button class="btn btn-ok" id="bimp">${ICO.subir}Importar CSV</button>
+    <button class="btn" id="bpdf">${ICO.imprimir}Claves en PDF</button>
+    <button class="btn" id="bren" ${esSuper()?'':'style="display:none"'}>${ICO.lapiz}Renombrar / pasar de curso</button>
+    <button class="btn" id="breset" ${esSuper()?'':'style="display:none"'}>${ICO.reiniciar}Reiniciar progreso</button>
+    <button class="btn btn-rojo" id="bborrar" ${esSuper()?'':'style="display:none"'}>${ICO.papelera}Borrar clase</button>
+  </div>
+  <section class="panel"><div class="herr"><input id="buscar" placeholder="Buscar por nombre o usuario…" value="${esc(filtro)}">
+    <button class="btn btn-gris" id="bver">${verClaves?ICO.ojoNo+'Ocultar claves':ICO.ojo+'Mostrar claves'}</button></div>
+    <div class="tabla-c"><table><thead><tr><th>Nombre</th><th>Usuario</th><th>Clave</th><th>★</th><th>🔥</th><th>Última vez</th><th></th></tr></thead><tbody id="tb"></tbody></table></div>
+    ${al.length?'':'<p class="vacio">Esta clase no tiene alumnos. Usa «Importar CSV» o «Alumno».</p>'}</section>`;
+  const pintarFilas=()=>{
+    const f=norm(filtro);
+    $('#tb').innerHTML=al.filter(a=>!f||norm(a.nombre).includes(f)||a.usuario.includes(f)).map(a=>{ const s=estrellas(a), k=D.claves[a.uid];
+      return `<tr><td class="nombre">${esc(a.nombre)}</td><td><span class="mono">${esc(a.usuario)}</span></td>
+      <td>${k==null?'<span class="oculta">?</span>':verClaves?`<span class="mono">${esc(k)}</span>`:'<span class="oculta">••••••</span>'}</td>
+      <td>${s.e}</td><td>${s.r}</td><td>${fecha(a.act)}</td>
+      <td style="text-align:right"><button class="mini" data-a="clave" data-u="${a.uid}" title="Cambiar clave">${ICO.llave}</button><button class="mini" data-a="mover" data-u="${a.uid}" title="Cambiar de clase">${ICO.mover}</button><button class="mini rojo" data-a="baja" data-u="${a.uid}" title="Dar de baja">${ICO.papelera}</button></td></tr>`; }).join('');
+  };
+  pintarFilas();
+  $('#buscar').oninput=e=>{ filtro=e.target.value; pintarFilas(); };
+  $('#bver').onclick=()=>{ verClaves=!verClaves; pintarClase(c); };
+  $('#balta').onclick=()=>altaIndividual(c); $('#bimp').onclick=()=>importar(c); $('#bpdf').onclick=()=>pdfClaves(c);
+  $('#bren').onclick=()=>renombrar(c); $('#bborrar').onclick=()=>borrarClase(c); $('#breset').onclick=()=>reiniciar(c);
+  $('#tb').onclick=e=>{ const b=e.target.closest('[data-a]'); if(!b) return; const uid=b.dataset.u;
+    if(b.dataset.a==='clave') dlgClave(uid,c); else if(b.dataset.a==='mover') dlgMover(uid,c); else dlgBaja(uid,c); };
+}
+function vUso(){
+  const n=Object.keys(D.alumnos).length;
+  vista.innerHTML=barra('Uso de Firebase',true)+`<section class="panel uso">
+    <p><b>${listaClases().length}</b> clases · <b>${n}</b> alumnos dados de alta.</p>
+    <p>Plan gratuito: <b>50.000 lecturas</b> y <b>20.000 escrituras</b> al día (se reinicia a las 9:00, hora de España). Si se superara, el juego seguiría funcionando en modo libre hasta las 9:00 del día siguiente, sin coste.</p>
+    <table><tr><td>Un alumno en una sesión</td><td>≈ 30 lecturas · ≈ 10 escrituras</td></tr>
+    <tr><td>Un día de cole (5 sesiones × 25 alumnos)</td><td>≈ 4.000 lecturas (8 %) · ≈ 1.250 escrituras (6 %)</td></tr>
+    <tr><td>Abrir este panel</td><td>≈ ${n+listaClases().length} lecturas</td></tr>
+    <tr><td>Importar una clase de 25</td><td>≈ 75 escrituras</td></tr></table>
+    <p>El uso real del día lo ves en la consola de Firebase:</p>
+    <p><a class="btn btn-pri" href="https://console.firebase.google.com/project/${FIREBASE.projectId}/firestore/usage" target="_blank" rel="noopener">${ICO.grafica}Abrir uso de Firestore</a></p>
+    <p class="ayuda">Dirección del juego para el alumnado: <b>${esc(URL_JUEGO)}</b></p></section>`;
+}
+
+/* ---------- diálogos ---------- */
+function selectorClases(id,actual,etq){
+  const cl=listaClases();
+  return `<div class="campo"><label for="${id}">${etq||'Clase'}</label><select id="${id}">${cl.map(c=>`<option ${c===actual?'selected':''}>${esc(c)}</option>`).join('')}<option value="__nueva">+ Nueva clase…</option></select></div>
+    <div class="campo" id="${id}-n" ${cl.length?'hidden':''}><label for="${id}-t">Nombre de la nueva clase</label><input id="${id}-t" placeholder="Ej.: 3B" maxlength="15"></div>`;
+}
+function leerSelector(id){
+  const s=$('#'+id); if(!s) return '';
+  if(s.value==='__nueva'||!listaClases().length){ return ($('#'+id+'-t').value||'').trim(); }
+  return s.value;
+}
+function activarSelector(id){ const s=$('#'+id); if(!s) return; const f=()=>{ $('#'+id+'-n').hidden=!(s.value==='__nueva'||!listaClases().length); }; s.onchange=f; f(); }
+function nuevaClase(){
+  modal({titulo:'Nueva clase',html:`<div class="campo"><label for="nc">Nombre</label><input id="nc" placeholder="Ej.: 1A, 5B…" maxlength="15"></div><p class="ayuda">Después podrás importar su CSV o añadir alumnos uno a uno.</p>`,
+    botones:[{txt:'Cancelar',cls:'btn-gris'},{txt:'Crear',cls:'btn-pri',fn:async()=>{
+      const c=$('#nc').value.trim();
+      if(!CLASE_OK.test(c)){ toast('Nombre no válido (letras, números, espacios; máx. 15)',true); return false; }
+      if(listaClases().includes(c)){ toast('Esa clase ya existe',true); return false; }
+      try{ await db.doc('clases/'+c).set({nombre:c,creada:TS()}); D.clases[c]={nombre:c}; toast('Clase '+c+' creada'); ir('clase',{c}); }catch(e){ toast(errorTexto(e),true); return false; }
+    }}]});
+}
+function altaIndividual(c){
+  modal({titulo:'Nuevo alumno',html:`<div class="campo"><label for="an">Nombre y apellidos</label><input id="an" maxlength="80"></div>
+    <div class="fila2"><div class="campo"><label for="au">Usuario</label><input id="au" maxlength="30" autocapitalize="none" spellcheck="false" placeholder="ej.: luciag"></div>${campoClave('ak',generarClave())}</div>
+    <p class="ayuda">Usuario: minúsculas, números, punto o guion. Clave: mínimo 6 caracteres (se propone una al azar).</p>${selectorClases('ac',c)}`,
+    botones:[{txt:'Cancelar',cls:'btn-gris'},{txt:'Dar de alta',cls:'btn-ok',fn:async(b)=>{
+      const nombre=$('#an').value.trim(), usuario=norm($('#au').value), clave=norm($('#ak').value), clase=leerSelector('ac');
+      if(!nombre){ toast('Escribe el nombre',true); return false; }
+      if(!USUARIO_OK.test(usuario)){ toast('Usuario no válido',true); return false; }
+      if(clave.length<6){ toast('La clave debe tener al menos 6 caracteres',true); return false; }
+      if(!CLASE_OK.test(clase)){ toast('Elige o escribe una clase válida',true); return false; }
+      b.disabled=true; b.textContent='Creando…';
+      try{ const r=await alta({nombre,usuario,clave,clase}); if(r.estado==='ya'){ toast('Ese usuario ya existe en la clase '+r.clase,true); b.disabled=false; b.textContent='Dar de alta'; return false; }
+        toast(usuario+' dado de alta'); ir('clase',{c:clase},clase===c); if(clase===c) pintarClase(c); }
+      catch(e){ toast(errorTexto(e),true); b.disabled=false; b.textContent='Dar de alta'; return false; }
+    }}]});
+  activarSelector('ac');
+}
+function dlgClave(uid,c){
+  const a=D.alumnos[uid];
+  modal({titulo:'Cambiar clave',html:`<p><b>${esc(a.nombre)}</b> · <span class="mono">${esc(a.usuario)}</span></p>${campoClave('nk',generarClave(),'Nueva clave')}<p class="ayuda">Mínimo 6 caracteres. Se guarda en minúsculas.</p>`,
+    botones:[{txt:'Cancelar',cls:'btn-gris'},{txt:'Guardar',cls:'btn-pri',fn:async(b)=>{
+      const k=norm($('#nk').value); if(k.length<6){ toast('Mínimo 6 caracteres',true); return false; }
+      b.disabled=true; b.textContent='Guardando…';
+      try{ await cambiarClave(uid,k); toast('Clave cambiada'); pintarClase(c); }catch(e){ toast(errorTexto(e),true); b.disabled=false; b.textContent='Guardar'; return false; }
+    }}]});
+}
+function dlgMover(uid,c){
+  const a=D.alumnos[uid];
+  modal({titulo:'Cambiar de clase',html:`<p><b>${esc(a.nombre)}</b> está en <b>${esc(c)}</b>.</p>${selectorClases('mc',c,'Nueva clase')}<p class="ayuda">Conserva su progreso y su clave.</p>`,
+    botones:[{txt:'Cancelar',cls:'btn-gris'},{txt:'Mover',cls:'btn-pri',fn:async()=>{
+      const n=leerSelector('mc'); if(!CLASE_OK.test(n)||n===c){ toast('Elige otra clase',true); return false; }
+      try{ await moverA([uid],n); toast(a.usuario+' ahora está en '+n); pintarClase(c); }catch(e){ toast(errorTexto(e),true); return false; }
+    }}]});
+  activarSelector('mc');
+}
+function dlgBaja(uid,c){
+  const a=D.alumnos[uid];
+  modal({titulo:'¿Dar de baja?',html:`<p>Se borrará la cuenta de <b>${esc(a.nombre)}</b> (<span class="mono">${esc(a.usuario)}</span>) y todo su progreso. No se puede deshacer.</p>`,
+    botones:[{txt:'Cancelar',cls:'btn-gris'},{txt:'Dar de baja',cls:'btn-rojo',fn:async(b)=>{
+      b.disabled=true; b.textContent='Borrando…';
+      try{ const ok=await baja(uid); toast(ok?a.usuario+' dado de baja':a.usuario+' dado de baja (su cuenta queda bloqueada: no puede entrar)'); pintarClase(c); }
+      catch(e){ toast(errorTexto(e),true); b.disabled=false; b.textContent='Dar de baja'; return false; }
+    }}]});
+}
+function renombrar(c){
+  if(!esSuper()) return soloSuper();
+  const al=alumnosDe(c);
+  modal({titulo:'Renombrar o pasar de curso',html:`<p>Cambia el nombre de <b>${esc(c)}</b> (por ejemplo, de 4A a 5A al empezar el curso). Los ${al.length} alumnos conservan su usuario, su clave y su progreso.</p>
+    <div class="campo"><label for="rn">Nuevo nombre</label><input id="rn" value="${esc(c)}" maxlength="15"></div>`,
+    botones:[{txt:'Cancelar',cls:'btn-gris'},{txt:'Cambiar',cls:'btn-pri',fn:async(b)=>{
+      const n=$('#rn').value.trim();
+      if(!CLASE_OK.test(n)||n===c){ toast('Escribe un nombre nuevo válido',true); return false; }
+      if(listaClases().includes(n)){ toast('Ya existe la clase '+n+'. Mueve a los alumnos uno a uno o borra antes esa clase.',true); return false; }
+      b.disabled=true; b.textContent='Cambiando…';
+      try{ await moverA(al.map(a=>a.uid),n); await db.doc('clases/'+c).delete().catch(()=>{}); delete D.clases[c]; toast('La clase '+c+' ahora es '+n); ir('clase',{c:n},true); }
+      catch(e){ toast(errorTexto(e),true); b.disabled=false; b.textContent='Cambiar'; return false; }
+    }}]});
+}
+function borrarClase(c){
+  if(!esSuper()) return soloSuper();
+  const al=alumnosDe(c);
+  modal({titulo:'Borrar la clase '+esc(c),html:`<div class="aviso rojo">Se borrarán <b>${al.length}</b> alumnos con sus cuentas y su progreso. No se puede deshacer.</div>
+    <div class="campo"><label for="bc">Para confirmar, escribe <b>${esc(c)}</b></label><input id="bc" autocomplete="off"></div><div class="progreso" hidden id="bp"><i></i></div><div class="ayuda" id="bt"></div>`,
+    botones:[{txt:'Cancelar',cls:'btn-gris'},{txt:'Borrar todo',cls:'btn-rojo',mantener:true,fn:async(b)=>{
+      if($('#bc').value.trim()!==c){ toast('Escribe el nombre exacto de la clase',true); return; }
+      b.disabled=true; modalCancel=false; $('#bp').hidden=false; let i=0;
+      for(const a of al){ try{ await baja(a.uid); }catch(e){ toast(a.usuario+': '+errorTexto(e),true); } i++; $('#bp i').style.width=(i/al.length*100)+'%'; $('#bt').textContent=i+' de '+al.length; }
+      await db.doc('clases/'+c).delete().catch(()=>{}); delete D.clases[c];
+      cerrarModal(); toast('Clase '+c+' borrada'); history.back();
+    }}]});
+}
+function reiniciar(c){
+  if(!esSuper()) return soloSuper();
+  const al=c?alumnosDe(c):Object.entries(D.alumnos).map(([uid,a])=>Object.assign({uid},a));
+  modal({titulo:'Reiniciar progreso',html:`<p>Se pondrán a cero las estrellas y las rachas de <b>${c?'la clase '+esc(c):'todo el colegio'}</b> (${al.length} alumnos) y se vaciará su parte del Salón de la fama.</p>
+    <p class="ayuda">Las cuentas y las claves no cambian. Útil al empezar un curso nuevo.</p>
+    <div class="campo"><label for="rc">Para confirmar, escribe <b>REINICIAR</b></label><input id="rc" autocomplete="off"></div>`,
+    botones:[{txt:'Cancelar',cls:'btn-gris'},{txt:'Reiniciar',cls:'btn-rojo',fn:async(b)=>{
+      if($('#rc').value.trim().toUpperCase()!=='REINICIAR'){ toast('Escribe REINICIAR para confirmar',true); return false; }
+      b.disabled=true; b.textContent='Reiniciando…'; const rv=Date.now();
+      try{ await lotes(al.flatMap(a=>[b=>b.update(db.doc('alumnos/'+a.uid),{prog:{},rv}),b=>b.set(db.doc('publico/'+a.uid),{u:a.usuario,c:a.clase,t:TS()})]));
+        al.forEach(a=>{ D.alumnos[a.uid].prog={}; D.alumnos[a.uid].rv=rv; }); toast('Progreso reiniciado'); mostrar(history.state||{p:'panel',params:{}}); }
+      catch(e){ toast(errorTexto(e),true); b.disabled=false; b.textContent='Reiniciar'; return false; }
+    }}]});
+}
+
+/* ---------- importar CSV ---------- */
+function leerCSV(txt){
+  txt=txt.replace(/^﻿/,'');
+  const lineas=txt.split(/\r?\n/).filter(l=>l.trim());
+  if(!lineas.length) return [];
+  const sep=[';','\t',','].map(s=>[s,(lineas[0].match(new RegExp(s==='\t'?'\t':'\\'+s,'g'))||[]).length]).sort((a,b)=>b[1]-a[1])[0][0];
+  const partir=l=>{ const o=[]; let cur='',q=false; for(const ch of l){ if(ch==='"'){ q=!q; continue; } if(ch===sep&&!q){ o.push(cur); cur=''; } else cur+=ch; } o.push(cur); return o.map(s=>s.trim()); };
+  let filas=lineas.map(partir);
+  let iN=0,iU=1,iC=2;
+  const cab=filas[0].map(norm);
+  if(cab.some(h=>/usuario|user|clave|contrase/.test(h))){
+    const f=re=>cab.findIndex(h=>re.test(h));
+    iN=f(/nombre|alumno|name/); iU=f(/usuario|user/); iC=f(/clave|contrase|password/);
+    if(iN<0) iN=0; filas=filas.slice(1);
+  }
+  return filas.map(r=>({nombre:(r[iN]||'').trim(),usuario:norm(r[iU]),clave:norm(r[iC])})).filter(r=>r.nombre||r.usuario);
+}
+function revisar(filas,clase){
+  const vistos=new Set();
+  return filas.map(r=>{
+    let est='ok',txt='Nuevo';
+    if(!r.nombre){ est='mal'; txt='Falta el nombre'; }
+    else if(!USUARIO_OK.test(r.usuario)){ est='mal'; txt='Usuario no válido'; }
+    else if(r.clave.length<6){ est='mal'; txt='Clave de menos de 6'; }
+    else if(vistos.has(r.usuario)){ est='mal'; txt='Repetido en el archivo'; }
+    else { const ex=usuarioExiste(r.usuario); if(ex){ est='av'; txt=ex[1].clase===clase?'Ya está en esta clase':'Ya existe en '+ex[1].clase; } }
+    vistos.add(r.usuario);
+    return Object.assign({},r,{est,txt});
+  });
+}
+function importar(c){
+  modal({titulo:'Importar alumnado desde CSV',cancelable:true,html:`
+    <p class="ayuda">Formato: <b>Nombre;usuario;clave</b> (el mismo CSV de los monstruos). La primera fila puede ser la cabecera.</p>
+    ${selectorClases('ic',c,'Clase de destino')}
+    <div class="campo"><label for="if">Archivo CSV</label><input id="if" type="file" accept=".csv,text/csv,.txt"></div>
+    <div id="iprev"></div><div class="progreso" hidden id="ip"><i></i></div><div class="log" hidden id="ilog"></div>`,
+    botones:[{txt:'Cerrar',cls:'btn-gris'},{txt:'Dar de alta',cls:'btn-ok',id:'iok',mantener:true,fn:()=>ejecutarImport()}]});
+  activarSelector('ic'); $('#iok').disabled=true;
+  let filas=[];
+  const repintar=()=>{
+    const clase=leerSelector('ic'); const r=revisar(filas,clase); IMP.filas=r;
+    const nuevos=r.filter(x=>x.est==='ok').length, libres=LIMITE_HORA-D.creadasHora.filter(t=>Date.now()-t<3600e3).length;
+    $('#iprev').innerHTML=filas.length?`<div class="prev"><table><thead><tr><th>Nombre</th><th>Usuario</th><th>Clave</th><th>Estado</th></tr></thead><tbody>${r.map(x=>`<tr><td>${esc(x.nombre)}</td><td>${esc(x.usuario)}</td><td>${esc(x.clave)}</td><td class="est-${x.est}">${esc(x.txt)}</td></tr>`).join('')}</tbody></table></div>
+      <p><b>${nuevos}</b> nuevos · ${r.filter(x=>x.est==='av').length} ya existen (se saltan) · ${r.filter(x=>x.est==='mal').length} con errores (se saltan).</p>
+      ${nuevos>libres?`<div class="aviso">Firebase permite unas ${LIMITE_HORA} cuentas nuevas por hora. Se crearán las primeras; si se frena, espera un rato y vuelve a importar el mismo archivo: los ya creados se saltan.</div>`:''}`:'';
+    $('#iok').disabled=!nuevos||!CLASE_OK.test(clase);
+    $('#iok').textContent='Dar de alta '+(nuevos||'');
+  };
+  $('#if').onchange=async e=>{ const f=e.target.files[0]; if(!f) return; let t=await f.text(); if(t.includes('�')){ t=new TextDecoder('windows-1252').decode(await f.arrayBuffer()); } filas=leerCSV(t); if(!filas.length) toast('El archivo está vacío o no se entiende',true); repintar(); };
+  $('#ic').addEventListener('change',repintar); $('#ic-t').addEventListener('input',repintar);
+}
+const IMP={filas:[],enMarcha:false};
+async function ejecutarImport(){
+  if(IMP.enMarcha) return;
+  const clase=leerSelector('ic'); if(!CLASE_OK.test(clase)){ toast('Elige o escribe una clase válida',true); return; }
+  const lista=IMP.filas.filter(x=>x.est==='ok'); if(!lista.length) return;
+  IMP.enMarcha=true; modalCancel=false; $('#iok').disabled=true; $('#ip').hidden=false; $('#ilog').hidden=false;
+  const log=t=>{ $('#ilog').insertAdjacentHTML('beforeend','<div>'+t+'</div>'); $('#ilog').scrollTop=1e6; };
+  let hechos=0, err=0, parado=false;
+  for(const r of lista){
+    try{ const res=await alta({nombre:r.nombre,usuario:r.usuario,clave:r.clave,clase});
+      log(res.estado==='ya'?'⏭ '+esc(r.usuario)+' ya existía':'✅ '+esc(r.usuario)+(res.estado==='recuperado'?' (cuenta recuperada)':'')); hechos++; }
+    catch(e){ err++; log('❌ '+esc(r.usuario)+': '+esc(errorTexto(e)));
+      if(/too-many-requests|quota/.test(e.code||'')){ parado=true; log('<b>Firebase ha frenado las altas. Espera un rato y vuelve a importar el mismo archivo.</b>'); break; } }
+    $('#ip i').style.width=((hechos+err)/lista.length*100)+'%';
+    await espera(150);
+  }
+  IMP.enMarcha=false; modalCancel=true;
+  $('#iok').outerHTML='<button class="btn btn-pri" id="ifin">Ver la clase</button>';
+  $('#ifin').onclick=()=>{ cerrarModal(); ir('clase',{c:clase}); };
+  toast(parado?'Importación pausada: '+hechos+' creados':'Importación terminada: '+hechos+' de '+lista.length);
+}
+
+/* ---------- PDF de claves (imprimir → Guardar como PDF) ---------- */
+async function pdfClaves(c){
+  const al=alumnosDe(c);
+  if(!al.length){ toast('La clase no tiene alumnos',true); return; }
+  try{ await cargarClaves(c); }catch(e){}
+  const tarjetas=al.map(a=>`<div class="t"><div class="cab"><img src="${BIT}" alt="">Código Siurot<span>${esc(c)}</span></div><div class="nom">${esc(a.nombre)}</div>
+    <div class="dato">Usuario: <b>${esc(a.usuario)}</b></div><div class="dato">Clave: <b>${esc(D.claves[a.uid]||'—')}</b></div><div class="url">${esc(URL_JUEGO)}</div></div>`).join('');
+  const html=`<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Claves ${esc(c)} · Código Siurot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>@page{size:A4;margin:10mm}body{margin:0;font-family:Fredoka,Arial,sans-serif;color:#1f1b4d}
+    h1{font-size:16pt;margin:0 0 4mm}.g{display:grid;grid-template-columns:1fr 1fr;gap:4mm}
+    .t{border:2px dashed #8b6bff;border-radius:5mm;padding:4mm 5mm;break-inside:avoid;height:48mm;display:flex;flex-direction:column;gap:1.6mm}
+    .cab{display:flex;align-items:center;gap:2mm;font-weight:700;color:#4527c9;font-size:11pt}.cab img{width:9mm;height:9mm}.cab span{margin-left:auto;background:#efeaff;border-radius:3mm;padding:.5mm 3mm}
+    .nom{font-weight:600;font-size:12pt}.dato{font-size:14pt}.dato b{font-family:Consolas,monospace;background:#f4f2ff;border-radius:2mm;padding:0 2mm;letter-spacing:.5pt}
+    .url{margin-top:auto;font-size:7.5pt;color:#5b5788;word-break:break-all}</style></head>
+    <body><h1>Claves de la clase ${esc(c)} · Código Siurot</h1><div class="g">${tarjetas}</div></body></html>`;
+  const f=document.createElement('iframe'); f.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0'; document.body.appendChild(f);
+  f.contentDocument.open(); f.contentDocument.write(html); f.contentDocument.close();
+  const imprimir=()=>{ try{ f.contentWindow.focus(); f.contentWindow.print(); }catch(e){} setTimeout(()=>f.remove(),60000); };
+  setTimeout(imprimir,900);
+  toast('Se abre la ventana de impresión: elige «Guardar como PDF»');
+}
+
+/* ---------- arranque ---------- */
+history.replaceState(history.state||{p:'panel',params:{}},'');
+if(!auth){ vLogin('No se pudo cargar Firebase. Revisa la conexión a internet.'); }
+else auth.onAuthStateChanged(u=>{ if(u) alEntrar(u); else { D.cargado=false; vLogin(avisoLogin); avisoLogin=''; } });
+</script>
+</body>
+</html>
