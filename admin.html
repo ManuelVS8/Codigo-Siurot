@@ -125,6 +125,12 @@ const ADMINS = ['o7RrLEPeYfZfbVIA6y1Hz8NjVC43','2AY1PTrrwPd0lOAqubDgsEsula83','U
 const SUPER = ['o7RrLEPeYfZfbVIA6y1Hz8NjVC43','2AY1PTrrwPd0lOAqubDgsEsula83']; // solo estos pueden borrar clases, reiniciar y pasar de curso
 function esSuper(){ return SUPER.includes(auth.currentUser?.uid); }
 function soloSuper(){ toast('Solo el superadmin puede hacer esto', true); }
+/* Aviso fijo en pantalla (no desaparece solo): sirve para ver el motivo exacto de cualquier fallo */
+function avisoGlobal(t){ let d=document.getElementById('diag');
+  if(!d){ d=document.createElement('div'); d.id='diag'; d.style.cssText='position:fixed;left:8px;right:8px;bottom:8px;z-index:9999;background:#fff1f1;color:#a40000;border:2px solid #e00;border-radius:12px;padding:10px 12px;font:14px/1.35 system-ui,sans-serif;white-space:pre-wrap;word-break:break-word;max-height:40vh;overflow:auto'; document.body.appendChild(d); }
+  d.textContent='⚠ '+t; }
+window.addEventListener('error',e=>avisoGlobal('Error en la página: '+(e.message||e.error)+(e.filename?' ('+String(e.filename).split('/').pop()+':'+e.lineno+')':'')));
+window.addEventListener('unhandledrejection',e=>{ const r=e.reason||{}; avisoGlobal('Error: '+(r.code?'['+r.code+'] ':'')+(r.message||String(r))); });
 const URL_JUEGO = new URL('index.html', location.href).href;
 const MUNDOS_N = 3;          // mundos con puntuación
 const LIMITE_HORA = 100;     // Firebase: cuentas nuevas por hora desde un mismo ordenador
@@ -297,7 +303,8 @@ function vLogin(msg){
     ${msg?`<div class="aviso rojo">${esc(msg)}</div>`:''}
     <div class="campo"><label for="le">Correo</label><input id="le" type="email" autocomplete="username"></div>
     ${campoClave('lp','','Contraseña')}
-    <button class="btn btn-pri grande" id="bent">Entrar</button></section>`;
+    <button class="btn btn-pri grande" id="bent">Entrar</button>
+    <p class="ayuda" style="margin-top:10px;text-align:center">${auth?'Firebase cargado ✓':'Firebase NO cargado ✗'} · ${esc(location.host||'archivo local')}</p></section>`;
   const go=()=>entrar(); $('#bent').onclick=go;
   ['#le','#lp'].forEach(s=>$(s).addEventListener('keydown',e=>{ if(e.key==='Enter') go(); }));
   $('#lp').setAttribute('autocomplete','current-password');
@@ -309,14 +316,16 @@ async function entrar(){
   if(!auth){ toast('No se pudo cargar Firebase. Revisa la conexión.',true); return; }
   b.disabled=true; b.textContent='Entrando…';
   try{ await auth.signInWithEmailAndPassword(em,pw); }
-  catch(e){ console.warn('Error de acceso',e); toast(/too-many-requests/.test(e&&e.code||'')?'Demasiados intentos seguidos. Espera unos minutos y vuelve a probar.':errorTexto(e),true); b.disabled=false; b.textContent='Entrar'; }
+  catch(e){ console.warn('Error de acceso',e);
+    const t=/too-many-requests/.test(e&&e.code||'')?'Demasiados intentos seguidos. Espera unos minutos y vuelve a probar.':errorTexto(e);
+    toast(t,true); avisoGlobal('No se pudo entrar: '+t+(e&&e.code?'  [código: '+e.code+']':'')); b.disabled=false; b.textContent='Entrar'; }
 }
 let avisoLogin='';
 async function alEntrar(u){
   if(!ADMINS.includes(u.uid)){ avisoLogin='La contraseña es correcta, pero esta cuenta no está en la lista de administradores del panel. UID de esta cuenta: '+u.uid; console.warn('UID sin permiso:',u.uid); await auth.signOut(); return; }
   vista.innerHTML='<p class="vacio">Cargando datos…</p>';
   try{ await cargarTodo(); }catch(e){ avisoLogin=errorTexto(e)+' (UID de esta cuenta: '+u.uid+')'; console.warn('Error al cargar datos',e); await auth.signOut(); return; }
-  mostrar(history.state||{p:'panel',params:{}});
+  try{ mostrar(history.state||{p:'panel',params:{}}); }catch(e){ avisoGlobal('Entraste bien, pero el panel falló al dibujarse: '+(e&&e.message||e)); console.error(e); }
 }
 function vPanel(){
   const cl=listaClases(), n=Object.keys(D.alumnos).length;
@@ -593,7 +602,7 @@ async function pdfClaves(c){
 /* ---------- arranque ---------- */
 history.replaceState(history.state||{p:'panel',params:{}},'');
 if(!auth){ vLogin('No se pudo cargar Firebase. Revisa la conexión a internet.'); }
-else auth.onAuthStateChanged(u=>{ if(u) alEntrar(u); else { D.cargado=false; vLogin(avisoLogin); avisoLogin=''; } });
+else auth.onAuthStateChanged(u=>{ if(u) alEntrar(u); else { D.cargado=false; vLogin(avisoLogin); avisoLogin=''; } },e=>avisoGlobal('Firebase Auth: ['+(e&&e.code)+'] '+(e&&e.message)));
 </script>
 </body>
 </html>
