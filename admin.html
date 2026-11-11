@@ -309,13 +309,13 @@ async function entrar(){
   if(!auth){ toast('No se pudo cargar Firebase. Revisa la conexión.',true); return; }
   b.disabled=true; b.textContent='Entrando…';
   try{ await auth.signInWithEmailAndPassword(em,pw); }
-  catch(e){ toast(errorTexto(e),true); b.disabled=false; b.textContent='Entrar'; }
+  catch(e){ console.warn('Error de acceso',e); toast(/too-many-requests/.test(e&&e.code||'')?'Demasiados intentos seguidos. Espera unos minutos y vuelve a probar.':errorTexto(e),true); b.disabled=false; b.textContent='Entrar'; }
 }
 let avisoLogin='';
 async function alEntrar(u){
-  if(!ADMINS.includes(u.uid)){ avisoLogin='Esta cuenta no tiene permiso de administración.'; await auth.signOut(); return; }
+  if(!ADMINS.includes(u.uid)){ avisoLogin='La contraseña es correcta, pero esta cuenta no está en la lista de administradores del panel. UID de esta cuenta: '+u.uid; console.warn('UID sin permiso:',u.uid); await auth.signOut(); return; }
   vista.innerHTML='<p class="vacio">Cargando datos…</p>';
-  try{ await cargarTodo(); }catch(e){ avisoLogin=errorTexto(e); await auth.signOut(); return; }
+  try{ await cargarTodo(); }catch(e){ avisoLogin=errorTexto(e)+' (UID de esta cuenta: '+u.uid+')'; console.warn('Error al cargar datos',e); await auth.signOut(); return; }
   mostrar(history.state||{p:'panel',params:{}});
 }
 function vPanel(){
