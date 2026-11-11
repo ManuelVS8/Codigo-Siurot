@@ -1,0 +1,74 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Administradores (UID de Authentication > Usuarios)
+    function esAdmin() {
+      return request.auth != null && request.auth.uid in [
+        'o7RrLEPeYfZfbVIA6y1Hz8NjVC43',
+        '2AY1PTrrwPd0lOAqubDgsEsula83',
+        'Ut79f3XpMyPgCEFP6h0yuXUO1Pr2'
+      ];
+    }
+    // Superadministradores: borrar clases, reiniciar progreso y renombrar/pasar de curso
+    function esSuper() {
+      return request.auth != null && request.auth.uid in [
+        'o7RrLEPeYfZfbVIA6y1Hz8NjVC43',
+        '2AY1PTrrwPd0lOAqubDgsEsula83'
+      ];
+    }
+    function soyYo(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+    function ficha(uid) {
+      return get(/databases/$(database)/documents/alumnos/$(uid)).data;
+    }
+    // número entero entre 0 y max (o que no exista)
+    function num(d, k, max) {
+      return !(k in d) || (d[k] is int && d[k] >= 0 && d[k] <= max);
+    }
+    function puntosOk(d) {
+      return num(d,'e1',15) && num(d,'r1',1000)
+          && num(d,'e2',15) && num(d,'r2',1000)
+          && num(d,'e3',15) && num(d,'r3',1000)
+          && num(d,'e4',15) && num(d,'r4',1000)
+          && num(d,'e5',15) && num(d,'r5',1000)
+          && num(d,'e6',15) && num(d,'r6',1000)
+          && num(d,'e7',15) && num(d,'r7',1000);
+    }
+
+    // Clases y claves: solo el administrador
+    match /clases/{id}  {
+      allow read, create, update: if esAdmin();
+      allow delete: if esSuper();
+    }
+    match /claves/{uid} { allow read, write: if esAdmin(); }
+
+    // Ficha privada de cada alumno (nombre, clase y progreso)
+    match /alumnos/{uid} {
+      allow read: if esAdmin() || soyYo(uid);
+      allow create, delete: if esAdmin();
+      // Un admin normal no puede cambiar 'rv' (eso es el reinicio de progreso): solo el superadmin
+      allow update: if esSuper()
+        || (esAdmin() && request.resource.data.get('rv', 0) == resource.data.get('rv', 0))
+        || (soyYo(uid)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['prog', 'act'])
+        && request.resource.data.prog is map);
+    }
+
+    // Puntuaciones públicas del Salón de la fama (solo usuario y clase, sin nombres reales)
+    match /publico/{uid} {
+      allow read: if true;
+      allow delete: if esAdmin();
+      allow create, update: if esAdmin() || (soyYo(uid)
+        && request.resource.data.keys().hasOnly(['u','c','t','e1','r1','e2','r2','e3','r3','e4','r4','e5','r5','e6','r6','e7','r7'])
+        && request.resource.data.u == ficha(uid).usuario
+        && request.resource.data.c == ficha(uid).clase
+        && request.resource.data.t == request.time
+        && puntosOk(request.resource.data));
+    }
+
+    // Todo lo demás, cerrado
+    match /{todo=**} { allow read, write: if false; }
+  }
+}
