@@ -3,9 +3,9 @@
      la app se actualiza sola sin desinstalar. Sin conexión, se usa la última copia guardada.
    - Iconos, fuentes y librerías de Firebase se guardan para ir más rápido y funcionar sin conexión.
    - Las peticiones a la base de datos (Firestore / inicio de sesión) nunca pasan por aquí. */
-const CACHE = 'codigo-siurot-v4';
+const CACHE = 'codigo-siurot-v6';
 const BASICOS = ['./index.html', './manifest.json',
-  './iconos/icon-192.png', './iconos/icon-512.png', './iconos/icon-maskable-512.png', './iconos/apple-touch-icon.png', './iconos/favicon-32.png'];
+  './iconos/icon-192.png', './iconos/icon-512.png', './iconos/icon-maskable-512.png', './iconos/apple-touch-icon.png', './iconos/favicon-32.png', './iconos/favicon-64.png'];
 const EXTERNOS = ['https://www.gstatic.com/firebasejs/', 'https://fonts.googleapis.com/', 'https://fonts.gstatic.com/'];
 
 self.addEventListener('install', e => {

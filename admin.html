@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" sizes="32x32" href="iconos/favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="iconos/favicon-64.png">
 <style>
 :root{--ink:#1f1b4d;--ink2:#5b5788;--linea:#e7e3ff;--pri:#6d4aff;--priD:#4527c9;--ok:#22c55e;--okD:#15803d;--bad:#f43f5e;--badD:#be123c;--oro:#fbbf24;
   --font:'Fredoka','Nunito','Trebuchet MS',system-ui,sans-serif;--sombra:0 10px 30px rgba(31,27,77,.14)}
@@ -132,7 +133,7 @@ function avisoGlobal(t){ let d=document.getElementById('diag');
 window.addEventListener('error',e=>avisoGlobal('Error en la página: '+(e.message||e.error)+(e.filename?' ('+String(e.filename).split('/').pop()+':'+e.lineno+')':'')));
 window.addEventListener('unhandledrejection',e=>{ const r=e.reason||{}; avisoGlobal('Error: '+(r.code?'['+r.code+'] ':'')+(r.message||String(r))); });
 const URL_JUEGO = new URL('index.html', location.href).href;
-const MUNDOS_N = 3;          // mundos con puntuación
+const MUNDOS_N = 7;          // mundos con puntuación
 const LIMITE_HORA = 100;     // Firebase: cuentas nuevas por hora desde un mismo ordenador
 
 /* ---------- utilidades ---------- */

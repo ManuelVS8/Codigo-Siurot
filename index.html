@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="32x32" href="iconos/favicon-32.png">
-<link rel="icon" type="image/png" sizes="192x192" href="iconos/icon-192.png">
+<link rel="icon" type="image/png" sizes="64x64" href="iconos/favicon-64.png">
 <link rel="apple-touch-icon" href="iconos/apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -33,6 +33,7 @@
   --oro:#fbbf24; --oroD:#d97706;
   --F:#3b82f6; --FD:#1d4ed8; --L:#f97316; --LD:#c2410c; --R:#a855f7; --RD:#7e22ce;
   --REP:#10b981; --REPD:#047857; --HAT:#facc15; --HATD:#ca8a04;
+  --J:#84cc16; --JD:#4d7c0f; --IF:#ec4899; --IFD:#be185d; --UNT:#ef4444; --UNTD:#b91c1c; --FN:#06b6d4; --FND:#0e7490;
   --rad:24px; --sombra:0 10px 30px rgba(31,27,77,.18);
   --font:'Fredoka','Baloo 2','Nunito','Trebuchet MS',system-ui,sans-serif;
   --mc1:#86efac; --mc2:#22c55e; --mD:#15803d;
@@ -41,6 +42,10 @@ body[data-tema=menu]    {--c1:#5aaeff;--c2:#cdb6ff;--h1:#a7ebc0;--h2:#6fd59a;--h
 body[data-tema=pradera] {--c1:#4fb8ff;--c2:#d6f5ff;--h1:#b6ec8c;--h2:#7fd35f;--h3:#4fb043}
 body[data-tema=desierto]{--c1:#ff8f5a;--c2:#ffe2a6;--h1:#f7c983;--h2:#e8a258;--h3:#c97a37}
 body[data-tema=hielo]   {--c1:#6f9cff;--c2:#e6efff;--h1:#eef5ff;--h2:#c7dcfb;--h3:#9dbcef}
+body[data-tema=selva]   {--c1:#2fc79b;--c2:#e3fbd0;--h1:#8fe0a0;--h2:#3cb872;--h3:#1f8f56}
+body[data-tema=volcan]  {--c1:#2a1535;--c2:#ff9a5a;--h1:#6b3446;--h2:#4b2336;--h3:#34172a}
+body[data-tema=ciudad]  {--c1:#4a90ff;--c2:#ffe7c4;--h1:#c1cbe6;--h2:#9eaad0;--h3:#7e8bb8}
+body[data-tema=galaxia] {--c1:#0a0630;--c2:#5a3fb0;--h1:#3b2f85;--h2:#2b2268;--h3:#1d1750}
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;min-height:100%}
@@ -62,6 +67,8 @@ h1,h2,h3{margin:0;font-weight:700}
   animation:latido 7s ease-in-out infinite;transition:opacity 1s,transform 1s}
 body[data-tema=desierto] #cielo .sol{transform:scale(1.5);background:radial-gradient(circle,#fff6d0 0 30%,#ffb347 50%,rgba(255,140,60,.35) 62%,rgba(255,140,60,0) 72%)}
 body[data-tema=hielo] #cielo .sol{opacity:.55}
+body[data-tema=volcan] #cielo .sol{transform:scale(1.7);background:radial-gradient(circle,#ffe29a 0 25%,#ff6a1a 45%,rgba(255,80,20,.35) 62%,rgba(255,80,20,0) 72%)}
+body[data-tema=galaxia] #cielo .sol{width:110px;height:110px;background:radial-gradient(circle at 38% 35%,#fff 0 28%,#dcd8ff 52%,rgba(200,190,255,.35) 64%,rgba(200,190,255,0) 74%)}
 @keyframes latido{50%{filter:brightness(1.12)}}
 .nube{position:absolute;left:-300px;width:200px;height:58px;background:#fff;border-radius:60px;opacity:.9;
   animation:nube linear infinite;filter:drop-shadow(0 6px 0 rgba(120,110,200,.12))}
@@ -69,6 +76,11 @@ body[data-tema=hielo] #cielo .sol{opacity:.55}
 .nube::before{width:92px;height:92px;left:28px;top:-46px}
 .nube::after{width:68px;height:68px;left:102px;top:-30px}
 body[data-tema=desierto] .nube{opacity:.55}
+body[data-tema=selva] .nube{opacity:.7}
+body[data-tema=volcan] .nube,body[data-tema=volcan] .nube::before,body[data-tema=volcan] .nube::after{background:#5c3a55}
+body[data-tema=volcan] .nube{opacity:.6;filter:none}
+body[data-tema=galaxia] .nube,body[data-tema=galaxia] .nube::before,body[data-tema=galaxia] .nube::after{background:#b9a8ff}
+body[data-tema=galaxia] .nube{opacity:.14;filter:none}
 @keyframes nube{to{transform:translateX(calc(100vw + 600px))}}
 #cielo .colinas{position:absolute;left:0;right:0;bottom:0;width:100%;height:34vh}
 #cielo .colinas .c1{fill:var(--h1)} #cielo .colinas .c2{fill:var(--h2)} #cielo .colinas .c3{fill:var(--h3)}
@@ -77,6 +89,11 @@ body[data-tema=menu] .mota{width:8px;height:8px;border-radius:50%;background:#ff
 body[data-tema=pradera] .mota{width:12px;height:8px;border-radius:60% 0 60% 0;background:#ffb3d1;animation:petalo linear infinite}
 body[data-tema=desierto] .mota{width:5px;height:5px;border-radius:50%;background:#fff3d6;animation:arena linear infinite}
 body[data-tema=hielo] .mota{width:9px;height:9px;border-radius:50%;background:#fff;box-shadow:0 0 6px #fff;animation:nieve linear infinite}
+body[data-tema=selva] .mota{width:12px;height:7px;border-radius:70% 0 70% 0;background:#7be08a;animation:petalo linear infinite}
+body[data-tema=volcan] .mota{width:6px;height:6px;border-radius:50%;background:#ffb02e;box-shadow:0 0 9px #ff7a1a;animation:brasa linear infinite}
+body[data-tema=ciudad] .mota{width:7px;height:7px;border-radius:50%;background:#fff6c9;box-shadow:0 0 10px #ffe58a;animation:brilla 4s ease-in-out infinite}
+body[data-tema=galaxia] .mota{width:5px;height:5px;border-radius:50%;background:#fff;box-shadow:0 0 9px #cbbcff;animation:brilla 3.2s ease-in-out infinite}
+@keyframes brasa{0%{opacity:0;transform:translate(0,105vh) scale(1)}12%{opacity:.95}100%{opacity:0;transform:translate(30px,4vh) scale(.4)}}
 @keyframes brilla{0%,100%{opacity:0;transform:translateY(var(--y)) scale(.4)}50%{opacity:.9;transform:translateY(var(--y)) scale(1)}}
 @keyframes petalo{0%{opacity:0;transform:translate(0,0) rotate(0)}10%{opacity:.9}100%{opacity:.8;transform:translate(120px,105vh) rotate(720deg)}}
 @keyframes nieve{0%{opacity:0;transform:translate(0,0)}10%{opacity:.95}50%{transform:translate(30px,52vh)}100%{opacity:.8;transform:translate(-10px,105vh)}}
@@ -204,7 +221,7 @@ body.en-juego #app{height:100vh;height:100dvh;padding-bottom:12px}
 .mundo.bloq:hover{transform:none}
 .mundo.bloq .ilus{background:repeating-linear-gradient(135deg,#e2e8f0 0 16px,#edf1f6 16px 32px)}
 .mundo.bloq .ilus .em{font-size:5rem;filter:grayscale(1);opacity:.45}
-.mundo.bloq .candado{position:absolute;inset:auto auto 14px 50%;transform:translateX(-50%);background:#fff;border-radius:999px;padding:6px 14px;font-weight:600;color:#64748b;box-shadow:0 4px 10px rgba(0,0,0,.1)}
+.mundo.bloq .candado{white-space:nowrap;position:absolute;inset:auto auto 14px 50%;transform:translateX(-50%);background:#fff;border-radius:999px;padding:6px 14px;font-weight:600;color:#64748b;box-shadow:0 4px 10px rgba(0,0,0,.1)}
 .mundo.bloq h3,.mundo.bloq .num{color:#64748b}
 
 /* ---------- pantalla de un mundo ---------- */
@@ -292,6 +309,7 @@ body.sin-voz .btn-voz{display:none}
 .blk .ico svg{width:22px;height:22px}
 .blk .tecla{margin-left:auto;font-size:.75rem;background:rgba(0,0,0,.2);border-radius:7px;padding:3px 7px;text-shadow:none}
 .b-F{--b:var(--F);--bd:var(--FD)} .b-L{--b:var(--L);--bd:var(--LD)} .b-R{--b:var(--R);--bd:var(--RD)} .b-REP{--b:var(--REP);--bd:var(--REPD)}
+.b-J{--b:var(--J);--bd:var(--JD)} .b-IF{--b:var(--IF);--bd:var(--IFD)} .b-UNT{--b:var(--UNT);--bd:var(--UNTD)} .b-FN{--b:var(--FN);--bd:var(--FND)}
 .blk.hat{--b:var(--HAT);--bd:var(--HATD);color:#5b3b00;text-shadow:none;border-radius:28px 28px 13px 13px;padding-top:16px;cursor:default;min-width:230px}
 .blk.hat::before{display:none}
 .pila .blk{min-width:210px}
@@ -335,6 +353,41 @@ body.sin-voz .btn-voz{display:none}
 .zona-ctrl .btn.mini{flex:0 0 auto}
 
 .juego.corriendo .paleta,.juego.corriendo [data-acc=quitar],.juego.corriendo [data-acc=vaciar],.juego.corriendo [data-acc=pista],.juego.corriendo [data-acc=otro]{opacity:.45;pointer-events:none;filter:grayscale(.4)}
+/* contenedores nuevos: Si / Si no, Repetir hasta llegar, Mi bloque */
+.rep.c-IF{--b:var(--IF);--bd:var(--IFD)} .rep.c-UNT{--b:var(--UNT);--bd:var(--UNTD)}
+.rep .rep-cuerpo{background:rgba(31,27,77,.045)}
+.rep-cuerpo.dentro{background:rgba(109,74,255,.09)!important}
+.rep-cab .etq{white-space:nowrap}
+.conds{display:inline-flex;gap:3px;background:#fff;border-radius:999px;padding:3px;text-shadow:none;flex-wrap:wrap}
+.conds button{border:0;border-radius:999px;padding:5px 10px;font:600 .88rem/1 var(--font);cursor:pointer;background:transparent;color:var(--IFD);display:inline-flex;align-items:center;gap:4px}
+.conds button.on{background:var(--IF);color:#fff;box-shadow:inset 0 -3px 0 var(--IFD)}
+.conds button:active{transform:scale(.94)}
+.rep-sino{align-self:stretch;background:var(--b);color:#fff;font-weight:600;padding:7px 14px;box-shadow:inset 0 -4px 0 var(--bd),inset 0 2px 0 rgba(255,255,255,.2);text-shadow:0 1px 0 rgba(0,0,0,.2);border-radius:0 12px 12px 0}
+.sino-mini{cursor:pointer;font-size:.92rem;padding:5px 14px;opacity:.88}
+.sino-mini:hover{opacity:1}
+.resif{display:none;background:#fff;border-radius:99px;padding:3px 10px;font-size:.9rem;text-shadow:none;font-weight:700}
+.resif.ver{display:inline-block;animation:pop .3s}
+.resif.si{color:#15803d} .resif.no{color:#be123c}
+.def{margin:0 0 20px;padding-bottom:16px;border-bottom:3px dashed var(--FN);width:100%}
+.def-tit{font-weight:700;color:var(--FND);margin:0 0 8px;display:flex;align-items:center;gap:8px;font-size:1.02rem}
+.blk.hat.def-hat{--b:var(--FN);--bd:var(--FND);color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.22)}
+.def .vacio-prog{font-size:.92rem}
+.def-tit svg{width:22px;height:22px;flex:none}
+.paleta.muchos{gap:9px}
+.paleta.muchos .blk{min-height:50px}
+.tecla2{display:none}
+/* mundos bloqueados (se abren de uno en uno) */
+.mundo.bloq .ilus img{filter:grayscale(1) blur(2.5px);opacity:.42}
+.mundo.bloq .ilus .em{position:relative;z-index:1}
+.mundo.bloq{cursor:pointer}
+.mundo.bloq:active{transform:none;box-shadow:0 8px 0 #94a3b8,0 16px 24px rgba(31,27,77,.12)}
+.mundo.bloq .falta{margin-top:8px;font-weight:600;color:#64748b;font-size:.95rem}
+.mundo.bloq.sacude{animation:sacude .5s}
+.mundo .nuevo-cinta{position:absolute;right:-34px;top:20px;transform:rotate(38deg);background:#f43f5e;color:#fff;font-weight:700;padding:4px 42px;box-shadow:0 3px 8px rgba(0,0,0,.25);z-index:2;font-size:.9rem}
+.mundo{overflow:hidden}
+.desbloqueo{background:linear-gradient(#fff7d6,#ffe8a0);border:3px solid #fbbf24;border-radius:18px;padding:10px 14px;margin:10px 0;font-weight:600;color:#7a4a00}
+.ejemplo-si .col{display:flex;flex-direction:column;gap:2px;align-items:flex-start}
+
 /* ---------- capas, modales y avisos ---------- */
 #capa{position:fixed;inset:0;z-index:60;background:rgba(24,20,60,.5);backdrop-filter:blur(5px);display:grid;place-items:center;padding:16px}
 #capa[hidden]{display:none}
@@ -498,18 +551,26 @@ const MUNDOS = [
    intro:'¡Qué camino tan largo! Piensa cada paso antes de ejecutar. Puedes usar «Paso a paso» para revisar.'},
   {id:3, nombre:'Glaciar Bucle', concepto:'Repetir (bucles)', tema:'hielo', mc1:'#d4ecff', mc2:'#4aa8ff', mD:'#1d64c4', bloques:['F','L','R','REP'],
    aprende:'Usar Repetir para no escribir lo mismo muchas veces.',
-   intro:'¿Ves algo que se repite? Mete esos bloques dentro de «Repetir» y gastarás muchos menos.'}
+   intro:'¿Ves algo que se repite? Mete esos bloques dentro de «Repetir» y gastarás muchos menos.'},
+  {id:4, nombre:'Selva Si', concepto:'Condicionales: «si hay camino…»', tema:'selva', mc1:'#9be7b5', mc2:'#12a56a', mD:'#0b6e47', bloques:['F','L','R','REP','IF'],
+   aprende:'Tomar decisiones: «Si hay camino a la izquierda, gira». Así un solo programa sirve para cualquier camino.',
+   intro:'¡La selva está llena de giros! Con «Si» puedo mirar a mi alrededor y decidir. Prueba: Repetir → Si hay camino a la izquierda → girar.'},
+  {id:5, nombre:'Volcán Mientras', concepto:'Repetir hasta llegar', tema:'volcan', mc1:'#ffc08a', mc2:'#ef5b2a', mD:'#a3290d', bloques:['F','L','R','REP','IF','UNT'],
+   aprende:'Repetir sin contar: «Repetir hasta llegar a la estrella» se para solo cuando llego.',
+   intro:'¡No hace falta contar! Con «Repetir hasta llegar» sigo repitiendo hasta que encuentre la estrella.'},
+  {id:6, nombre:'Ciudad Función', concepto:'Crea tus propios bloques', tema:'ciudad', mc1:'#c3d4ff', mc2:'#5b7cfa', mD:'#2e44b8', bloques:['F','L','R','REP','FN'],
+   aprende:'Inventar tu propio bloque («Mi bloque») y usarlo muchas veces.',
+   intro:'Hay un trozo de camino que se repite por la ciudad. Enséñame ese trozo una vez en «Mi bloque» y úsalo todas las veces que quieras.'},
+  {id:7, nombre:'Galaxia Final', concepto:'Retos combinados', tema:'galaxia', mc1:'#c9b6ff', mc2:'#6d3fe0', mD:'#3b1f94', bloques:['F','L','R','J','REP','IF','UNT','FN'],
+   aprende:'Juntar todo lo aprendido y cruzar abismos con «Saltar».',
+   intro:'¡Último mundo! Hay abismos en el camino: con «Saltar» paso al otro lado. Combina todo lo que sabes.'}
 ];
 const NIVELES = MUNDOS;
-const PROXIMOS = [
-  {id:4, nombre:'Selva Si',        concepto:'Condicionales: «si hay camino…»', em:'🌴'},
-  {id:5, nombre:'Volcán Mientras', concepto:'Repetir hasta llegar',           em:'🌋'},
-  {id:6, nombre:'Ciudad Función',  concepto:'Crea tus propios bloques',       em:'🏙️'},
-  {id:7, nombre:'Galaxia Final',   concepto:'Retos combinados',               em:'🪐'}
-];
-const CORTO = {F:'Avanzar', L:'Girar izquierda', R:'Girar derecha', REP:'Repetir'};
-const LARGO = {F:'Avanzar', L:'Girar a la izquierda', R:'Girar a la derecha', REP:'Repetir'};
-const TECLA = {F:'↑', L:'←', R:'→', REP:'R'};
+const CORTO = {F:'Avanzar', L:'Girar izquierda', R:'Girar derecha', REP:'Repetir', J:'Saltar', IF:'Si', UNT:'Repetir hasta llegar', FN:'Mi bloque'};
+const LARGO = {F:'Avanzar', L:'Girar a la izquierda', R:'Girar a la derecha', REP:'Repetir', J:'Saltar un abismo', IF:'Si hay camino…', UNT:'Repetir hasta llegar a la estrella', FN:'Usar «Mi bloque»'};
+const TECLA = {F:'↑', L:'←', R:'→', J:'↓', REP:'R', IF:'S', UNT:'H', FN:'M'};
+const CONTENEDOR = {REP:1, IF:1, UNT:1};
+const MAX_ANIDADO = 2;          // un bloque con huecos puede ir dentro de otro, pero no más
 const HITOS_RACHA = [5,10,15,20,30,40,50,75,100];
 
 // ==== LOGICA ====
@@ -537,27 +598,49 @@ let _id = 0;
 const nuevoId = () => 'n' + (++_id);
 const nodo = t => ({t, id:nuevoId()});
 const rep = (n,body) => ({t:'REP', n, body, id:nuevoId()});
+const mkIf = (c,body,otro) => ({t:'IF', c, body:body||[], otro:otro||[], id:nuevoId()});
+const unt = body => ({t:'UNT', body, id:nuevoId()});
+const hijos = n => n.t==='IF' ? [n.body,n.otro] : (n.body ? [n.body] : []);
+const COND = {del:'delante', izq:'a la izquierda', der:'a la derecha'};
+const SENS = {del:0, izq:3, der:1};
 
 function aplanar(prog,out){ out = out || []; for(const n of prog){ if(n.t==='REP'){ for(let i=0;i<n.n;i++) aplanar(n.body,out); } else out.push(n); } return out; }
-function contar(prog){ let c = 0; for(const n of prog){ c++; if(n.t==='REP') c += contar(n.body); } return c; }
+function contar(prog){ let c = 0; for(const n of prog){ c++; for(const h of hijos(n)) c += contar(h); } return c; }
 
+// pasos: F avanzar · L/R girar · J saltar un abismo (avanza 2 casillas, la del medio es un hueco)
 function trazar(pasos,dir0){
-  let x=0,y=0,d=dir0; const cel=[[0,0]]; const vis=new Set(['0,0']);
+  let x=0,y=0,d=dir0; const cel=[[0,0]], huecos=[]; const vis=new Set(['0,0']);
+  const toca=(cx,cy,salvo)=>{ for(let q=0;q<4;q++){ const vx=cx+DX[q], vy=cy+DY[q]; if((vx+','+vy)!==salvo && vis.has(vx+','+vy)) return true; } return false; };
   for(const s of pasos){
     if(s==='L') d=(d+3)%4; else if(s==='R') d=(d+1)%4;
-    else { x+=DX[d]; y+=DY[d]; const k=x+','+y; if(vis.has(k)) return null; vis.add(k); cel.push([x,y]); }
+    else if(s==='J'){
+      const mx=x+DX[d], my=y+DY[d], lx=mx+DX[d], ly=my+DY[d], km=mx+','+my, kl=lx+','+ly;
+      if(vis.has(km)||vis.has(kl)) return null;
+      if(toca(mx,my,x+','+y)) return null;
+      vis.add(km);
+      if(toca(lx,ly,km)) return null;
+      vis.add(kl); huecos.push([mx,my]); cel.push([lx,ly]); x=lx; y=ly;
+    }
+    else {
+      const px=x, py=y; x+=DX[d]; y+=DY[d]; const k=x+','+y; if(vis.has(k)) return null;
+      // sin atajos: la casilla nueva no puede tocar (en cruz) ninguna casilla anterior salvo la que acaba de dejar; así el camino es el único posible
+      if(toca(x,y,px+','+py)) return null;
+      vis.add(k); cel.push([x,y]);
+    }
   }
-  return cel;
+  return {cel,huecos};
 }
-function colocar(cel,dir0,maxS,minS,rnd){
+function colocar(tz,dir0,maxS,minS,rnd){
+  const cel=tz.cel, huecos=tz.huecos;
   let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;
-  for(const [x,y] of cel){ if(x<x0)x0=x; if(x>x1)x1=x; if(y<y0)y0=y; if(y>y1)y1=y; }
+  for(const [x,y] of cel.concat(huecos)){ if(x<x0)x0=x; if(x>x1)x1=x; if(y<y0)y0=y; if(y>y1)y1=y; }
   const w=x1-x0+1, h=y1-y0+1, n=Math.max(w,h,minS);
   if(n>maxS) return null;
   const ox=rint(rnd,0,n-w), oy=rint(rnd,0,n-h);
-  const path=cel.map(([x,y])=>[x-x0+ox,y-y0+oy]);
+  const mv=([x,y])=>[x-x0+ox,y-y0+oy];
+  const path=cel.map(mv), hu=huecos.map(mv);
   const ult=path[path.length-1];
-  return {n, path, ini:{x:path[0][0],y:path[0][1],dir:dir0}, meta:{x:ult[0],y:ult[1]}};
+  return {n, path, huecos:hu, ini:{x:path[0][0],y:path[0][1],dir:dir0}, meta:{x:ult[0],y:ult[1]}};
 }
 function partir(rnd,total,partes){ const a=Array(partes).fill(1); let resto=total-partes; while(resto-->0) a[Math.floor(rnd()*partes)]++; return a; }
 
@@ -566,9 +649,9 @@ function genLineal(rnd,nF,nT,maxS,minS){
     const segs=partir(rnd,nF,nT+1), pasos=[];
     segs.forEach((s,i)=>{ if(i>0) pasos.push(rnd()<0.5?'L':'R'); for(let j=0;j<s;j++) pasos.push('F'); });
     const dir0=rint(rnd,0,3);
-    const cel=trazar(pasos,dir0); if(!cel) continue;
-    const col=colocar(cel,dir0,maxS,minS,rnd); if(!col) continue;
-    return Object.assign(col,{ref:pasos.map(nodo), par:pasos.length});
+    const tz=trazar(pasos,dir0); if(!tz) continue;
+    const col=colocar(tz,dir0,maxS,minS,rnd); if(!col) continue;
+    return Object.assign(col,{ref:pasos.map(nodo), refFn:[], par:pasos.length});
   }
   return null;
 }
@@ -581,39 +664,204 @@ function genRepetir(rnd,pl,kmin,kmax,npre,nsuf,maxS,minS){
     const pasos=pre.slice(); for(let i=0;i<k;i++) pasos.push(...pat); pasos.push(...suf);
     if(!valida(pasos)) continue;
     const dir0=rint(rnd,0,3);
-    const cel=trazar(pasos,dir0); if(!cel) continue;
-    const col=colocar(cel,dir0,maxS,minS,rnd); if(!col) continue;
-    return Object.assign(col,{ref:[...pre.map(nodo), rep(k,pat.map(nodo)), ...suf.map(nodo)], par:npre+1+pat.length+nsuf});
+    const tz=trazar(pasos,dir0); if(!tz) continue;
+    const col=colocar(tz,dir0,maxS,minS,rnd); if(!col) continue;
+    return Object.assign(col,{ref:[...pre.map(nodo), rep(k,pat.map(nodo)), ...suf.map(nodo)], refFn:[], par:npre+1+pat.length+nsuf});
   }
   return null;
 }
+
+/* =========================================================
+   Ejecución: un intérprete que va dando los pasos de uno en uno
+   (hace falta porque «Si» y «Repetir hasta» dependen de dónde esté el robot)
+   ========================================================= */
+const MAX_EV = 2500, MAX_ACC = 120, LIM = {lim:true};
+function sensor(est,lab,c){ const d=(est.d+SENS[c])%4; return lab.set.has((est.x+DX[d])+','+(est.y+DY[d])); }
+function* corrLista(arr,ctx,reps){
+  const est=ctx.est, lab=ctx.lab;
+  for(const n of arr){
+    if(n.t==='REP'){ for(let k=0;k<n.n;k++) yield* corrLista(n.body,ctx,reps.concat([{id:n.id,k,n:n.n}])); }
+    else if(n.t==='UNT'){
+      let k=0;
+      while(!(est.x===lab.meta.x&&est.y===lab.meta.y)){ if(++ctx.n>MAX_EV) throw LIM; yield* corrLista(n.body,ctx,reps.concat([{id:n.id,k:k++,n:0}])); }
+    }
+    else if(n.t==='IF'){ if(++ctx.n>MAX_EV) throw LIM; const res=sensor(est,lab,n.c); yield {t:'IF',id:n.id,reps,res}; yield* corrLista(res?n.body:n.otro,ctx,reps); }
+    else if(n.t==='FN'){ if(++ctx.n>MAX_EV) throw LIM; yield {t:'CALL',id:n.id,reps}; yield* corrLista(ctx.fn,ctx,reps.concat([{id:'fn',k:0,n:1}])); }
+    else { if(++ctx.n>MAX_EV) throw LIM; yield {t:n.t,id:n.id,reps}; }
+  }
+}
+function* correr(prog,fn,est,lab){
+  const ctx={fn:fn||[],est,lab,n:0};
+  try{ yield* corrLista(prog,ctx,[]); } catch(e){ if(e!==LIM) throw e; yield {t:'LIM'}; }
+}
+// recorre todo el programa de antemano: lista de pasos + cómo termina ('meta' | 'choque' | 'fin' | 'limite')
+function trazaEjecucion(lab,prog,fn){
+  const est={x:lab.ini.x,y:lab.ini.y,d:lab.ini.dir}; const ev=[]; let fin='fin', acc=0;
+  for(const e of correr(prog,fn,est,lab)){
+    if(e.t==='LIM'){ fin='limite'; break; }
+    if(e.t==='IF'||e.t==='CALL'){ ev.push(e); continue; }
+    const r=dar(est,e.t,lab); e.r=r; ev.push(e);
+    if(r==='choque'){ fin='choque'; break; }
+    if(r==='meta'){ fin='meta'; break; }
+    if(++acc>=MAX_ACC){ fin='limite'; break; }
+  }
+  return {ev,fin,est};
+}
+
+/* =========================================================
+   Generadores de los mundos 4 a 7
+   ========================================================= */
+// cuerpo del «seguidor de camino»: gira si hay camino al lado y avanza
+function refSeguir(g){
+  const b=[]; if(g!=='der') b.push(mkIf('izq',[nodo('L')])); if(g!=='izq') b.push(mkIf('der',[nodo('R')])); b.push(nodo('F')); return b;
+}
+function refSeguirJ(){ return [mkIf('izq',[nodo('L')]), mkIf('der',[nodo('R')]), mkIf('del',[nodo('F')],[nodo('J')])]; }
+function armar(pasos,rnd,maxS,minS,ref,refFn){
+  const dir0=rint(rnd,0,3);
+  const tz=trazar(pasos,dir0); if(!tz) return null;
+  const col=colocar(tz,dir0,maxS,minS,rnd); if(!col) return null;
+  col.ref=ref; col.refFn=refFn||[]; col.par=contar(ref)+contar(col.refFn);
+  col.hset=new Set(col.huecos.map(p=>p[0]+','+p[1]));
+  col.set=new Set(col.path.map(p=>p[0]+','+p[1]));
+  if(!simular(col,ref,col.refFn).ok) return null;
+  return col;
+}
+// camino con tramos rectos y giros; g = 'der' | 'izq' | 'mix'
+function pasosSeguir(rnd,g,nT,nFmin,nFmax){
+  const nF=rint(rnd,Math.max(nFmin,nT+1),Math.max(nFmax,nT+1)), segs=partir(rnd,nF,nT+1), pasos=[];
+  let giros=[]; for(let i=0;i<nT;i++) giros.push(g==='der'?'R':g==='izq'?'L':(rnd()<.5?'L':'R'));
+  if(g==='mix'&&nT>=2&&!(giros.includes('L')&&giros.includes('R'))) giros[rint(rnd,0,nT-1)]=giros[0]==='L'?'R':'L';
+  segs.forEach((s,i)=>{ if(i>0) pasos.push(giros[i-1]); for(let j=0;j<s;j++) pasos.push('F'); });
+  return pasos;
+}
+// cambia algunos «avanzar» por «saltar» (solo si ya miraba hacia allí: el paso anterior es avanzar o saltar)
+function ponerSaltos(pasos,rnd,nJ){
+  const cand=[]; for(let i=0;i<pasos.length;i++) if(pasos[i]==='F'&&(i===0||pasos[i-1]==='F'||pasos[i-1]==='J')) cand.push(i);
+  if(cand.length<nJ) return false;
+  for(let k=0;k<nJ;k++){ const j=Math.floor(rnd()*cand.length); pasos[cand[j]]='J'; cand.splice(j,1); }
+  return true;
+}
+function genSeguir(rnd,sp,maxS,modo){
+  for(let t=0;t<900;t++){
+    const nT=rint(rnd,sp.nT[0],sp.nT[1]);
+    const pasos=pasosSeguir(rnd,sp.g,nT,sp.nF[0],sp.nF[1]);
+    let ref;
+    if(modo==='rep'){ const nF=pasos.length-nT; if(nF>20) continue; ref=[rep(Math.max(2,nF),refSeguir(sp.g))]; }
+    else if(modo==='unt') ref=[unt(refSeguir(sp.g))];
+    else { if(!ponerSaltos(pasos,rnd,sp.nJ)) continue; ref=[unt(refSeguirJ())]; }
+    const lab=armar(pasos,rnd,maxS,sp.minS||5,ref); if(lab) return lab;
+  }
+  return null;
+}
+// «Repetir hasta llegar» con un patrón que se repite (no hace falta contar las vueltas)
+function genHasta(rnd,sp,maxS){
+  for(let t=0;t<1500;t++){
+    const pat=elegir(rnd,PAT[sp.pl]), k=rint(rnd,sp.k[0],sp.k[1]), pre=aleat(rnd,sp.pre);
+    const pasos=pre.slice(); for(let i=0;i<k;i++) pasos.push(...pat);
+    while(pasos.length&&pasos[pasos.length-1]!=='F') pasos.pop();
+    if(!valida(pasos)) continue;
+    const lab=armar(pasos,rnd,maxS,sp.minS||5,[...pre.map(nodo), unt(pat.map(nodo))]); if(lab) return lab;
+  }
+  return null;
+}
+const MOTIVOS = {
+  3:[['F','R','F'],['F','L','F']],
+  4:[['F','F','R','F'],['F','R','F','F'],['F','F','L','F'],['F','L','F','F']],
+  5:[['F','R','F','L','F'],['F','L','F','R','F'],['F','F','R','F','F'],['F','F','L','F','F']],
+  6:[['F','R','F','F','L','F'],['F','L','F','F','R','F'],['F','F','R','F','L','F'],['F','F','L','F','R','F']],
+  j3:[['F','J','F']],
+  j4:[['F','J','R','F'],['F','J','L','F'],['F','R','J','F'],['F','L','J','F']],
+  j5:[['F','J','F','R','F'],['F','J','F','L','F'],['F','R','J','F','F'],['F','L','J','F','F']]
+};
+const CONEX = [[],['L'],['R'],['F'],['L','F'],['R','F']];
+// «Mi bloque»: un trozo de camino que aparece varias veces, con pequeños enlaces entre medias
+function genFuncion(rnd,sp,maxS){
+  for(let t=0;t<1500;t++){
+    const motivo=elegir(rnd,sp.pool), c=rint(rnd,sp.c[0],sp.c[1]), pasos=[], main=[], cons=[];
+    for(let i=0;i<c;i++){ pasos.push(...motivo); main.push(nodo('FN')); if(i<c-1){ const cn=elegir(rnd,CONEX); cons.push(cn.join('')); pasos.push(...cn); main.push(...cn.map(nodo)); } }
+    if(sp.pool.length&&c>=3&&new Set(cons).size===1&&cons[0]==='') continue;   // sería una recta aburrida
+    const lab=armar(pasos,rnd,maxS,sp.minS||5,main,motivo.map(nodo)); if(lab) return lab;
+  }
+  return null;
+}
+// patrón con saltos dentro de «Repetir»
+const PATJ = [['F','J'],['J','F'],['F','J','R','F'],['F','L','J','F'],['J','R','F']];
+function genSaltoRep(rnd,sp,maxS){
+  for(let t=0;t<1500;t++){
+    const pat=elegir(rnd,PATJ), k=rint(rnd,sp.k[0],sp.k[1]), pasos=[];
+    for(let i=0;i<k;i++) pasos.push(...pat);
+    const lab=armar(pasos,rnd,maxS,sp.minS||5,[rep(k,pat.map(nodo))]); if(lab) return lab;
+  }
+  return null;
+}
+// camino recto-giros con saltos, programa «a mano»
+function genSalto(rnd,sp,maxS){
+  for(let t=0;t<900;t++){
+    const nT=rint(rnd,sp.nT[0],sp.nT[1]), pasos=pasosSeguir(rnd,'mix',nT,sp.nF[0],sp.nF[1]);
+    if(!ponerSaltos(pasos,rnd,sp.nJ)) continue;
+    const lab=armar(pasos,rnd,maxS,sp.minS||5,pasos.map(nodo)); if(lab) return lab;
+  }
+  return null;
+}
+const GEN = {
+  si:(r,s,m)=>genSeguir(r,s,m,'rep'), seg:(r,s,m)=>genSeguir(r,s,m,'unt'), segj:(r,s,m)=>genSeguir(r,s,m,'untj'),
+  hasta:genHasta, fn:genFuncion, salrep:genSaltoRep, salto:genSalto
+};
+const ESPEC = {
+  4:[{t:'si',g:'der',nT:[1,1],nF:[5,6],maxS:6}, {t:'si',g:'izq',nT:[1,2],nF:[6,8],maxS:7}, {t:'si',g:'mix',nT:[2,3],nF:[8,10],maxS:7},
+     {t:'si',g:'mix',nT:[3,4],nF:[10,12],maxS:8}, {t:'si',g:'mix',nT:[4,6],nF:[12,15],maxS:8}],
+  5:[{t:'hasta',pl:1,k:[5,7],pre:0,maxS:7}, {t:'hasta',pl:2,k:[3,4],pre:0,maxS:7}, {t:'hasta',pl:3,k:[3,4],pre:1,maxS:8},
+     {t:'seg',g:'mix',nT:[3,5],nF:[9,12],maxS:8}, {t:'seg',g:'mix',nT:[6,8],nF:[13,17],maxS:9}],
+  6:[{t:'fn',pool:MOTIVOS[3],c:[3,3],maxS:8}, {t:'fn',pool:MOTIVOS[4],c:[3,3],maxS:8}, {t:'fn',pool:MOTIVOS[5],c:[3,3],maxS:9},
+     {t:'fn',pool:MOTIVOS[4],c:[4,4],maxS:9}, {t:'fn',pool:MOTIVOS[6],c:[3,4],maxS:10}],
+  7:[{t:'salto',nT:[1,2],nF:[7,9],nJ:2,maxS:8}, {t:'salrep',k:[3,4],maxS:8}, {t:'segj',g:'mix',nT:[2,4],nF:[9,12],nJ:2,maxS:8},
+     {t:'fn',pool:MOTIVOS.j4.concat(MOTIVOS.j3),c:[3,3],maxS:9}, {t:'segj',g:'mix',nT:[4,6],nF:[12,16],nJ:3,maxS:10}]
+};
+function espInfinito(nivel,rnd){
+  if(nivel===4) return {t:'si',g:elegir(rnd,['der','izq','mix','mix','mix']),nT:[2,5],nF:[7,13],maxS:8};
+  if(nivel===5){
+    if(rnd()<.5){ const pl=rint(rnd,1,4); return {t:'hasta',pl,k:{1:[5,7],2:[3,5],3:[2,4],4:[2,3]}[pl],pre:pl===1?0:rint(rnd,0,2),maxS:8}; }
+    return {t:'seg',g:'mix',nT:[3,7],nF:[8,15],maxS:9};
+  }
+  if(nivel===6){ const m=rint(rnd,3,6); return {t:'fn',pool:MOTIVOS[m],c:[2,m>=5?3:4],maxS:9}; }
+  return Object.assign({},ESPEC[7][rint(rnd,0,4)]);
+}
+
 // decoración: 0 = nada, 1..6 = tipo de objeto (cada mundo los dibuja a su manera)
-function decorar(n,set,rnd){ const d=[]; for(let y=0;y<n;y++) for(let x=0;x<n;x++) d.push(set.has(x+','+y)?0:(rnd()<0.58?1+Math.floor(rnd()*6):0)); return d; }
+function decorar(n,set,rnd,hset){ const d=[]; for(let y=0;y<n;y++) for(let x=0;x<n;x++){ const k=x+','+y; d.push((set.has(k)||(hset&&hset.has(k)))?0:(rnd()<0.58?1+Math.floor(rnd()*6):0)); } return d; }
 
 // idx >= 0: reto fijo; idx = -1: laberinto aleatorio del modo infinito
 function generar(nivel,idx,rnd){
-  const c=CFG[nivel]; let lab=null;
-  for(let ampliar=0; ampliar<3 && !lab; ampliar++){
-    const maxS=c.maxS+ampliar;
-    if(nivel===3){
-      let f;
-      if(idx>=0) f={pl:c.pat[idx],kmin:c.k[idx][0],kmax:c.k[idx][1],pre:c.pre[idx],suf:c.suf[idx]};
-      else { const pl=rint(rnd,1,4); f={pl,kmin:c.kInf[pl][0],kmax:c.kInf[pl][1],pre:rint(rnd,0,2),suf:rint(rnd,0,2)}; }
-      lab=genRepetir(rnd,f.pl,f.kmin,f.kmax,f.pre,f.suf,maxS,c.minS);
-    } else {
-      let nT,nF;
-      if(idx>=0){ nT=c.nT[idx]; nF=c.nF[idx]; }
-      else { nT=rint(rnd,c.inf.nT[0],c.inf.nT[1]); nF=rint(rnd,Math.max(nT+1,c.inf.nF[0]),Math.max(nT+1,c.inf.nF[1])); }
-      lab=genLineal(rnd,nF,nT,maxS,c.minS);
+  let lab=null;
+  if(nivel>=4){
+    const sp=idx>=0?ESPEC[nivel][idx]:espInfinito(nivel,rnd);
+    for(let ampliar=0; ampliar<3 && !lab; ampliar++) lab=GEN[sp.t](rnd,sp,sp.maxS+ampliar);
+    if(!lab) lab=genSeguir(rnd,{g:'mix',nT:[2,3],nF:[7,9]},9,'unt');
+  } else {
+    const c=CFG[nivel];
+    for(let ampliar=0; ampliar<3 && !lab; ampliar++){
+      const maxS=c.maxS+ampliar;
+      if(nivel===3){
+        let f;
+        if(idx>=0) f={pl:c.pat[idx],kmin:c.k[idx][0],kmax:c.k[idx][1],pre:c.pre[idx],suf:c.suf[idx]};
+        else { const pl=rint(rnd,1,4); f={pl,kmin:c.kInf[pl][0],kmax:c.kInf[pl][1],pre:rint(rnd,0,2),suf:rint(rnd,0,2)}; }
+        lab=genRepetir(rnd,f.pl,f.kmin,f.kmax,f.pre,f.suf,maxS,c.minS);
+      } else {
+        let nT,nF;
+        if(idx>=0){ nT=c.nT[idx]; nF=c.nF[idx]; }
+        else { nT=rint(rnd,c.inf.nT[0],c.inf.nT[1]); nF=rint(rnd,Math.max(nT+1,c.inf.nF[0]),Math.max(nT+1,c.inf.nF[1])); }
+        lab=genLineal(rnd,nF,nT,maxS,c.minS);
+      }
     }
+    if(!lab && nivel===3) lab=genRepetir(rnd,1,4,5,0,0,99,5);   // plan B del nivel 3: una recta con Repetir
   }
-  if(!lab && nivel===3) lab=genRepetir(rnd,1,4,5,0,0,99,5);   // plan B del nivel 3: una recta con Repetir
   let planB=false;
   if(!lab){ lab=genLineal(rnd,4,0,99,4); planB=true; }          // último recurso (no debería hacer falta)
   lab.planB=planB;
   lab.set=new Set(lab.path.map(p=>p[0]+','+p[1]));
+  lab.hset=new Set((lab.huecos||[]).map(p=>p[0]+','+p[1]));
   lab.nivel=nivel;
-  lab.decor=decorar(lab.n,lab.set,rnd);
+  lab.decor=decorar(lab.n,lab.set,rnd,lab.hset);
   return lab;
 }
 
@@ -621,17 +869,25 @@ function generar(nivel,idx,rnd){
 function dar(est,t,lab){
   if(t==='L'){ est.d=(est.d+3)%4; return 'giro'; }
   if(t==='R'){ est.d=(est.d+1)%4; return 'giro'; }
-  const nx=est.x+DX[est.d], ny=est.y+DY[est.d];
+  let nx=est.x+DX[est.d], ny=est.y+DY[est.d];
+  if(t==='J'){
+    if(!lab.hset||!lab.hset.has(nx+','+ny)) return 'choque';   // solo se salta sobre un abismo
+    nx+=DX[est.d]; ny+=DY[est.d];
+  }
   if(!lab.set.has(nx+','+ny)) return 'choque';
   est.x=nx; est.y=ny;
   return (nx===lab.meta.x && ny===lab.meta.y) ? 'meta' : 'mov';
 }
-function simular(lab,prog){
+function simular(lab,prog,fn){
   const est={x:lab.ini.x,y:lab.ini.y,d:lab.ini.dir};
-  for(const p of aplanar(prog)){
-    const r=dar(est,p.t,lab);
+  let acc=0;
+  for(const e of correr(prog,fn||[],est,lab)){
+    if(e.t==='LIM') return {ok:false,motivo:'limite'};
+    if(e.t==='IF'||e.t==='CALL') continue;
+    const r=dar(est,e.t,lab);
     if(r==='choque') return {ok:false,motivo:'choque'};
     if(r==='meta') return {ok:true};
+    if(++acc>=MAX_ACC) return {ok:false,motivo:'limite'};
   }
   return {ok:false,motivo:'fin'};
 }
@@ -713,6 +969,14 @@ function cargarPerfil(){ const p=leerLS().p[clavePerfil()]||{}; S.prog=normaliza
 function guardarPerfil(){ const ls=leerLS(); ls.p[clavePerfil()]={prog:S.prog,pend:S.pend,rv:S.rv||0}; escribirJSON(LS_KEY,ls); }
 const estrellasMundo = id => S.prog[id].s.reduce((a,b)=>a+b,0);
 const estrellasTotal = () => MUNDOS.reduce((a,m)=>a+estrellasMundo(m.id),0);
+// los mundos 4 a 7 se abren de uno en uno: hay que pasar los 5 retos (con ★ al menos) del mundo anterior. La clase «Admin» (profesorado) los ve todos abiertos.
+const mundoCompleto = id => S.prog[id].s.every(v=>v>=1);
+const retosPendientes = id => S.prog[id].s.filter(v=>v<1).length;
+function mundoAbierto(id){
+  if(id<=3) return true;
+  if(S.user&&String(S.user.clase||'').trim().toLowerCase()==='admin') return true;
+  return mundoCompleto(id-1)||estrellasMundo(id)>0;
+}
 
 /* ---------- Firebase ---------- */
 let FB=null;
@@ -846,7 +1110,7 @@ const SND = (() => {
   const fx = {
     tap(){ nota(1046,.06,{tipo:'triangle',vol:.1}); },
     hover(){ nota(1568,.03,{tipo:'sine',vol:.03}); },
-    add(t){ const b={F:72,L:67,R:76,REP:64}[t]||72; nota(mf(b),.08,{tipo:'square',vol:.06,filtro:2600}); nota(mf(b+7),.14,{tipo:'triangle',vol:.13,retraso:.045}); nota(mf(b+12),.1,{tipo:'sine',vol:.05,retraso:.08}); },
+    add(t){ const b={F:72,L:67,R:76,REP:64,J:74,IF:69,UNT:62,FN:79}[t]||72; nota(mf(b),.08,{tipo:'square',vol:.06,filtro:2600}); nota(mf(b+7),.14,{tipo:'triangle',vol:.13,retraso:.045}); nota(mf(b+12),.1,{tipo:'sine',vol:.05,retraso:.08}); },
     quitar(){ nota(620,.14,{tipo:'triangle',hasta:200,vol:.14}); ruido(.08,{vol:.05,filtro:3000,tf:'highpass'}); },
     vaciar(){ ruido(.45,{vol:.2,filtro:2400,hasta:180}); nota(380,.4,{tipo:'sawtooth',hasta:60,vol:.06,filtro:900}); },
     run(){ [0,4,7,12,16].forEach((s,i)=>nota(mf(60+s),.16,{tipo:'square',vol:.055,filtro:2800,retraso:i*.05})); nota(mf(84),.4,{tipo:'triangle',vol:.08,retraso:.25}); },
@@ -864,6 +1128,7 @@ const SND = (() => {
     whoosh(){ ruido(.32,{vol:.09,filtro:300,hasta:5000,tf:'bandpass',q:2}); },
     pista(){ [79,83,86].forEach((m,i)=>nota(mf(m),.25,{tipo:'sine',vol:.09,retraso:i*.07})); },
     color(){ nota(mf(76),.1,{tipo:'triangle',vol:.1}); nota(mf(83),.18,{tipo:'triangle',vol:.1,retraso:.07}); },
+    salto(){ nota(330,.3,{tipo:'sine',hasta:880,vol:.14}); nota(mf(88),.18,{tipo:'triangle',vol:.06,retraso:.2}); ruido(.12,{vol:.04,filtro:6000,tf:'highpass',retraso:.28}); },
     boing(){ nota(220,.35,{tipo:'sine',hasta:880,vol:.14,rampa:.5}); nota(440,.2,{tipo:'triangle',hasta:220,vol:.05,retraso:.2}); },
     pensar(){ nota(mf(72),.15,{tipo:'sine',vol:.08}); nota(mf(70),.15,{tipo:'sine',vol:.08,retraso:.18}); nota(mf(74),.3,{tipo:'sine',vol:.08,retraso:.36,vib:6}); }
   };
@@ -881,6 +1146,18 @@ const SND = (() => {
     hielo:{bpm:84,tipo:'sine',vol:.085,perc:false,eco:true,
       mel:[81,0,0,83,85,0,88,0, 87,0,85,0,83,0,0,0, 81,0,83,0,85,0,81,0, 76,0,0,0,0,0,0,0],
       ac:[[45,52,61],[42,49,57],[38,50,57],[40,52,59]]}
+    ,selva:{bpm:104,tipo:'triangle',vol:.1,perc:true,
+      mel:[74,0,77,0,79,77,0,74, 72,0,74,0,77,0,0,0, 74,0,77,79,81,0,79,77, 76,0,74,0,72,0,0,0],
+      ac:[[38,50,57],[41,53,60],[43,55,62],[36,48,55]]},
+    volcan:{bpm:118,tipo:'sawtooth',vol:.04,perc:true,filtro:1700,
+      mel:[69,0,72,0,76,75,0,72, 69,0,0,67,69,0,72,0, 74,0,77,0,76,0,74,72, 71,0,0,0,69,0,0,0],
+      ac:[[33,45,52],[33,45,52],[29,41,48],[31,43,50]]},
+    ciudad:{bpm:122,tipo:'square',vol:.04,perc:true,filtro:2400,
+      mel:[72,0,76,72,79,0,76,0, 74,0,77,74,81,0,77,0, 72,0,76,72,79,0,84,0, 83,0,79,0,76,0,0,0],
+      ac:[[36,48,55],[41,53,60],[43,55,62],[36,48,55]]},
+    galaxia:{bpm:78,tipo:'sine',vol:.085,perc:false,eco:true,
+      mel:[76,0,0,79,83,0,0,86, 84,0,83,0,79,0,0,0, 76,0,0,81,84,0,0,88, 86,0,0,0,83,0,0,0],
+      ac:[[40,52,59],[36,48,55],[33,45,52],[35,47,54]]}
   };
   let tema='menu', paso=0, sig=0, timer=null;
   function tocar(T,i,t,dur){
@@ -966,6 +1243,10 @@ const ICO = {
   L:'<svg viewBox="0 0 24 24"><path d="M9 2 2 9l7 7v-5h6a2 2 0 0 1 2 2v7h4v-7a6 6 0 0 0-6-6H9z" fill="currentColor"/></svg>',
   R:'<svg viewBox="0 0 24 24"><path d="M15 2l7 7-7 7v-5H9a2 2 0 0 0-2 2v7H3v-7a6 6 0 0 1 6-6h6z" fill="currentColor"/></svg>',
   REP:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11V9a3 3 0 0 1 3-3h12"/><path d="M16 3l3 3-3 3"/><path d="M20 13v2a3 3 0 0 1-3 3H5"/><path d="M8 21l-3-3 3-3"/></svg>',
+  J:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19C5 8 17 8 20 17"/><path d="M15.5 16.5 20 17.5 21 13"/></svg>',
+  IF:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-8"/><path d="M12 13c0-4-6-4-6-9"/><path d="M12 13c0-4 6-4 6-9"/><path d="M3.5 6.5 6 3.5l2.5 3"/><path d="M15.5 6.5 18 3.5l2.5 3"/></svg>',
+  UNT:'<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-2.6-6.1"/><path d="M20.5 3.5v4.5H16"/></g><polygon points="12,7.6 13.2,10.4 16.2,10.6 13.9,12.5 14.6,15.4 12,13.8 9.4,15.4 10.1,12.5 7.8,10.6 10.8,10.4" fill="currentColor"/></svg>',
+  FN:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9z"/><path d="M12 12 20 7.5M12 12 4 7.5M12 12v9"/></svg>',
   play:'<svg viewBox="0 0 24 24"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.4-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z" fill="currentColor"/></svg>',
   stop:'<svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="3" fill="currentColor"/></svg>',
   paso:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 5.5v13a1 1 0 0 0 1.6.8l8.6-6.5a1 1 0 0 0 0-1.6L5.6 4.7A1 1 0 0 0 4 5.5z"/><rect x="16.5" y="4.5" width="3.5" height="15" rx="1.5"/></svg>',
@@ -1148,7 +1429,15 @@ const ARTE = {
   desierto:{suelo:['#f8d18c','#f1c47b'],hierba:'#dba25a',borde:'#d8994e',camino:'#eab27c',caminoLado:'#a8673a',caminoDet:'#c7895a',
     acant:['#e7904d','#c76c34','#9c4c22'],estrato:'rgba(120,40,10,.2)',polvo:'#f6dcb0',meta:'#ffd23f'},
   hielo:{suelo:['#f5faff','#e7f1ff'],hierba:'#bcd6f6',borde:'#b6d0f2',camino:'#b3e6ff',caminoLado:'#5aaee0',caminoDet:'#e2f6ff',
-    acant:['#a7d0f7','#76abe6','#4f86cc'],estrato:'rgba(255,255,255,.4)',polvo:'#ffffff',meta:'#ffd23f'}
+    acant:['#a7d0f7','#76abe6','#4f86cc'],estrato:'rgba(255,255,255,.4)',polvo:'#ffffff',meta:'#ffd23f'},
+  selva:{suelo:['#6fcf6a','#66c762'],hierba:'#2f9a4a',borde:'#3a9450',camino:'#e8c994',caminoLado:'#8f5f2e',caminoDet:'#c99a62',
+    acant:['#7d5b34','#5c4125','#3f2c17'],estrato:'rgba(30,18,0,.22)',polvo:'#d6efae',meta:'#ffd23f'},
+  volcan:{suelo:['#4d3b52','#45354b'],hierba:'#6a4a62',borde:'#2d2034',camino:'#ffb96a',caminoLado:'#b3451a',caminoDet:'#e38a3e',
+    acant:['#5d3a3d','#3e2428','#2a161c'],estrato:'rgba(255,120,40,.28)',polvo:'#ffb36b',meta:'#ffd23f'},
+  ciudad:{suelo:['#dbe3f0','#d1dbea'],hierba:'#b3bfd6',borde:'#a8b5cf',camino:'#6c7893',caminoLado:'#3d4761',caminoDet:'#8d98b0',
+    acant:['#8f9cba','#6a789f','#49567c'],estrato:'rgba(255,255,255,.28)',polvo:'#e8ecf4',meta:'#ffd23f'},
+  galaxia:{suelo:['#2b2665','#262058'],hierba:'#4d45a6',borde:'#1b1646',camino:'#c0aeff',caminoLado:'#6a4dd8',caminoDet:'#e1d8ff',
+    acant:['#6e6d9a','#4c4b73','#323151'],estrato:'rgba(255,255,255,.13)',polvo:'#d3caff',meta:'#ffd23f'}
 };
 function texturaSuelo(c,tema,x,y,T,rnd,A){
   if(tema==='pradera'){
@@ -1161,9 +1450,25 @@ function texturaSuelo(c,tema,x,y,T,rnd,A){
       c.strokeStyle='rgba(255,255,255,.4)'; c.beginPath(); c.moveTo(x0,yy); c.quadraticCurveTo(x0+T*.25,yy-T*.08,x0+T*.55,yy); c.stroke();
       c.strokeStyle='rgba(170,100,40,.22)'; c.beginPath(); c.moveTo(x0+T*.02,yy+T*.03); c.quadraticCurveTo(x0+T*.27,yy-T*.05,x0+T*.57,yy+T*.03); c.stroke(); }
     if(rnd()<.2){ c.fillStyle='rgba(160,90,40,.35)'; elip(c,x+T*(.2+rnd()*.6),y+T*(.2+rnd()*.6),T*.03,T*.02); c.fill(); }
-  } else {
+  } else if(tema==='hielo'){
     if(rnd()<.6){ c.fillStyle=rnd()<.5?'rgba(150,200,255,.7)':'rgba(255,255,255,.95)'; destello(c,x+T*(.15+rnd()*.7),y+T*(.15+rnd()*.7),T*(.03+rnd()*.03)); c.fill(); }
     if(rnd()<.2){ c.strokeStyle='rgba(120,170,230,.35)'; c.lineWidth=Math.max(1,T*.018); const sx=x+T*(.2+rnd()*.4), sy=y+T*(.2+rnd()*.4); c.beginPath(); c.moveTo(sx,sy); c.lineTo(sx+T*.12,sy+T*.06); c.lineTo(sx+T*.18,sy+T*.2); c.stroke(); }
+  } else if(tema==='selva'){
+    c.fillStyle=A.hierba;
+    for(let k=0;k<2;k++){ const lx=x+T*(.15+rnd()*.7), ly=y+T*(.2+rnd()*.65), rot=-.9+rnd()*1.8; c.save(); c.translate(lx,ly); c.rotate(rot); elip(c,0,0,T*.075,T*.032); c.fill(); c.restore(); }
+    if(rnd()<.14){ const fx=x+T*(.2+rnd()*.6), fy=y+T*(.2+rnd()*.6); c.fillStyle=rnd()<.5?'#ff6b6b':'#ffd43b'; circ(c,fx,fy,T*.03); c.fill(); c.fillStyle='#fff3'; circ(c,fx-T*.01,fy-T*.01,T*.012); c.fill(); }
+  } else if(tema==='volcan'){
+    if(rnd()<.3){ c.strokeStyle='rgba(255,128,40,.6)'; c.lineWidth=Math.max(1,T*.026); c.lineCap='round'; c.lineJoin='round'; const sx=x+T*(.15+rnd()*.5), sy=y+T*(.15+rnd()*.5);
+      c.beginPath(); c.moveTo(sx,sy); c.lineTo(sx+T*.12,sy+T*.08); c.lineTo(sx+T*.1,sy+T*.2); c.lineTo(sx+T*.22,sy+T*.27); c.stroke();
+      c.strokeStyle='rgba(255,220,120,.45)'; c.lineWidth=Math.max(1,T*.01); c.stroke(); }
+    c.fillStyle=A.hierba; elip(c,x+T*(.2+rnd()*.6),y+T*(.2+rnd()*.6),T*.05,T*.03); c.fill();
+    if(rnd()<.25){ c.fillStyle='rgba(255,170,60,.8)'; circ(c,x+T*(.15+rnd()*.7),y+T*(.15+rnd()*.7),T*.018); c.fill(); }
+  } else if(tema==='ciudad'){
+    c.strokeStyle='rgba(120,135,168,.38)'; c.lineWidth=Math.max(1,T*.018); c.strokeRect(x+T*.04,y+T*.04,T*.92,T*.92);
+    if(rnd()<.2){ c.fillStyle='rgba(120,135,168,.22)'; circ(c,x+T*(.25+rnd()*.5),y+T*(.25+rnd()*.5),T*.05); c.fill(); }
+  } else {
+    for(let k=0;k<2;k++){ c.fillStyle='rgba(255,255,255,'+(.25+rnd()*.5)+')'; circ(c,x+T*(.08+rnd()*.84),y+T*(.08+rnd()*.84),T*(.012+rnd()*.014)); c.fill(); }
+    if(rnd()<.22){ c.fillStyle=rnd()<.5?'rgba(190,170,255,.9)':'rgba(130,230,255,.85)'; destello(c,x+T*(.15+rnd()*.7),y+T*(.15+rnd()*.7),T*(.04+rnd()*.035)); c.fill(); }
   }
 }
 function texturaCamino(c,tema,x,y,T,rnd,A){
@@ -1175,11 +1480,27 @@ function texturaCamino(c,tema,x,y,T,rnd,A){
     const x0=x+i, x1=x+T-i, h=(T-2*i)/3;
     for(let k=1;k<3;k++){ c.beginPath(); c.moveTo(x0+T*.04,y+i+h*k); c.lineTo(x1-T*.04,y+i+h*k); c.stroke(); }
     for(let k=0;k<3;k++){ const off=k%2?.33:.62; c.beginPath(); c.moveTo(x0+(x1-x0)*off,y+i+h*k+T*.02); c.lineTo(x0+(x1-x0)*off,y+i+h*(k+1)-T*.02); c.stroke(); }
-  } else {
+  } else if(tema==='hielo'){
     c.strokeStyle='rgba(255,255,255,.85)'; c.lineCap='round'; c.lineWidth=T*.05;
     c.beginPath(); c.moveTo(x+T*.26,y+T*.66); c.lineTo(x+T*.44,y+T*.3); c.stroke();
     c.lineWidth=T*.03; c.beginPath(); c.moveTo(x+T*.4,y+T*.7); c.lineTo(x+T*.5,y+T*.5); c.stroke();
     c.fillStyle='rgba(255,255,255,.6)'; circ(c,x+T*(.6+rnd()*.15),y+T*(.6+rnd()*.15),T*.025); c.fill();
+  } else if(tema==='selva'){
+    c.strokeStyle='rgba(110,70,30,.28)'; c.lineWidth=Math.max(1,T*.02); c.lineCap='round';
+    for(let k=1;k<4;k++){ c.beginPath(); c.moveTo(x+i+T*.03,y+i+(T-2*i)*k/4); c.lineTo(x+T-i-T*.03,y+i+(T-2*i)*k/4); c.stroke(); }
+    c.fillStyle='rgba(110,70,30,.3)'; elip(c,x+T*(.3+rnd()*.4),y+T*(.3+rnd()*.4),T*.025,T*.015); c.fill();
+  } else if(tema==='volcan'){
+    c.strokeStyle='rgba(150,40,0,.45)'; c.lineWidth=Math.max(1,T*.024); c.lineCap='round'; c.lineJoin='round';
+    c.beginPath(); c.moveTo(x+T*.22,y+T*.3); c.lineTo(x+T*.4,y+T*.42); c.lineTo(x+T*.36,y+T*.6); c.lineTo(x+T*.62,y+T*.72); c.stroke();
+    c.strokeStyle='rgba(255,236,150,.7)'; c.lineWidth=Math.max(1,T*.01); c.stroke();
+    c.fillStyle='rgba(255,236,150,.8)'; circ(c,x+T*(.55+rnd()*.2),y+T*(.25+rnd()*.15),T*.02); c.fill();
+  } else if(tema==='ciudad'){
+    c.fillStyle='rgba(255,255,255,.07)'; for(let k=0;k<5;k++){ circ(c,x+T*(.2+rnd()*.6),y+T*(.2+rnd()*.6),T*.018); c.fill(); }
+    c.fillStyle='#ffd43b'; rrect(c,x+T*.46,y+T*.46,T*.08,T*.08,T*.02); c.fill();
+    c.fillStyle='rgba(255,255,255,.55)'; [[.28,.28],[.72,.28],[.28,.72],[.72,.72]].forEach(([a,b])=>{ circ(c,x+T*a,y+T*b,T*.016); c.fill(); });
+  } else {
+    c.strokeStyle='rgba(255,255,255,.75)'; c.lineWidth=Math.max(1,T*.026); rrect(c,x+T*.24,y+T*.24,T*.52,T*.52,T*.1); c.stroke();
+    c.fillStyle='rgba(255,255,255,.85)'; destello(c,x+T*(.62+rnd()*.1),y+T*(.3+rnd()*.1),T*.06); c.fill();
   }
 }
 const DECO = {
@@ -1282,6 +1603,149 @@ const DECO = {
         c.fillStyle='#fb923c'; c.beginPath(); c.moveTo(x-T*.035,y-T*.06); c.lineTo(x+T*.035,y-T*.06); c.lineTo(x,y-T*.02); c.closePath(); c.fill();
         c.fillStyle='rgba(255,140,170,.55)'; circ(c,x-T*.07,y-T*.05,T*.018); c.fill(); circ(c,x+T*.07,y-T*.05,T*.018); c.fill();
     }
+  },
+  selva(c,tipo,x,y,T){
+    switch(tipo){
+      case 1: sombraSuelo(c,x+T*.04,y+T*.26,T*.26,T*.08);   // palmera
+        c.strokeStyle='#8a5a2b'; c.lineWidth=T*.09; c.lineCap='round'; c.beginPath(); c.moveTo(x-T*.02,y+T*.26); c.quadraticCurveTo(x+T*.1,y-T*.05,x+T*.04,y-T*.32); c.stroke();
+        c.strokeStyle='#6b431c'; c.lineWidth=T*.02; for(let k=0;k<4;k++){ c.beginPath(); c.moveTo(x-T*.05,y+T*(.2-k*.12)); c.lineTo(x+T*.06,y+T*(.17-k*.12)); c.stroke(); }
+        { const tx=x+T*.04, ty=y-T*.32; c.strokeStyle='#2fa24f'; c.lineWidth=T*.075;
+          [[-.34,.12],[.36,.1],[-.22,-.12],[.24,-.14],[0,-.2]].forEach(([dx,dy])=>{ c.beginPath(); c.moveTo(tx,ty); c.quadraticCurveTo(tx+T*dx*.6,ty+T*dy-T*.14,tx+T*dx,ty+T*dy+T*.08); c.stroke(); });
+          c.fillStyle='#7a4a24'; circ(c,tx-T*.04,ty+T*.05,T*.037); c.fill(); circ(c,tx+T*.04,ty+T*.06,T*.037); c.fill(); } break;
+      case 2: sombraSuelo(c,x,y+T*.24,T*.26,T*.08);   // hoja gigante
+        [[-.2,0,-.5],[.2,0,.5],[0,-.08,0]].forEach(([dx,dy,rot])=>{ c.save(); c.translate(x+T*dx,y+T*(.12+dy)); c.rotate(rot);
+          c.fillStyle='#23903f'; c.beginPath(); c.ellipse(0,-T*.16,T*.13,T*.24,0,0,Math.PI*2); c.fill();
+          c.fillStyle='#37b457'; c.beginPath(); c.ellipse(-T*.03,-T*.18,T*.09,T*.2,0,0,Math.PI*2); c.fill();
+          c.strokeStyle='#17692c'; c.lineWidth=T*.016; c.beginPath(); c.moveTo(0,0); c.lineTo(0,-T*.38); c.stroke(); c.restore(); }); break;
+      case 3: [[-.18,.08,'#ff6b3d'],[.14,-.04,'#ff7aa8'],[.02,.2,'#ffd43b'],[.24,.16,'#ff4d6d']].forEach(([dx,dy,co])=>{   // flores tropicales
+          const fx=x+T*dx, fy=y+T*dy; c.strokeStyle='#2f8a3c'; c.lineWidth=T*.025; c.beginPath(); c.moveTo(fx,fy); c.lineTo(fx,fy+T*.14); c.stroke();
+          c.fillStyle=co; for(let a=0;a<5;a++){ elip(c,fx+Math.cos(a*1.257)*T*.05,fy+Math.sin(a*1.257)*T*.05,T*.04,T*.03,a*1.257); c.fill(); }
+          c.fillStyle='#fff3b0'; circ(c,fx,fy,T*.026); c.fill(); }); break;
+      case 4: sombraSuelo(c,x,y+T*.2,T*.27,T*.09);   // roca con musgo
+        c.fillStyle='#7d8a82'; elip(c,x,y+T*.08,T*.25,T*.17); c.fill();
+        c.fillStyle='#a3b0a8'; elip(c,x-T*.03,y+T*.03,T*.2,T*.12); c.fill();
+        c.fillStyle='#3fae53'; c.beginPath(); c.ellipse(x+T*.02,y-T*.03,T*.19,T*.07,0,Math.PI,0); c.fill(); circ(c,x-T*.1,y-T*.01,T*.04); c.fill(); break;
+      case 5: sombraSuelo(c,x,y+T*.22,T*.26,T*.08);   // arbusto con bayas
+        copa(c,[[x-T*.15,y+T*.04,T*.15],[x+T*.15,y+T*.04,T*.15],[x,y-T*.07,T*.18]],'#28934a','#4cc46c','#1b6e36');
+        c.fillStyle='#e11d48'; [[-.12,-.02],[.1,-.1],[.17,.06],[-.02,.1],[.02,-.2]].forEach(([a,b])=>{ circ(c,x+T*a,y+T*b,T*.03); c.fill(); }); break;
+      default: sombraSuelo(c,x,y+T*.22,T*.2,T*.06);   // rana sobre una hoja
+        c.fillStyle='#2a9d4a'; elip(c,x,y+T*.2,T*.25,T*.1); c.fill();
+        c.fillStyle='#65c454'; elip(c,x,y+T*.06,T*.15,T*.12); c.fill();
+        c.fillStyle='#8be072'; elip(c,x,y+T*.1,T*.09,T*.07); c.fill();
+        c.fillStyle='#65c454'; circ(c,x-T*.07,y-T*.07,T*.05); c.fill(); circ(c,x+T*.07,y-T*.07,T*.05); c.fill();
+        c.fillStyle='#fff'; circ(c,x-T*.07,y-T*.08,T*.032); c.fill(); circ(c,x+T*.07,y-T*.08,T*.032); c.fill();
+        c.fillStyle='#111'; circ(c,x-T*.065,y-T*.075,T*.016); c.fill(); circ(c,x+T*.075,y-T*.075,T*.016); c.fill();
+        c.strokeStyle='#1e7a39'; c.lineWidth=T*.016; c.lineCap='round'; c.beginPath(); c.arc(x,y+T*.03,T*.05,.2,Math.PI-.2); c.stroke();
+    }
+  },
+  volcan(c,tipo,x,y,T){
+    switch(tipo){
+      case 1: sombraSuelo(c,x,y+T*.26,T*.28,T*.09,.35);   // mini volcán
+        c.fillStyle='#3a2a30'; c.beginPath(); c.moveTo(x-T*.3,y+T*.26); c.lineTo(x-T*.09,y-T*.2); c.lineTo(x+T*.09,y-T*.2); c.lineTo(x+T*.3,y+T*.26); c.closePath(); c.fill();
+        c.fillStyle='#55393f'; c.beginPath(); c.moveTo(x-T*.3,y+T*.26); c.lineTo(x-T*.09,y-T*.2); c.lineTo(x-T*.02,y-T*.2); c.lineTo(x-T*.12,y+T*.26); c.closePath(); c.fill();
+        c.fillStyle='#ff8a1f'; elip(c,x,y-T*.2,T*.1,T*.045); c.fill(); c.fillStyle='#ffd23f'; elip(c,x,y-T*.205,T*.06,T*.025); c.fill();
+        c.strokeStyle='#ff8a1f'; c.lineWidth=T*.035; c.lineCap='round'; c.beginPath(); c.moveTo(x+T*.03,y-T*.17); c.quadraticCurveTo(x+T*.1,y,x+T*.08,y+T*.2); c.stroke();
+        c.fillStyle='rgba(210,200,210,.7)'; circ(c,x+T*.04,y-T*.36,T*.06); c.fill(); circ(c,x+T*.12,y-T*.44,T*.045); c.fill(); break;
+      case 2: sombraSuelo(c,x,y+T*.2,T*.27,T*.08,.3);   // charco de lava
+        c.fillStyle='#2b1a1f'; elip(c,x,y+T*.1,T*.27,T*.17); c.fill();
+        c.fillStyle='#ff6a1a'; elip(c,x,y+T*.09,T*.22,T*.13); c.fill();
+        c.fillStyle='#ffb02e'; elip(c,x-T*.02,y+T*.08,T*.14,T*.08); c.fill();
+        c.fillStyle='#ffe28a'; elip(c,x-T*.04,y+T*.07,T*.06,T*.035); c.fill();
+        c.fillStyle='#ffd23f'; circ(c,x+T*.1,y+T*.02,T*.03); c.fill(); circ(c,x-T*.12,y+T*.14,T*.022); c.fill(); break;
+      case 3: sombraSuelo(c,x,y+T*.22,T*.24,T*.07,.3);   // cristales de obsidiana
+        [[-.13,.1,.3,-.3],[.12,.12,.36,.28],[0,.15,.44,0]].forEach(([dx,dy,h,rot])=>{ c.save(); c.translate(x+T*dx,y+T*dy); c.rotate(rot);
+          c.fillStyle='#2a2140'; c.beginPath(); c.moveTo(0,-T*h); c.lineTo(T*.07,-T*h*.6); c.lineTo(T*.06,0); c.lineTo(-T*.06,0); c.lineTo(-T*.07,-T*h*.6); c.closePath(); c.fill();
+          c.fillStyle='#6b4fd0'; c.beginPath(); c.moveTo(0,-T*h); c.lineTo(-T*.07,-T*h*.6); c.lineTo(-T*.06,0); c.lineTo(0,0); c.closePath(); c.fill();
+          c.fillStyle='rgba(255,255,255,.5)'; c.fillRect(-T*.04,-T*h*.7,T*.015,T*h*.4); c.restore(); }); break;
+      case 4: sombraSuelo(c,x,y+T*.2,T*.27,T*.09,.35);   // rocas con brasas
+        c.fillStyle='#2e2128'; elip(c,x,y+T*.1,T*.26,T*.16); c.fill();
+        c.fillStyle='#4b3640'; elip(c,x-T*.04,y+T*.03,T*.2,T*.12); c.fill();
+        c.strokeStyle='#ff8a1f'; c.lineWidth=T*.022; c.lineCap='round'; c.lineJoin='round'; c.beginPath(); c.moveTo(x-T*.14,y+T*.08); c.lineTo(x-T*.04,y+T*.01); c.lineTo(x+T*.02,y+T*.09); c.lineTo(x+T*.14,y+T*.03); c.stroke();
+        c.fillStyle='#ffd23f'; circ(c,x+T*.12,y-T*.08,T*.018); c.fill(); circ(c,x-T*.08,y-T*.13,T*.014); c.fill(); break;
+      case 5: sombraSuelo(c,x,y+T*.22,T*.2,T*.06,.3);   // flor de fuego
+        c.strokeStyle='#4a6b2a'; c.lineWidth=T*.04; c.lineCap='round'; c.beginPath(); c.moveTo(x,y+T*.22); c.lineTo(x,y-T*.02); c.stroke();
+        [[-.1,.09,'#ff4d1a'],[.1,.09,'#ff4d1a'],[0,-.0,'#ff7a1a']].forEach(([dx,sc,co],k)=>{ c.fillStyle=co; c.beginPath(); c.moveTo(x+T*dx*.2,y);
+          c.quadraticCurveTo(x+T*(dx*2.4-.12),y-T*.12,x+T*dx,y-T*(.3-k*.04)); c.quadraticCurveTo(x+T*(dx*2.4+.12),y-T*.1,x+T*dx*.2,y); c.fill(); });
+        c.fillStyle='#ffd23f'; c.beginPath(); c.moveTo(x-T*.04,y); c.quadraticCurveTo(x,y-T*.22,x+T*.04,y); c.fill(); break;
+      default: sombraSuelo(c,x,y+T*.22,T*.22,T*.07,.3);   // huevo de dragón en su nido
+        c.strokeStyle='#5b3b24'; c.lineWidth=T*.03; c.lineCap='round'; for(let a=0;a<9;a++){ c.beginPath(); c.arc(x,y+T*.14,T*(.16+(a%3)*.03),Math.PI*(1.0+a*.12),Math.PI*(1.4+a*.12)); c.stroke(); }
+        c.fillStyle='#f6e7c8'; elip(c,x,y,T*.14,T*.19); c.fill();
+        c.fillStyle='#ff8a1f'; [[-.05,-.07,.04],[.06,0,.045],[-.03,.07,.035],[.05,-.12,.03]].forEach(([a,b,r])=>{ circ(c,x+T*a,y+T*b,T*r); c.fill(); });
+        c.fillStyle='rgba(255,255,255,.5)'; elip(c,x-T*.06,y-T*.09,T*.03,T*.05,.4); c.fill();
+    }
+  },
+  ciudad(c,tipo,x,y,T){
+    const vent=(bx,by,w,h,f,cols)=>{ for(let j=0;j<f;j++) for(let i=0;i<cols;i++){ const lit=((i*7+j*3+f)%3)!==0; c.fillStyle=lit?'#ffe58a':'#4a5a82'; c.fillRect(bx+w*(.14+i*(.72/cols)),by+h*(.08+j*(.84/f)),w*(.5/cols),h*(.5/f)); } };
+    switch(tipo){
+      case 1: sombraSuelo(c,x+T*.04,y+T*.27,T*.26,T*.08,.3);   // rascacielos
+        c.fillStyle='#5b6fa8'; rrect(c,x-T*.15,y-T*.42,T*.3,T*.68,T*.025); c.fill();
+        c.fillStyle='#7185c0'; c.fillRect(x-T*.15,y-T*.42,T*.1,T*.68);
+        vent(x-T*.15,y-T*.42,T*.3,T*.68,7,3);
+        c.fillStyle='#3d4a78'; c.fillRect(x-T*.04,y-T*.5,T*.08,T*.09); c.fillStyle='#ff4d4f'; circ(c,x,y-T*.52,T*.018); c.fill(); break;
+      case 2: sombraSuelo(c,x,y+T*.24,T*.28,T*.08,.3);   // casita
+        c.fillStyle='#f4d9a8'; rrect(c,x-T*.2,y-T*.06,T*.4,T*.3,T*.02); c.fill();
+        c.fillStyle='#e0655a'; c.beginPath(); c.moveTo(x-T*.26,y-T*.04); c.lineTo(x,y-T*.3); c.lineTo(x+T*.26,y-T*.04); c.closePath(); c.fill();
+        c.fillStyle='#b8473e'; c.beginPath(); c.moveTo(x,y-T*.3); c.lineTo(x+T*.26,y-T*.04); c.lineTo(x+T*.1,y-T*.04); c.closePath(); c.fill();
+        c.fillStyle='#8b5a2b'; rrect(c,x-T*.05,y+T*.06,T*.1,T*.18,T*.02); c.fill();
+        c.fillStyle='#9ad7ff'; c.fillRect(x+T*.08,y,T*.08,T*.08); c.fillRect(x-T*.16,y,T*.08,T*.08); break;
+      case 3: sombraSuelo(c,x,y+T*.26,T*.2,T*.06,.3);   // semáforo
+        c.fillStyle='#454d63'; c.fillRect(x-T*.02,y-T*.05,T*.04,T*.3);
+        c.fillStyle='#2b3142'; rrect(c,x-T*.08,y-T*.36,T*.16,T*.32,T*.04); c.fill();
+        [['#ff4d4f',-.28],['#ffd43b',-.2],['#33d17a',-.12]].forEach(([co,dy],k)=>{ c.fillStyle=k===2?co:co+'55'; circ(c,x,y+T*dy-T*.0,T*.032); c.fill(); }); break;
+      case 4: sombraSuelo(c,x,y+T*.2,T*.27,T*.08,.3);   // coche
+        c.fillStyle='#e8453c'; rrect(c,x-T*.24,y-T*.0,T*.48,T*.18,T*.05); c.fill();
+        c.fillStyle='#c93329'; rrect(c,x-T*.15,y-T*.13,T*.3,T*.17,T*.06); c.fill();
+        c.fillStyle='#bfe6ff'; rrect(c,x-T*.12,y-T*.1,T*.11,T*.1,T*.02); c.fill(); rrect(c,x+T*.01,y-T*.1,T*.11,T*.1,T*.02); c.fill();
+        c.fillStyle='#222'; circ(c,x-T*.14,y+T*.19,T*.055); c.fill(); circ(c,x+T*.14,y+T*.19,T*.055); c.fill();
+        c.fillStyle='#ccc'; circ(c,x-T*.14,y+T*.19,T*.022); c.fill(); circ(c,x+T*.14,y+T*.19,T*.022); c.fill();
+        c.fillStyle='#ffe58a'; circ(c,x+T*.23,y+T*.06,T*.02); c.fill(); break;
+      case 5: sombraSuelo(c,x,y+T*.26,T*.26,T*.08,.3);   // farola y árbol
+        copa(c,[[x+T*.12,y-T*.1,T*.15],[x+T*.2,y+T*.0,T*.12]],'#3cb554','#6ee07c','#28873d');
+        c.fillStyle='#4b5470'; c.fillRect(x-T*.2,y-T*.28,T*.035,T*.52);
+        c.fillStyle='#fff3b0'; circ(c,x-T*.18,y-T*.32,T*.06); c.fill(); c.fillStyle='rgba(255,240,150,.35)'; circ(c,x-T*.18,y-T*.32,T*.12); c.fill(); break;
+      default: sombraSuelo(c,x,y+T*.22,T*.28,T*.08,.3);   // fuente
+        c.fillStyle='#9fadc9'; elip(c,x,y+T*.12,T*.27,T*.13); c.fill();
+        c.fillStyle='#6fc7ff'; elip(c,x,y+T*.1,T*.22,T*.09); c.fill();
+        c.fillStyle='#8c9bb9'; c.fillRect(x-T*.03,y-T*.12,T*.06,T*.22);
+        c.strokeStyle='#bfe9ff'; c.lineWidth=T*.025; c.lineCap='round';
+        [-1,0,1].forEach(d=>{ c.beginPath(); c.moveTo(x,y-T*.12); c.quadraticCurveTo(x+d*T*.1,y-T*.28,x+d*T*.16,y+T*.06); c.stroke(); });
+    }
+  },
+  galaxia(c,tipo,x,y,T){
+    switch(tipo){
+      case 1: sombraSuelo(c,x,y+T*.26,T*.2,T*.06,.35);   // planeta con anillo
+        c.strokeStyle='#ffe8b8'; c.lineWidth=T*.045; c.beginPath(); c.ellipse(x,y-T*.02,T*.32,T*.08,-.35,Math.PI,Math.PI*2); c.stroke();
+        { const g=c.createRadialGradient(x-T*.07,y-T*.12,T*.02,x,y-T*.02,T*.22); g.addColorStop(0,'#ffc78a'); g.addColorStop(1,'#d9603b');
+          c.fillStyle=g; circ(c,x,y-T*.02,T*.2); c.fill(); }
+        c.strokeStyle='#ffe8b8'; c.lineWidth=T*.045; c.beginPath(); c.ellipse(x,y-T*.02,T*.32,T*.08,-.35,0,Math.PI); c.stroke(); break;
+      case 2: sombraSuelo(c,x,y+T*.22,T*.26,T*.08,.35);   // asteroide
+        c.fillStyle='#7d7a9c'; c.beginPath(); c.moveTo(x-T*.24,y+T*.08); c.lineTo(x-T*.14,y-T*.12); c.lineTo(x+T*.08,y-T*.16); c.lineTo(x+T*.25,y); c.lineTo(x+T*.15,y+T*.17); c.lineTo(x-T*.1,y+T*.19); c.closePath(); c.fill();
+        c.fillStyle='#a19fc4'; c.beginPath(); c.moveTo(x-T*.14,y-T*.12); c.lineTo(x+T*.08,y-T*.16); c.lineTo(x+T*.02,y+T*.02); c.lineTo(x-T*.2,y+T*.04); c.closePath(); c.fill();
+        c.fillStyle='#5f5c80'; elip(c,x+T*.1,y+T*.06,T*.05,T*.035); c.fill(); elip(c,x-T*.08,y+T*.11,T*.04,T*.025); c.fill(); break;
+      case 3: sombraSuelo(c,x,y+T*.26,T*.18,T*.06,.35);   // cohete
+        c.fillStyle='#ff6b6b'; c.beginPath(); c.moveTo(x-T*.1,y+T*.14); c.lineTo(x-T*.2,y+T*.26); c.lineTo(x-T*.06,y+T*.2); c.fill(); c.beginPath(); c.moveTo(x+T*.1,y+T*.14); c.lineTo(x+T*.2,y+T*.26); c.lineTo(x+T*.06,y+T*.2); c.fill();
+        c.fillStyle='#f3f4ff'; c.beginPath(); c.moveTo(x,y-T*.4); c.quadraticCurveTo(x+T*.15,y-T*.2,x+T*.1,y+T*.2); c.lineTo(x-T*.1,y+T*.2); c.quadraticCurveTo(x-T*.15,y-T*.2,x,y-T*.4); c.fill();
+        c.fillStyle='#ff6b6b'; c.beginPath(); c.moveTo(x,y-T*.4); c.quadraticCurveTo(x+T*.09,y-T*.3,x+T*.11,y-T*.22); c.lineTo(x-T*.11,y-T*.22); c.quadraticCurveTo(x-T*.09,y-T*.3,x,y-T*.4); c.fill();
+        c.fillStyle='#69c8ff'; circ(c,x,y-T*.08,T*.06); c.fill(); c.strokeStyle='#8a8fb8'; c.lineWidth=T*.02; c.stroke();
+        c.fillStyle='#ffb02e'; c.beginPath(); c.moveTo(x-T*.06,y+T*.2); c.lineTo(x,y+T*.34); c.lineTo(x+T*.06,y+T*.2); c.fill(); break;
+      case 4: sombraSuelo(c,x,y+T*.24,T*.2,T*.06,.35);   // alienígena
+        c.strokeStyle='#5bd16a'; c.lineWidth=T*.025; c.lineCap='round'; c.beginPath(); c.moveTo(x-T*.05,y-T*.14); c.lineTo(x-T*.1,y-T*.3); c.moveTo(x+T*.05,y-T*.14); c.lineTo(x+T*.1,y-T*.3); c.stroke();
+        c.fillStyle='#ff6bd6'; circ(c,x-T*.1,y-T*.31,T*.03); c.fill(); circ(c,x+T*.1,y-T*.31,T*.03); c.fill();
+        c.fillStyle='#5bd16a'; elip(c,x,y+T*.08,T*.15,T*.17); c.fill(); elip(c,x,y-T*.05,T*.17,T*.14); c.fill();
+        c.fillStyle='#fff'; circ(c,x-T*.06,y-T*.06,T*.05); c.fill(); circ(c,x+T*.06,y-T*.06,T*.05); c.fill();
+        c.fillStyle='#222'; circ(c,x-T*.055,y-T*.055,T*.025); c.fill(); circ(c,x+T*.065,y-T*.055,T*.025); c.fill();
+        c.strokeStyle='#2a8a3a'; c.lineWidth=T*.018; c.beginPath(); c.arc(x,y+T*.0,T*.05,.25,Math.PI-.25); c.stroke(); break;
+      case 5: sombraSuelo(c,x,y+T*.22,T*.2,T*.06,.35);   // satélite
+        c.save(); c.translate(x,y); c.rotate(-.3);
+        c.fillStyle='#3b6fd1'; c.fillRect(-T*.34,-T*.06,T*.2,T*.12); c.fillRect(T*.14,-T*.06,T*.2,T*.12);
+        c.strokeStyle='#9cc0ff'; c.lineWidth=T*.012; for(let k=1;k<4;k++){ c.beginPath(); c.moveTo(-T*.34+k*T*.05,-T*.06); c.lineTo(-T*.34+k*T*.05,T*.06); c.moveTo(T*.14+k*T*.05,-T*.06); c.lineTo(T*.14+k*T*.05,T*.06); c.stroke(); }
+        c.fillStyle='#d9deff'; rrect(c,-T*.12,-T*.11,T*.24,T*.22,T*.04); c.fill(); c.fillStyle='#ffd23f'; circ(c,0,0,T*.04); c.fill();
+        c.fillStyle='#8a8fb8'; c.fillRect(-T*.015,-T*.22,T*.03,T*.11); circ(c,0,-T*.23,T*.03); c.fill(); c.restore(); break;
+      default: sombraSuelo(c,x,y+T*.24,T*.24,T*.07,.35);   // cristales brillantes
+        [[-.14,.1,.3,-.25,'#7be8ff','#d6f8ff'],[.13,.12,.36,.25,'#ff8be6','#ffd6f6'],[0,.15,.46,0,'#a98bff','#e6dcff']].forEach(([dx,dy,h,rot,c1,c2])=>{ c.save(); c.translate(x+T*dx,y+T*dy); c.rotate(rot);
+          c.shadowColor=c1; c.shadowBlur=T*.12; c.fillStyle=c1; c.beginPath(); c.moveTo(0,-T*h); c.lineTo(T*.07,-T*h*.6); c.lineTo(T*.06,0); c.lineTo(-T*.06,0); c.lineTo(-T*.07,-T*h*.6); c.closePath(); c.fill(); c.shadowBlur=0;
+          c.fillStyle=c2; c.beginPath(); c.moveTo(0,-T*h); c.lineTo(-T*.07,-T*h*.6); c.lineTo(-T*.06,0); c.lineTo(0,0); c.closePath(); c.fill(); c.restore(); });
+    }
   }
 };
 
@@ -1355,6 +1819,15 @@ class Tablero{
     if(this.tema==='pradera'){
       c.strokeStyle='#6b4423'; c.lineWidth=Math.max(1,T*.03); c.lineCap='round';
       for(let i=0;i<n;i++){ const x=ox+W*(.15+rnd()*.7), y=oy+W+ch*.35; c.beginPath(); c.moveTo(x,y); c.quadraticCurveTo(x+T*.1,y+T*.2,x-T*.02,y+T*(.3+rnd()*.25)); c.stroke(); }
+    } else if(this.tema==='selva'){
+      c.strokeStyle='#2f9a4a'; c.lineWidth=Math.max(1.5,T*.045); c.lineCap='round';
+      for(let i=0;i<n;i++){ const x=ox+W*(.1+rnd()*.8), y=oy+W+ch*.3, L=T*(.3+rnd()*.5); c.beginPath(); c.moveTo(x,y); c.bezierCurveTo(x+T*.12,y+L*.4,x-T*.14,y+L*.7,x+T*.04,y+L); c.stroke(); }
+    } else if(this.tema==='volcan'){
+      for(let i=0;i<n*2;i++){ const x=ox+W*(.08+rnd()*.84), y=oy+W+ch*(.25+rnd()*.25), L=T*(.12+rnd()*.28);
+        c.fillStyle=rnd()<.5?'#ff7a1a':'#ffb02e'; c.beginPath(); c.moveTo(x-T*.05,y); c.lineTo(x,y+L); c.lineTo(x+T*.05,y); c.closePath(); c.fill(); }
+    } else if(this.tema==='galaxia'){
+      for(let i=0;i<n*2;i++){ const x=ox+W*(.08+rnd()*.84), y=oy+W+ch*(.2+rnd()*.3), L=T*(.14+rnd()*.3);
+        c.fillStyle=rnd()<.5?'#8be9ff':'#c8a8ff'; c.beginPath(); c.moveTo(x-T*.045,y); c.lineTo(x,y+L); c.lineTo(x+T*.045,y); c.closePath(); c.fill(); }
     } else if(this.tema==='hielo'){
       for(let i=0;i<n*2;i++){ const x=ox+W*(.08+rnd()*.84), y=oy+W+ch*(.2+rnd()*.2), L=T*(.15+rnd()*.3);
         c.fillStyle='rgba(220,240,255,.9)'; c.beginPath(); c.moveTo(x-T*.05,y); c.lineTo(x,y+L); c.lineTo(x+T*.05,y); c.closePath(); c.fill(); }
@@ -1387,6 +1860,19 @@ class Tablero{
       const bx=ox+x*T, by=oy+y*T;
       c.strokeStyle='rgba(60,30,10,.22)'; c.lineWidth=Math.max(1.5,T*.03); rrect(c,bx+T*.12,by+T*.12,T*.76,T*.76,T*.14); c.stroke();
       c.strokeStyle='rgba(255,255,255,.55)'; c.lineWidth=Math.max(1,T*.02); c.beginPath(); c.moveTo(bx+T*.2,by+T*.15); c.lineTo(bx+T*.8,by+T*.15); c.stroke();
+    }
+    // abismos (solo en la Galaxia): agujeros negros que hay que saltar
+    for(const [x,y] of (lab.huecos||[])){
+      const bx=ox+x*T, by=oy+y*T, cx=bx+T/2, cy=by+T/2;
+      c.fillStyle='rgba(255,255,255,.18)'; rrect(c,bx+ins*.4,by+ins*.4,T-ins*.8,T-ins*.8,rr); c.fill();
+      const g=c.createRadialGradient(cx,cy,0,cx,cy,T*.5); g.addColorStop(0,'#000'); g.addColorStop(.55,'#07041a'); g.addColorStop(1,'#241a5e');
+      c.fillStyle=g; rrect(c,bx+ins,by+ins,T-2*ins,T-2*ins,rr); c.fill();
+      c.save(); rrect(c,bx+ins,by+ins,T-2*ins,T-2*ins,rr); c.clip();
+      c.lineWidth=Math.max(1,T*.03); c.lineCap='round';
+      for(let k=0;k<3;k++){ c.strokeStyle='rgba(167,139,250,'+(.55-k*.14)+')'; c.beginPath(); c.arc(cx,cy,T*(.12+k*.1),k*1.7,k*1.7+3.9); c.stroke(); }
+      c.fillStyle='rgba(255,255,255,.8)'; [[.2,.25],[.78,.3],[.3,.8],[.72,.74]].forEach(([a,b])=>{ circ(c,bx+T*a,by+T*b,T*.016); c.fill(); });
+      c.restore();
+      c.strokeStyle='#8b6bff'; c.lineWidth=Math.max(1.5,T*.035); rrect(c,bx+ins,by+ins,T-2*ins,T-2*ins,rr); c.stroke();
     }
     // casilla de salida
     { const [sx,sy]=this.px(lab.ini.x,lab.ini.y);
@@ -1421,6 +1907,13 @@ class Tablero{
     await this.animar(v*.85,(e,p)=>{ r.x=x0+(nx-x0)*e; r.y=y0+(ny-y0)*e; r.hop=Math.sin(Math.PI*p)*.1; });
     r.hop=0; r.motor=false; r.x=nx; r.y=ny;
     this.rastro.push([nx,ny]); this.polvo(nx,ny,4); this.aplastar();
+  }
+  async saltar(nx,ny,v){
+    const r=this.r, x0=r.x, y0=r.y;
+    r.motor=true; this.polvo(x0,y0,4);
+    await this.animar(v*1.35,(e,p)=>{ r.x=x0+(nx-x0)*e; r.y=y0+(ny-y0)*e; r.hop=Math.sin(Math.PI*p)*1.05; });
+    r.hop=0; r.motor=false; r.x=nx; r.y=ny;
+    this.rastro.push([nx,ny]); this.polvo(nx,ny,6); this.brillo(nx,ny-.3,3); this.aplastar();
   }
   async girar(der,v){
     const r=this.r, a0=r.ang, a1=a0+(der?90:-90);
@@ -1708,11 +2201,12 @@ function mostrar(st){
 window.addEventListener('popstate',e=>mostrar(e.state||{p:'home',params:{}}));
 function ponerMotas(tema){
   if(motasTema===tema) return; motasTema=tema;
-  const n=tema==='desierto'?16:tema==='menu'?22:20; let h='';
+  const fijo=tema==='menu'||tema==='ciudad'||tema==='galaxia';   // motas que parpadean en su sitio
+  const n=tema==='desierto'?16:fijo?22:20; let h='';
   for(let i=0;i<n;i++){
     const left=Math.random()*100, y=Math.random()*75;
-    const dur=tema==='menu'?3+Math.random()*4:tema==='desierto'?5+Math.random()*6:tema==='hielo'?9+Math.random()*10:11+Math.random()*9;
-    const top=tema==='menu'?y+'%':tema==='desierto'?'0':'-30px';
+    const dur=fijo?3+Math.random()*4:tema==='desierto'?5+Math.random()*6:tema==='hielo'?9+Math.random()*10:tema==='volcan'?7+Math.random()*7:11+Math.random()*9;
+    const top=fijo?y+'%':tema==='desierto'?'0':'-30px';
     h+=`<i class="mota" style="left:${left}%;top:${top};--y:${tema==='desierto'?y+'vh':'0px'};animation-duration:${dur.toFixed(1)}s;animation-delay:${(-Math.random()*dur).toFixed(1)}s"></i>`;
   }
   $('#motas').innerHTML=h;
@@ -1836,28 +2330,32 @@ function vMapa(){
   vista.innerHTML=barra('<span class="pill">'+ic(ICO.mapa)+' Elige un mundo</span>')+
   `<div class="resumen"><span class="chip oro">${ICO.estrella} ${total} / ${max}</span><span class="chip fuego">${ICO.fuego} Mejor racha: ${mejor}</span>
    ${u?`<span class="chip">${ICO.usuario} ${esc(u.usuario)} · ${esc(u.clase)}</span><span class="chip nube-estado"></span>`:'<span class="chip">Modo libre</span>'}</div>
-   <div class="mundos">${MUNDOS.map(tarjetaMundo).join('')}${PROXIMOS.map(tarjetaProx).join('')}</div>
+   <div class="mundos">${MUNDOS.map(tarjetaMundo).join('')}</div>
    <div style="text-align:center">${u?'<button class="enlace" data-acc="salir2">Cerrar sesión</button>':'<button class="enlace" data-acc="borrar">Borrar mi progreso de este ordenador</button>'}</div>`;
   pintarNube();
 }
 function tarjetaMundo(m){
+  if(!mundoAbierto(m.id)) return tarjetaCerrada(m);
   const est=estrellasMundo(m.id), r=S.prog[m.id].r;
   return `<button class="mundo" data-acc="mundo" data-n="${m.id}" style="--mc1:${m.mc1};--mc2:${m.mc2};--mD:${m.mD}">
-    <div class="ilus"><span class="num">Mundo ${m.id}</span><img src="${vistaMundo(m)}" alt=""></div>
+    <div class="ilus"><span class="num">Mundo ${m.id}</span>${m.id>=4&&est===0?'<span class="nuevo-cinta">¡Nuevo!</span>':''}<img src="${vistaMundo(m)}" alt=""></div>
     <div class="info"><h3>${m.nombre}</h3><div class="concepto">${m.concepto}</div>
       <div class="barra-prog"><i style="width:${(est/(RETOS*3)*100).toFixed(1)}%"></i></div>
       <div class="fila"><span>${ic(ICO.estrella)} ${est}/${RETOS*3}</span><span>${ic(ICO.fuego)} ${r}</span></div></div></button>`;
 }
-function tarjetaProx(p){
-  return `<div class="mundo bloq"><div class="ilus"><span class="num">Mundo ${p.id}</span><span class="em">${p.em}</span><span class="candado">🔒 Próximamente</span></div>
-    <div class="info"><h3>${p.nombre}</h3><div class="concepto">${p.concepto}</div></div></div>`;
+function tarjetaCerrada(m){
+  const falta=retosPendientes(m.id-1), prev=MUNDOS[m.id-2];
+  return `<button class="mundo bloq" data-acc="cerrado" data-n="${m.id}" aria-label="Mundo ${m.id} bloqueado">
+    <div class="ilus"><span class="num">Mundo ${m.id}</span><img src="${vistaMundo(m)}" alt=""><span class="candado">🔒 Bloqueado</span></div>
+    <div class="info"><h3>${m.nombre}</h3><div class="concepto">${m.concepto}</div>
+      <div class="falta">Se abre al pasar los ${RETOS} retos del Mundo ${m.id-1} (${prev.nombre})${falta<RETOS?` · ${falta===1?'te falta 1 reto':'te faltan '+falta+' retos'}`:''}</div></div></button>`;
 }
 
 /* =========================================================
    PANTALLA DE UN MUNDO
    ========================================================= */
 function vMundo(n){
-  const m=MUNDOS[n-1]; if(!m){ ir('mapa',{},true); return; }
+  const m=MUNDOS[n-1]; if(!m||!mundoAbierto(n)){ ir('mapa',{},true); return; }
   const p=S.prog[n], actual=p.s.findIndex(s=>s===0);
   vista.innerHTML=barra(`<span class="pill"><span class="punto"></span>Mundo ${n} · ${m.nombre}</span>`,`<span class="chip oro ocultable">${ICO.estrella} ${estrellasMundo(n)}/${RETOS*3}</span>`)+
   `<section class="panel mundo-cab"><div class="mini-ilus"><img src="${vistaMundo(m)}" alt=""></div>
@@ -1867,7 +2365,39 @@ function vMundo(n){
     `<button class="nodo${s?' hecho':''}" data-acc="reto" data-n="${n}" data-i="${i}" aria-label="Reto ${i+1}">${i===actual?`<img class="aqui" src="${avatarRobot(P.color,60)}" alt="">`:''}${i+1}<span class="est">${[0,1,2].map(k=>k<s?ICO.estrella:ICO.estrellaG).join('')}</span></button>`).join('')}</div>
   <button class="portal" data-acc="inf" data-n="${n}"><span class="aro">∞</span><span><h3>Modo infinito</h3><p>Laberintos nuevos sin parar. ¿Hasta dónde llegará tu racha?</p></span>
     <span class="record">${ic(ICO.fuego)} ${p.r}<small>mejor racha</small></span></button>`;
-  if(n===3&&!P.tutos.rep){ P.tutos.rep=true; guardarPrefs(); setTimeout(introRepetir,450); }
+  const intro={3:['rep',introRepetir],4:['si',introSi],5:['hasta',introHasta],6:['fn',introFuncion],7:['gal',introGalaxia]}[n];
+  if(intro&&!P.tutos[intro[0]]){ P.tutos[intro[0]]=true; guardarPrefs(); setTimeout(intro[1],450); }
+}
+const bq=(t,txt)=>`<span class="blk b-${t}" style="min-width:0"><span class="ico">${ICO[t]}</span>${txt||CORTO[t]}</span>`;
+function contEj(t,cab,dentro,ancho){ return `<div class="rep${t==='REP'?'':' c-'+t}" style="min-width:0"><div class="blk rep-cab b-${t}" style="min-width:0"><span class="ico">${ICO[t]}</span>${cab}</div><div class="rep-cuerpo" style="min-height:0;cursor:default">${dentro}</div><div class="rep-pie" style="width:${ancho||110}px"></div></div>`; }
+function introSi(){
+  modal({titulo:'¡Nuevo bloque: Si!',robot:'sorpresa',cancelable:true,
+    html:`<p>Con <b>Si</b> miro a mi alrededor y decido. Lo que hay dentro solo lo hago <b>si hay camino</b> hacia donde me indicas.</p>
+      <div class="ejemplo-rep"><div class="col">${contEj('IF','<span class="etq">Si hay camino</span><span class="conds"><button class="on">← izquierda</button></span>',bq('L'))}</div></div>
+      <p>Junto con <b>Repetir</b> y <b>Avanzar</b>, ¡un solo programa vale para cualquier camino! Si pones más vueltas de las necesarias no pasa nada: me paro al llegar.</p>`,
+    botones:[{txt:'¡Entendido!',cls:'btn-ok'}]});
+}
+function introHasta(){
+  modal({titulo:'¡Nuevo bloque: Repetir hasta llegar!',robot:'feliz',cancelable:true,
+    html:`<p>Este bloque repite lo que tiene dentro <b>sin que cuentes las vueltas</b>. Se detiene solo cuando llego a la estrella ⭐.</p>
+      <div class="ejemplo-rep"><div class="col">${contEj('UNT','<span class="etq">Repetir hasta llegar a la ⭐</span>',bq('F')+bq('R'),150)}</div></div>
+      <p>Puedes meter dentro otros bloques, como un <b>Si</b>.</p>`,
+    botones:[{txt:'¡Entendido!',cls:'btn-ok'}]});
+}
+function introFuncion(){
+  modal({titulo:'¡Nuevo bloque: Mi bloque!',robot:'sorpresa',cancelable:true,
+    html:`<p>Tú inventas un bloque. En la zona <b>«Mi bloque hace esto»</b> pones los pasos, ¡y después lo usas todas las veces que quieras!</p>
+      <div class="ejemplo-rep"><div class="col">${bq('FN')}${bq('F')}${bq('FN')}</div><div class="igual">=</div>
+      <div class="col">${bq('F')}${bq('R')}${bq('F')}${bq('F')}${bq('F')}${bq('R')}${bq('F')}</div></div>
+      <p>Si el trozo cambia, solo lo arreglas una vez.</p>`,
+    botones:[{txt:'¡Entendido!',cls:'btn-ok'}]});
+}
+function introGalaxia(){
+  modal({titulo:'¡Último mundo!',robot:'sorpresa',cancelable:true,
+    html:`<p>Hay <b>abismos</b> 🕳️ en el camino. Con <b>Saltar</b> paso al otro lado (justo antes de un abismo, mirando hacia él).</p>
+      <div class="ejemplo-rep"><div class="col">${bq('F')}${bq('J')}${bq('F')}</div></div>
+      <p>Aquí vale todo lo aprendido: Repetir, Si, Repetir hasta llegar y Mi bloque. ¡Combínalos!</p>`,
+    botones:[{txt:'¡A por ello!',cls:'btn-ok'}]});
 }
 function introRepetir(){
   const blq=t=>`<span class="blk b-${t}"><span class="ico">${ICO[t]}</span>${CORTO[t]}</span>`;
@@ -1941,13 +2471,13 @@ function detenerJuego(){
   if(tab){ tab.parar(); tab=null; }
 }
 function arrancarJuego(mundo,modo,idx){
-  const M=MUNDOS[mundo-1]; if(!M){ ir('mapa',{},true); return; }
+  const M=MUNDOS[mundo-1]; if(!M||!mundoAbierto(mundo)){ ir('mapa',{},true); return; }
   modo=modo==='inf'?'inf':'fijo'; idx=clamp(idx|0,0,RETOS-1);
   const num=(G&&G.modo==='inf'&&modo==='inf'&&G.mundo===mundo)?G.num+1:1;
   detenerJuego();
   const semilla=modo==='fijo'?hashStr('N'+mundo+'R'+idx):(Math.random()*4294967296)>>>0;
   const lab=generar(mundo,modo==='fijo'?idx:-1,mulberry32(semilla));
-  G={mundo,modo,idx,lab,prog:[],cur:null,sel:null,corriendo:false,runId:0,paso:false,resolverPaso:null,pistas:0,nuevo:null,marca:null,num,tuto:0,msg:''};
+  G={mundo,modo,idx,lab,prog:[],fn:[],cur:null,sel:null,corriendo:false,runId:0,paso:false,resolverPaso:null,pistas:0,nuevo:null,marca:null,num,tuto:0,msg:''};
   G.cur={arr:G.prog,i:0};
   renderJuego();
 }
@@ -1969,8 +2499,8 @@ function renderJuego(){
         <button class="btn-voz" data-acc="voz" aria-label="Escuchar" title="Escuchar">${ICO.altavoz}</button></div>
     </section>
     <section class="zona-caja panel"><h3>🧰 Bloques</h3>
-      <div class="paleta" id="paleta">${M.bloques.map(t=>`<button class="blk b-${t}" data-acc="add" data-t="${t}" title="${LARGO[t]}"><span class="ico">${ICO[t]}</span><span>${CORTO[t]}</span><span class="tecla">${TECLA[t]}</span></button>`).join('')}</div>
-      <div class="caja-ayuda">Con teclado: <kbd>↑</kbd> <kbd>←</kbd> <kbd>→</kbd>${M.bloques.includes('REP')?' <kbd>R</kbd>':''} añaden bloques, <kbd>⌫</kbd> borra y <kbd>Intro</kbd> ejecuta.</div>
+      <div class="paleta${M.bloques.length>5?' muchos':''}" id="paleta">${M.bloques.map(t=>`<button class="blk b-${t}" data-acc="add" data-t="${t}" title="${LARGO[t]}"><span class="ico">${ICO[t]}</span><span>${CORTO[t]}</span><span class="tecla">${TECLA[t]}</span></button>`).join('')}</div>
+      <div class="caja-ayuda">Con teclado: ${M.bloques.map(t=>`<kbd>${TECLA[t]}</kbd>`).join(' ')} añaden bloques, <kbd>⌫</kbd> borra y <kbd>Intro</kbd> ejecuta.</div>
     </section>
     <section class="zona-prog panel">
       <div class="prog-cab"><b>📜 Mi programa</b><span class="chip contador" id="contador"></span>
@@ -2003,35 +2533,60 @@ function decir(txt,tipo){
 }
 
 /* ---------- el programa ---------- */
+// el programa tiene dos zonas: «Mi programa» (G.prog) y, en los mundos 6 y 7, la definición de «Mi bloque» (G.fn)
+const tieneFn = () => MUNDOS[G.mundo-1].bloques.includes('FN');
+const totalBloques = () => contar(G.prog)+contar(G.fn);
 function buscar(arr,id){
-  for(let i=0;i<arr.length;i++){ const n=arr[i]; if(n.id===id) return {nodo:n,arr,i}; if(n.t==='REP'){ const r=buscar(n.body,id); if(r) return r; } }
+  for(let i=0;i<arr.length;i++){ const n=arr[i]; if(n.id===id) return {nodo:n,arr,i}; for(const h of hijos(n)){ const r=buscar(h,id); if(r) return r; } }
   return null;
 }
+const buscarT = id => buscar(G.prog,id)||buscar(G.fn,id);
 function buscarCuerpo(arr,body){
-  for(let i=0;i<arr.length;i++){ const n=arr[i]; if(n.t==='REP'){ if(n.body===body) return {nodo:n,arr,i}; const r=buscarCuerpo(n.body,body); if(r) return r; } }
+  for(let i=0;i<arr.length;i++){ const n=arr[i], hs=hijos(n); if(hs.includes(body)) return {nodo:n,arr,i}; for(const h of hs){ const r=buscarCuerpo(h,body); if(r) return r; } }
   return null;
 }
+const buscarCuerpoT = body => buscarCuerpo(G.prog,body)||buscarCuerpo(G.fn,body);
+const profundidad = arr => { if(arr===G.prog||arr===G.fn) return 0; const r=buscarCuerpoT(arr); return r?1+profundidad(r.arr):0; };
+const enFn = arr => { if(arr===G.fn) return true; if(arr===G.prog) return false; const r=buscarCuerpoT(arr); return r?enFn(r.arr):false; };
+const contieneArr = (nodo,arr) => hijos(nodo).some(h=>h===arr||h.some(m=>contieneArr(m,arr)));
+const usa = (arr,t) => arr.some(n=>n.t===t||hijos(n).some(h=>usa(h,t)));
+const usaT = t => usa(G.prog,t)||usa(G.fn,t);
+const ETQ_COND = {izq:'← izquierda', del:'↑ delante', der:'derecha →'};
+
 function renderPila(){
   const pila=$('#pila'); if(!pila||!G) return;
   const cursorVisible=!G.corriendo;
   const x=n=>G.sel===n.id&&!G.corriendo?'<button class="x" data-acc="quitarSel" aria-label="Quitar este bloque">×</button>':'';
-  const extra=n=>(G.sel===n.id?' sel':'')+(G.nuevo===n.id?' nuevo':'')+(G.marca&&G.marca.id===n.id?' '+G.marca.cls:'');
-  const blq=n=>`<div class="blk b-${n.t}${extra(n)}" data-id="${n.id}"><span class="ico">${ICO[n.t]}</span><span>${CORTO[n.t]}</span>${x(n)}</div>`;
-  const repH=n=>{ const dentro=cursorVisible&&G.cur.arr===n.body;
-    return `<div class="rep${G.sel===n.id?' sel':''}${G.nuevo===n.id?' nuevo':''}" data-id="${n.id}">
-      <div class="blk rep-cab b-REP${G.marca&&G.marca.id===n.id?' '+G.marca.cls:''}" data-cab="${n.id}"><span class="ico">${ICO.REP}</span><span>Repetir</span>
+  const extra=n=>(G.sel===n.id?' sel':'')+(G.nuevo===n.id?' nuevo':'');
+  const marca=n=>G.marca&&G.marca.id===n.id?' '+G.marca.cls:'';
+  const blq=n=>`<div class="blk b-${n.t}${extra(n)}${marca(n)}" data-id="${n.id}"><span class="ico">${ICO[n.t]}</span><span>${CORTO[n.t]}</span>${x(n)}</div>`;
+  const cuerpo=(n,arr,p,vacio)=>{ const dentro=cursorVisible&&G.cur.arr===arr;
+    return `<div class="rep-cuerpo${dentro?' dentro':''}" data-cuerpo="${n.id}" data-p="${p}">${lista(arr)}${arr.length?'':`<span class="vacio-prog">${vacio}</span>`}</div>`; };
+  const cabeza=n=>{
+    if(n.t==='REP') return `<span class="ico">${ICO.REP}</span><span>Repetir</span>
         <span class="veces"><button data-acc="menos" data-id="${n.id}" aria-label="Menos veces">−</button><b>${n.n}</b><button data-acc="mas" data-id="${n.id}" aria-label="Más veces">+</button></span><span>veces</span>
-        <span class="vuelta" data-vuelta="${n.id}"></span>${x(n)}</div>
-      <div class="rep-cuerpo${dentro?' dentro':''}" data-cuerpo="${n.id}">${lista(n.body)}${n.body.length?'':'<span class="vacio-prog">👆 Toca aquí y añade bloques dentro</span>'}</div>
-      <div class="rep-pie"></div></div>`; };
-  const lista=arr=>{ let h=''; arr.forEach((n,i)=>{ if(cursorVisible&&G.cur.arr===arr&&G.cur.i===i) h+='<div class="cursor"></div>'; h+=n.t==='REP'?repH(n):blq(n); });
+        <span class="vuelta" data-vuelta="${n.id}"></span>${x(n)}`;
+    if(n.t==='UNT') return `<span class="ico">${ICO.UNT}</span><span class="etq">Repetir hasta llegar a la ⭐</span><span class="vuelta" data-vuelta="${n.id}"></span>${x(n)}`;
+    return `<span class="ico">${ICO.IF}</span><span class="etq">Si hay camino</span>
+        <span class="conds">${['izq','del','der'].map(c=>`<button class="${n.c===c?'on':''}" data-acc="cond" data-id="${n.id}" data-c="${c}">${ETQ_COND[c]}</button>`).join('')}</span>
+        <span class="resif" data-resif="${n.id}"></span>${x(n)}`;
+  };
+  const contH=n=>`<div class="rep${n.t==='REP'?'':' c-'+n.t}${G.sel===n.id?' sel':''}${G.nuevo===n.id?' nuevo':''}" data-id="${n.id}">
+      <div class="blk rep-cab b-${n.t}${marca(n)}" data-cab="${n.id}">${cabeza(n)}</div>
+      ${cuerpo(n,n.body,'b','👆 Toca aquí y añade bloques dentro')}
+      ${n.t==='IF'?((n.otro.length||(cursorVisible&&G.cur.arr===n.otro))?`<div class="rep-sino">Si no</div>${cuerpo(n,n.otro,'o','👆 Toca aquí y añade lo que hago si NO hay camino')}`:`<div class="rep-sino sino-mini" data-cuerpo="${n.id}" data-p="o">＋ Si no… (opcional)</div>`):''}
+      <div class="rep-pie"></div></div>`;
+  const lista=arr=>{ let h=''; arr.forEach((n,i)=>{ if(cursorVisible&&G.cur.arr===arr&&G.cur.i===i) h+='<div class="cursor"></div>'; h+=CONTENEDOR[n.t]?contH(n):blq(n); });
     if(cursorVisible&&G.cur.arr===arr&&G.cur.i===arr.length) h+='<div class="cursor"></div>'; return h; };
-  pila.innerHTML=`<div class="blk hat"><span class="ico">${ICO.play}</span><span>Al pulsar Ejecutar</span></div>`+lista(G.prog)+
+  const def=tieneFn()?`<div class="def"><div class="def-tit">${ICO.FN} Aquí inventas tu bloque</div>
+      <div class="blk hat def-hat"><span class="ico">${ICO.FN}</span><span>«Mi bloque» hace esto:</span></div>${lista(G.fn)}
+      ${G.fn.length?'':'<div class="vacio-prog">Toca «Mi bloque hace esto» y añade los pasos que quieras guardar 👆</div>'}</div>`:'';
+  pila.innerHTML=def+`<div class="blk hat"><span class="ico">${ICO.play}</span><span>Al pulsar Ejecutar</span></div>`+lista(G.prog)+
     (G.prog.length?'':'<div class="vacio-prog">Toca un bloque de la caja para empezar 👈</div>');
   G.nuevo=null;
-  const n=contar(G.prog), c=$('#contador');
+  const n=totalBloques(), c=$('#contador');
   if(c){ c.textContent=n+(n===1?' bloque':' bloques')+(n>=MAX_BLOQUES-8?' / '+MAX_BLOQUES:''); c.className='chip contador'+(G.modo==='fijo'&&n?(n<=G.lab.par?' ok':' sobra'):''); }
-  $$('#paleta .blk').forEach(b=>b.classList.toggle('off',b.dataset.t==='REP'&&G.cur.arr!==G.prog));
+  $$('#paleta .blk').forEach(b=>{ const t=b.dataset.t; b.classList.toggle('off',(CONTENEDOR[t]&&profundidad(G.cur.arr)>=MAX_ANIDADO)||(t==='FN'&&enFn(G.cur.arr))); });
 }
 function scrollSuave(el){
   const a=$('#area'); if(!a||!el) return;
@@ -2041,49 +2596,50 @@ function scrollSuave(el){
 function añadir(t){
   if(!G||G.corriendo) return;
   const M=MUNDOS[G.mundo-1]; if(!M.bloques.includes(t)) return;
-  if(contar(G.prog)>=MAX_BLOQUES){ SND.fx('error'); toast('¡Ya no caben más bloques! (máximo '+MAX_BLOQUES+')'); return; }
-  if(t==='REP'&&G.cur.arr!==G.prog){ SND.fx('error'); toast('Un Repetir no puede ir dentro de otro Repetir'); return; }
-  const nn=t==='REP'?rep(2,[]):nodo(t);
+  if(totalBloques()>=MAX_BLOQUES){ SND.fx('error'); toast('¡Ya no caben más bloques! (máximo '+MAX_BLOQUES+')'); return; }
+  if(CONTENEDOR[t]&&profundidad(G.cur.arr)>=MAX_ANIDADO){ SND.fx('error'); toast('No se pueden meter tantos bloques unos dentro de otros'); return; }
+  if(t==='FN'&&enFn(G.cur.arr)){ SND.fx('error'); toast('Dentro de «Mi bloque» no puedes usar «Mi bloque»'); return; }
+  const nn=t==='REP'?rep(G.mundo>=4?10:2,[]):t==='IF'?mkIf('izq'):t==='UNT'?unt([]):nodo(t);
   G.cur.arr.splice(G.cur.i,0,nn);
-  if(t==='REP') G.cur={arr:nn.body,i:0}; else G.cur.i++;
+  if(CONTENEDOR[t]) G.cur={arr:nn.body,i:0}; else G.cur.i++;
   G.sel=null; G.nuevo=nn.id; G.marca=null;
   SND.fx('add',t); renderPila();
   scrollSuave(document.querySelector(`#pila [data-id="${nn.id}"]`));
-  if(t==='REP') decir('¡Repetir añadido! Ahora toca los bloques que quieras meter dentro. Cuando acabes, toca fuera del Repetir.');
+  if(t==='REP') decir(G.mundo>=4?'¡Repetir añadido! Con + y − eliges las vueltas; si te pasas no pasa nada, me paro al llegar. Mete dentro los bloques y toca fuera cuando acabes.':'¡Repetir añadido! Ahora toca los bloques que quieras meter dentro. Cuando acabes, toca fuera del Repetir.');
+  else if(t==='IF') decir('¡«Si» añadido! Elige hacia dónde miro (← ↑ →) y mete dentro lo que hago si hay camino. «Si no» es opcional.');
+  else if(t==='UNT') decir('¡Repetir hasta llegar! Mete dentro lo que quieras repetir: me paro solo al llegar a la estrella ⭐.');
+  else if(t==='FN'&&!G.fn.length) decir('Primero enséñame qué hace «Mi bloque»: toca «Mi bloque hace esto» (arriba) y añade los pasos.');
   if(G.tuto===1){ G.tuto=2; MANO.mostrar('#brun'); decir('¡Muy bien! Añade los bloques que falten y luego pulsa «¡Ejecutar!» para ver qué hago.'); }
 }
 function quitarNodo(r){
   r.arr.splice(r.i,1);
-  if(r.nodo.t==='REP'&&(G.cur.arr===r.nodo.body||buscarCuerpo(r.nodo.body,G.cur.arr))) G.cur={arr:r.arr,i:r.i};
+  if(CONTENEDOR[r.nodo.t]&&contieneArr(r.nodo,G.cur.arr)) G.cur={arr:r.arr,i:r.i};
   else if(G.cur.arr===r.arr&&G.cur.i>r.i) G.cur.i--;
 }
 function quitar(){
   if(!G||G.corriendo) return;
-  if(G.sel){ const r=buscar(G.prog,G.sel); if(r) quitarNodo(r); G.sel=null; }
+  if(G.sel){ const r=buscarT(G.sel); if(r) quitarNodo(r); G.sel=null; }
   else if(G.cur.i>0){ quitarNodo({nodo:G.cur.arr[G.cur.i-1],arr:G.cur.arr,i:G.cur.i-1}); }
-  else if(G.cur.arr!==G.prog){ const pd=buscarCuerpo(G.prog,G.cur.arr); if(pd){ if(!pd.nodo.body.length) quitarNodo(pd); else G.cur={arr:pd.arr,i:pd.i}; } }
+  else if(G.cur.arr!==G.prog&&G.cur.arr!==G.fn){ const pd=buscarCuerpoT(G.cur.arr); if(pd){ if(hijos(pd.nodo).every(h=>!h.length)) quitarNodo(pd); else G.cur={arr:pd.arr,i:pd.i}; } }
   else { SND.fx('error'); return; }
   G.marca=null; SND.fx('quitar'); renderPila();
 }
 function clickArea(e){
   if(!G||G.corriendo) return;
   const t=e.target;
+  if(t.closest('.def-hat')){ G.cur={arr:G.fn,i:0}; G.sel=null; SND.fx('tap'); renderPila(); return; }
   if(t.closest('.hat')){ G.cur={arr:G.prog,i:0}; G.sel=null; SND.fx('tap'); renderPila(); return; }
   const cab=t.closest('.rep-cab');
-  if(cab){ const r=buscar(G.prog,cab.dataset.cab); if(r){ G.sel=G.sel===r.nodo.id?null:r.nodo.id; G.cur={arr:r.arr,i:r.i+1}; } SND.fx('tap'); renderPila(); return; }
+  if(cab){ const r=buscarT(cab.dataset.cab); if(r){ G.sel=G.sel===r.nodo.id?null:r.nodo.id; G.cur={arr:r.arr,i:r.i+1}; } SND.fx('tap'); renderPila(); return; }
   const b=t.closest('.blk[data-id]');
-  if(b){ const r=buscar(G.prog,b.dataset.id); if(r){ G.sel=G.sel===r.nodo.id?null:r.nodo.id; G.cur={arr:r.arr,i:r.i+1}; } SND.fx('tap'); renderPila(); return; }
-  const cu=t.closest('.rep-cuerpo');
-  if(cu){ const r=buscar(G.prog,cu.dataset.cuerpo); if(r){ G.cur={arr:r.nodo.body,i:r.nodo.body.length}; G.sel=null; } SND.fx('tap'); renderPila(); return; }
+  if(b){ const r=buscarT(b.dataset.id); if(r){ G.sel=G.sel===r.nodo.id?null:r.nodo.id; G.cur={arr:r.arr,i:r.i+1}; } SND.fx('tap'); renderPila(); return; }
+  const cu=t.closest('.rep-cuerpo,.sino-mini');
+  if(cu){ const r=buscarT(cu.dataset.cuerpo); if(r){ const arr=cu.dataset.p==='o'?r.nodo.otro:r.nodo.body; G.cur={arr,i:arr.length}; G.sel=null; } SND.fx('tap'); renderPila(); return; }
+  if(t.closest('.def')){ G.cur={arr:G.fn,i:G.fn.length}; G.sel=null; renderPila(); return; }
   G.cur={arr:G.prog,i:G.prog.length}; G.sel=null; renderPila();
 }
 
 /* ---------- ejecución ---------- */
-function aplanarInfo(prog,reps,out){
-  out=out||[]; reps=reps||[];
-  for(const n of prog){ if(n.t==='REP'){ for(let k=0;k<n.n;k++) aplanarInfo(n.body,reps.concat([{id:n.id,k,n:n.n}]),out); } else out.push({t:n.t,id:n.id,reps}); }
-  return out;
-}
 function estadoCtrl(){
   if(!G) return;
   const j=$('#juego'), br=$('#brun'), bp=$('#bpaso'); if(!br) return;
@@ -2099,15 +2655,24 @@ function liberarPaso(){ if(G&&G.resolverPaso){ const r=G.resolverPaso; G.resolve
 function marcarBloque(p,cls){
   $$('#pila .exec,#pila .siguiente').forEach(e=>e.classList.remove('exec','siguiente'));
   $$('#pila .vuelta.ver').forEach(v=>{ if(!p.reps.some(r=>r.id===v.dataset.vuelta)) v.classList.remove('ver'); });
-  p.reps.forEach(r=>{ const v=document.querySelector(`[data-vuelta="${r.id}"]`); if(v){ v.textContent=`vuelta ${r.k+1} de ${r.n}`; v.classList.add('ver'); } });
-  const el=document.querySelector(`#pila .blk[data-id="${p.id}"]`); if(el){ el.classList.add(cls); scrollSuave(el); }
+  p.reps.forEach(r=>{ const v=document.querySelector(`[data-vuelta="${r.id}"]`); if(v){ v.textContent=r.n?`vuelta ${r.k+1} de ${r.n}`:`vuelta ${r.k+1}`; v.classList.add('ver'); } });
+  if(p.t==='IF'){ const b=document.querySelector(`[data-resif="${p.id}"]`); if(b){ b.textContent=p.res?'✔ sí hay':'✘ no hay'; b.className='resif ver '+(p.res?'si':'no'); } }
+  const el=document.querySelector(`#pila .blk[data-id="${p.id}"]`)||document.querySelector(`#pila [data-cab="${p.id}"]`);
+  if(el){ el.classList.add(cls); scrollSuave(el); }
 }
 async function ejecutar(modoPaso){
   if(!G) return;
   if(G.corriendo){ if(G.paso&&!modoPaso){ G.paso=false; estadoCtrl(); liberarPaso(); } return; }
   if(!G.prog.length){ SND.fx('error'); decir('Tu programa está vacío. Toca los bloques de la caja para darme órdenes.','mal'); resaltarPaleta(); return; }
-  const pasos=aplanarInfo(G.prog);
-  if(!pasos.length){ SND.fx('error'); decir('Tu «Repetir» está vacío: mete bloques dentro.','mal'); return; }
+  const tr=trazaEjecucion(G.lab,G.prog,G.fn), pasos=tr.ev;
+  const acciones=pasos.filter(p=>p.t!=='IF'&&p.t!=='CALL').length;
+  if(!acciones){
+    SND.fx('error');
+    if(tr.fin==='limite') decir('Ese bucle no me hace moverme y nunca terminaría ♾️ Mete dentro bloques como «Avanzar».','mal');
+    else if(usaT('FN')&&!G.fn.length) decir('«Mi bloque» está vacío: toca «Mi bloque hace esto» y añade los pasos.','mal');
+    else decir('No hay ninguna orden que pueda hacer. Los bloques «Repetir» y «Si» necesitan órdenes dentro.','mal');
+    return;
+  }
   MANO.ocultar(); if(G.tuto) G.tuto=3;
   const id=++G.runId; G.corriendo=true; G.paso=!!modoPaso; G.sel=null; G.marca=null;
   renderPila(); estadoCtrl(); tab.reset();
@@ -2120,19 +2685,26 @@ async function ejecutar(modoPaso){
     const p=pasos[i];
     if(G.paso){ marcarBloque(p,'siguiente'); await esperarPaso(); if(!G||id!==G.runId) return; }
     marcarBloque(p,'exec');
+    if(p.t==='IF'||p.t==='CALL'){ await espera(Math.max(170,vel()*.65)); if(!G||id!==G.runId) return; continue; }
+    const ab=p.t==='F'&&G.lab.hset&&G.lab.hset.has((est.x+DX[est.d])+','+(est.y+DY[est.d]));
     const r=dar(est,p.t,G.lab);
-    if(r==='choque'){ SND.fx('choque'); vibrar(90); await tab.chocar(); return fin(id,'choque',p); }
+    if(r==='choque'){ SND.fx('choque'); vibrar(90); await tab.chocar(); return fin(id,'choque',p,ab); }
     if(p.t==='F'){ SND.fx('paso',i); await tab.mover(est.x,est.y,vel()); }
+    else if(p.t==='J'){ SND.fx('salto'); await tab.saltar(est.x,est.y,vel()); }
     else { SND.fx('giro',p.t==='R'); await tab.girar(p.t==='R',vel()); }
     if(!G||id!==G.runId) return;
     if(r==='meta') return victoria(id);
   }
-  fin(id,'fin');
+  fin(id,tr.fin==='limite'?'limite':'fin');
 }
-function fin(id,motivo,p){
+function fin(id,motivo,p,abismo){
   if(!G||id!==G.runId) return;
   G.corriendo=false; G.paso=false;
-  if(motivo==='choque'){ G.marca={id:p.id,cls:'choca'}; decir('¡Ay! Ahí no hay camino 💥 El bloque en rojo me hizo chocar. Cámbialo y vuelve a probar.','mal'); }
+  if(motivo==='choque'){ G.marca={id:p.id,cls:'choca'};
+    decir(abismo?'¡Cuidado, un abismo! 🕳️ Para cruzarlo hay que usar «Saltar» justo antes de él.'
+      :p.t==='J'?'Solo puedo saltar cuando delante hay un abismo 🕳️ y al otro lado hay camino. Revisa el bloque en rojo.'
+      :'¡Ay! Ahí no hay camino 💥 El bloque en rojo me hizo chocar. Cambialo y vuelve a probar.','mal'); }
+  else if(motivo==='limite'){ tab.dudar(); SND.fx('fallo'); decir('Llevo muchísimo rato y no llego nunca ♾️ Revisa tu «Repetir hasta llegar»: ¿me hace avanzar hacia la estrella?','mal'); }
   else { tab.dudar(); SND.fx('fallo'); decir('Se acabaron las órdenes y no he llegado a la estrella. ¡Te faltan bloques!','mal'); }
   renderPila(); estadoCtrl();
   if(G.modo==='inf'&&rachaSes>0){ toast('Has perdido la racha de '+rachaSes+' 😅'); rachaSes=0; pintarChips(); }
@@ -2150,14 +2722,18 @@ async function victoria(id){
   if(!G||id!==G.runId) return;
   G.corriendo=false; G.paso=false; renderPila(); estadoCtrl();
   CONFETI.lanzar(150);
-  const bl=contar(G.prog), par=G.lab.par, est=estrellas(bl,par), p=S.prog[G.mundo];
+  const bl=totalBloques(), par=G.lab.par, est=estrellas(bl,par), p=S.prog[G.mundo];
   if(G.tuto){ P.tutos.w1=true; guardarPrefs(); G.tuto=0; }
   if(G.modo==='fijo'){
-    const antes=p.s[G.idx], mejora=est>antes;
+    const antes=p.s[G.idx], mejora=est>antes, sig=MUNDOS[G.mundo];
+    const sigAbierto=sig?mundoAbierto(sig.id):true, completoAntes=mundoCompleto(G.mundo);
     if(mejora){ p.s[G.idx]=est; guardarPerfil(); programarSync(2500); }
+    const nuevoMundo=(sig&&!sigAbierto&&mundoAbierto(sig.id))?sig:null;
+    const finJuego=!sig&&!completoAntes&&mundoCompleto(G.mundo);
     pintarChips();
     decir(est===3?'¡Perfecto! ⭐⭐⭐ ¡Eres un genio de la programación!':'¡Lo conseguiste! ¿Te atreves a hacerlo con menos bloques?','bien');
-    modalVictoria(est,bl,par,mejora&&antes>0);
+    modalVictoria(est,bl,par,mejora&&antes>0,nuevoMundo,finJuego);
+    if(nuevoMundo||finJuego){ setTimeout(()=>{ SND.fx('logro'); CONFETI.lanzar(240); },900); }
   } else {
     rachaSes++; let rec=false;
     if(rachaSes>p.r){ p.r=rachaSes; rec=true; guardarPerfil(); programarSync(8000); }
@@ -2170,17 +2746,20 @@ async function victoria(id){
       botones:[{txt:'Siguiente laberinto',cls:'btn-ok',ico:ICO.play,fn:()=>arrancarJuego(G.mundo,'inf',0)},{txt:'Volver al mundo',cls:'btn-gris',ico:ICO.casa,fn:()=>history.back()}]});
   }
 }
-function modalVictoria(est,bl,par,mejora){
+function modalVictoria(est,bl,par,mejora,nuevoMundo,finJuego){
   const ult=G.idx>=RETOS-1;
   const txt=est===3?`¡Perfecto! Lo has hecho con <b>${bl}</b> ${bl===1?'bloque':'bloques'}.`:`Has usado <b>${bl}</b> bloques. Con <b>${par}</b> o menos consigues las 3 estrellas.`;
   const botones=[];
+  if(nuevoMundo) botones.push({txt:'Ir al Mundo '+nuevoMundo.id+': '+nuevoMundo.nombre,cls:'btn-oro',ico:ICO.mapa,fn:()=>{ const st={p:'mundo',params:{n:nuevoMundo.id}}; history.replaceState(st,''); mostrar(st); }});
   if(!ult) botones.push({txt:'Siguiente reto',cls:'btn-ok',ico:ICO.play,fn:()=>pasarA('fijo',G.idx+1)});
   else botones.push({txt:'¡Al modo infinito!',cls:'btn-pri',ico:ICO.dado,fn:()=>{ rachaSes=0; pasarA('inf',0); }});
   if(est<3) botones.push({txt:'Mejorar mi programa',cls:'btn-oro',ico:ICO.reiniciar,fn:()=>{ tab.reset(); decir(`Intenta llegar con ${par} bloques o menos. Puedes tocar un bloque para borrarlo.`,'pista'); }});
   else botones.push({txt:'Repetir este reto',cls:'btn-gris',ico:ICO.reiniciar,fn:()=>arrancarJuego(G.mundo,'fijo',G.idx)});
   botones.push({txt:'Volver al mundo',cls:'btn-gris',ico:ICO.casa,fn:()=>history.back()});
-  modal({titulo:est===3?'¡Increíble!':est===2?'¡Muy bien!':'¡Conseguido!',
-    html:`<div class="estrellas-grandes">${[0,1,2].map(i=>`<span class="e" data-i="${i}">${ICO.estrella}</span>`).join('')}</div><p>${txt}</p>${mejora?'<p>🎉 ¡Has mejorado tu marca!</p>':''}`,botones});
+  modal({titulo:finJuego?'¡Has terminado el juego!':est===3?'¡Increíble!':est===2?'¡Muy bien!':'¡Conseguido!',
+    html:`<div class="estrellas-grandes">${[0,1,2].map(i=>`<span class="e" data-i="${i}">${ICO.estrella}</span>`).join('')}</div><p>${txt}</p>${mejora?'<p>🎉 ¡Has mejorado tu marca!</p>':''}
+      ${nuevoMundo?`<div class="desbloqueo">🔓 ¡Has abierto el Mundo ${nuevoMundo.id}: ${nuevoMundo.nombre}!</div>`:''}
+      ${finJuego?'<div class="desbloqueo">🏆 ¡Has superado los 7 mundos de Código Siurot! Ahora puedes mejorar tus estrellas y batir tu racha en el modo infinito.</div>':''}`,botones});
   [0,1,2].forEach(i=>setTimeout(()=>{ const e=$(`#modal .e[data-i="${i}"]`); if(!e) return; if(i<est){ e.classList.add('on'); SND.fx('estrella',i); } else e.classList.add('gris'); },450+i*380));
 }
 function pasarA(modo,idx){
@@ -2191,33 +2770,53 @@ function pasarA(modo,idx){
 function resaltarPaleta(){ $$('#paleta .blk').forEach(b=>{ b.classList.add('resalta'); setTimeout(()=>b.classList.remove('resalta'),2400); }); }
 
 /* ---------- pistas ---------- */
+const NOMS = {F:'Avanzar', L:'Girar izq.', R:'Girar der.', J:'Saltar', FN:'Mi bloque'};
+function descNodo(n){
+  const l=a=>a.map(descNodo).join(', ');
+  if(n.t==='REP') return `Repetir ${n.n} veces [${l(n.body)}]`;
+  if(n.t==='UNT') return `Repetir hasta llegar [${l(n.body)}]`;
+  if(n.t==='IF') return `Si hay camino ${COND[n.c]} [${l(n.body)}]`+(n.otro.length?` si no [${l(n.otro)}]`:'');
+  return NOMS[n.t]||n.t;
+}
+function textoSolucion(){ const lab=G.lab; return lab.ref.map(descNodo).join(' → ')+(lab.refFn.length?' · y «Mi bloque» = '+lab.refFn.map(descNodo).join(' → '):''); }
+function pistaConcepto(){
+  const n=G.mundo, lab=G.lab;
+  if(n===4&&!usaT('IF')) return 'Los giros están en sitios distintos. Prueba: «Repetir» y dentro «Si hay camino a la izquierda → Girar izquierda», «Si hay camino a la derecha → Girar derecha» y «Avanzar».';
+  if(n===5&&!usaT('UNT')) return 'Prueba con «Repetir hasta llegar a la ⭐»: me paro solo al llegar y no hace falta contar nada.';
+  if(n===6&&!usaT('FN')) return 'Fíjate: hay un trozo de camino que se repite. Enséñalo una vez en «Mi bloque» y úsalo varias veces.';
+  if(n===6&&!G.fn.length) return '«Mi bloque» está vacío: toca «Mi bloque hace esto» (arriba) y añade los pasos del trozo que se repite.';
+  if(n===7&&lab.huecos.length&&!usaT('J')) return 'Hay un abismo 🕳️ en el camino: usa «Saltar» justo antes de él, mirando hacia el otro lado.';
+  return '';
+}
 function pista(){
   if(!G||G.corriendo) return;
   G.pistas++; SND.fx('pista');
-  const lab=G.lab, est={x:lab.ini.x,y:lab.ini.y,d:lab.ini.dir};
-  for(const p of aplanarInfo(G.prog)){
-    const r=dar(est,p.t,lab);
-    if(r==='choque'){ G.marca={id:p.id,cls:'marcado'}; renderPila(); scrollSuave(document.querySelector(`#pila [data-id="${p.id}"]`));
-      decir(`💡 Mira el bloque «${CORTO[p.t]}» que parpadea: con él me choco. Cámbialo o bórralo.`,'pista'); return; }
-    if(r==='meta'){
-      if(contar(G.prog)>lab.par) decir(G.mundo===3?`💡 ¡Tu programa funciona! Para ★★★ usa ${lab.par} bloques o menos: busca lo que se repite y mételo en «Repetir».`:`💡 ¡Tu programa funciona! Pero sobran bloques: con ${lab.par} es suficiente.`,'pista');
-      else decir('💡 ¡Tu programa ya funciona! Pulsa «¡Ejecutar!» y mira.','pista');
-      return;
-    }
+  const lab=G.lab, tr=trazaEjecucion(lab,G.prog,G.fn), total=totalBloques();
+  const sol=G.pistas>=3&&G.mundo>=3?` 🔎 Una solución posible: <b>${textoSolucion()}</b>`:'';
+  if(tr.fin==='choque'){ const e=tr.ev[tr.ev.length-1]; G.marca={id:e.id,cls:'marcado'}; renderPila(); scrollSuave(document.querySelector(`#pila [data-id="${e.id}"]`));
+    decir(`💡 Mira el bloque «${CORTO[e.t]}» que parpadea: con él me choco. Cámbialo o bórralo.`+sol,'pista'); return; }
+  if(tr.fin==='meta'){
+    if(total>lab.par) decir(G.mundo===3?`💡 ¡Tu programa funciona! Para ★★★ usa ${lab.par} bloques o menos: busca lo que se repite y mételo en «Repetir».`:`💡 ¡Tu programa funciona! Para ★★★ usa ${lab.par} bloques o menos.`+sol,'pista');
+    else decir('💡 ¡Tu programa ya funciona! Pulsa «¡Ejecutar!» y mira.','pista');
+    return;
   }
-  const k=lab.path.findIndex(([x,y])=>x===est.x&&y===est.y), sig=lab.path[k+1];
-  if(k<0||!sig) return;
-  const dn=[0,1,2,3].find(d=>est.x+DX[d]===sig[0]&&est.y+DY[d]===sig[1]);
-  const acc=dn===est.d?'F':dn===(est.d+1)%4?'R':dn===(est.d+3)%4?'L':'LL';
+  if(tr.fin==='limite'){ decir('💡 Tu programa no termina nunca ♾️ Mira si lo que hay dentro de «Repetir hasta llegar» me hace avanzar.'+sol,'pista'); return; }
+  const cp=pistaConcepto(); if(cp){ decir('💡 '+cp+sol,'pista'); return; }
+  const est=tr.est, k=lab.path.findIndex(([x,y])=>x===est.x&&y===est.y), sig=lab.path[k+1];
+  if(k<0||!sig){ decir('💡 Prueba con «Paso a paso» para ver qué hace cada bloque.'+sol,'pista'); return; }
+  let dn=[0,1,2,3].find(d=>est.x+DX[d]===sig[0]&&est.y+DY[d]===sig[1]), salto=false;
+  if(dn===undefined){ dn=[0,1,2,3].find(d=>est.x+2*DX[d]===sig[0]&&est.y+2*DY[d]===sig[1]); salto=true; }
+  const acc=dn===est.d?(salto?'J':'F'):dn===(est.d+1)%4?'R':dn===(est.d+3)%4?'L':'LL';
   tab.marca=sig; setTimeout(()=>{ if(tab) tab.marca=null; },4500);
   const pre=G.prog.length?'Después de tu programa, ':'Para empezar, ';
   const txt={F:`${pre}tengo el camino justo delante: añade «Avanzar».`,
+             J:`${pre}el camino sigue al otro lado de un abismo 🕳️: añade «Saltar».`,
              R:`${pre}el camino sigue a MI derecha (la derecha de Bit): añade «Girar derecha».`,
              L:`${pre}el camino sigue a MI izquierda (la izquierda de Bit): añade «Girar izquierda».`,
              LL:`${pre}tengo que darme la vuelta: gira dos veces.`}[acc];
   let extra='';
   if(G.mundo===3&&G.pistas>=2){ const rp=lab.ref.find(n=>n.t==='REP'); if(rp) extra=` Truco: «Repetir ${rp.n} veces» con ${rp.body.map(b=>'«'+CORTO[b.t]+'»').join(' + ')} dentro.`; }
-  decir('💡 '+txt+extra,'pista');
+  decir('💡 '+txt+extra+sol,'pista');
   const b=$(`#paleta [data-t="${acc==='LL'?'L':acc}"]`); if(b){ b.classList.add('resalta'); setTimeout(()=>b.classList.remove('resalta'),2600); }
 }
 
@@ -2260,13 +2859,18 @@ const ACC = {
   quitarSel(){ quitar(); },
   vaciar(){
     if(!G||G.corriendo) return;
-    if(!G.prog.length){ SND.fx('error'); return; }
-    const hacer=()=>{ G.prog.length=0; G.cur={arr:G.prog,i:0}; G.sel=null; G.marca=null; SND.fx('vaciar'); renderPila(); };
-    if(contar(G.prog)<3){ hacer(); return; }
+    if(!G.prog.length&&!G.fn.length){ SND.fx('error'); return; }
+    const hacer=()=>{ G.prog.length=0; G.fn.length=0; G.cur={arr:G.prog,i:0}; G.sel=null; G.marca=null; SND.fx('vaciar'); renderPila(); };
+    if(totalBloques()<3){ hacer(); return; }
     modal({titulo:'¿Borrar todo el programa?',robot:'sorpresa',cancelable:true,html:'<p>Se quitarán todos los bloques.</p>',botones:[{txt:'Sí, borrar todo',cls:'btn-rojo',ico:ICO.papelera,fn:hacer},{txt:'No, cancelar',cls:'btn-gris'}]});
   },
-  menos(b){ if(!G||G.corriendo) return; const r=buscar(G.prog,b.dataset.id); if(r&&r.nodo.n>2){ r.nodo.n--; SND.fx('add','L'); renderPila(); } else SND.fx('error'); },
-  mas(b){ if(!G||G.corriendo) return; const r=buscar(G.prog,b.dataset.id); if(r&&r.nodo.n<12){ r.nodo.n++; SND.fx('add','R'); renderPila(); } else SND.fx('error'); },
+  menos(b){ if(!G||G.corriendo) return; const r=buscarT(b.dataset.id); if(r&&r.nodo.n>2){ r.nodo.n--; SND.fx('add','L'); renderPila(); } else SND.fx('error'); },
+  mas(b){ if(!G||G.corriendo) return; const r=buscarT(b.dataset.id); if(r&&r.nodo.n<30){ r.nodo.n++; SND.fx('add','R'); renderPila(); } else SND.fx('error'); },
+  cond(b){ if(!G||G.corriendo) return; const r=buscarT(b.dataset.id); if(r&&r.nodo.t==='IF'){ r.nodo.c=b.dataset.c; G.marca=null; SND.fx('tap'); renderPila(); } },
+  cerrado(b){
+    SND.fx('error'); const n=+b.dataset.n; b.classList.remove('sacude'); void b.offsetWidth; b.classList.add('sacude');
+    toast('🔒 Pasa los 5 retos del Mundo '+(n-1)+' (al menos con ★) para abrir este mundo');
+  },
   run(){ if(!G) return; if(G.corriendo&&!G.paso){ SND.fx('tap'); parar(); } else ejecutar(false); },
   paso(){ if(!G) return; if(!G.corriendo) ejecutar(true); else if(G.paso) liberarPaso(); else { G.paso=true; estadoCtrl(); } },
   reiniciar(){ if(!G) return; SND.fx('whoosh'); if(G.corriendo) parar(false); else { G.marca=null; tab.reset(); renderPila(); } decir('¡De vuelta a la salida!'); },
@@ -2289,7 +2893,7 @@ document.addEventListener('keydown',e=>{
   if(modalAbierto()){ if(e.key==='Escape'&&modalCancelable) cerrarModal(); return; }
   if(vistaActual!=='juego'||!G) return;
   if(e.target.closest&&e.target.closest('input,textarea')) return;
-  const mapa={ArrowUp:'F',ArrowLeft:'L',ArrowRight:'R',r:'REP',R:'REP'};
+  const mapa={ArrowUp:'F',ArrowLeft:'L',ArrowRight:'R',ArrowDown:'J',r:'REP',R:'REP',s:'IF',S:'IF',h:'UNT',H:'UNT',m:'FN',M:'FN'};
   const k=e.key;
   if(mapa[k]){ e.preventDefault(); añadir(mapa[k]); }
   else if(k==='Backspace'||k==='Delete'){ e.preventDefault(); quitar(); }
