@@ -424,6 +424,8 @@ body>.fantasma{position:fixed!important;z-index:9999;pointer-events:none;opacity
 .stats{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:8px}
 .stat{background:#f4f2ff;border-radius:16px;padding:8px 14px;font-weight:600;color:var(--ink)}
 .stat b{color:var(--priD)}
+.mini-clave{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:7px;background:var(--b);box-shadow:inset 0 -3px 0 var(--bd);vertical-align:middle;margin:0 2px}
+.mini-clave svg{width:16px;height:16px;color:#fff;fill:currentColor}
 .bib-intro{text-align:center;font-weight:500;margin:4px 0 14px;color:var(--ink)}
 .bib{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;padding-bottom:30px}
 .bib-card{padding:16px 18px;display:flex;flex-direction:column;gap:6px;align-items:flex-start;border-top:6px solid var(--mc2,#999)}
@@ -591,6 +593,9 @@ const NIVELES = MUNDOS;
 const CORTO = {F:'Avanzar', L:'Girar izquierda', R:'Girar derecha', REP:'Repetir', J:'Saltar', IF:'Si', UNT:'Repetir hasta llegar', FN:'Mi bloque'};
 const LARGO = {F:'Avanzar', L:'Girar a la izquierda', R:'Girar a la derecha', REP:'Repetir', J:'Saltar un abismo', IF:'Si hay camino…', UNT:'Repetir hasta llegar a la estrella', FN:'Usar «Mi bloque»'};
 const TECLA = {F:'↑', L:'←', R:'→', J:'↓', REP:'R', IF:'S', UNT:'H', FN:'M'};
+// bloque nuevo de cada mundo: para ★★★ hay que usarlo
+const BLOQUE_CLAVE = {3:'REP', 4:'IF', 5:'UNT', 6:'FN', 7:'J'};
+const NOM_CLAVE = {REP:'«Repetir»', IF:'«Si»', UNT:'«Repetir hasta llegar»', FN:'«Mi bloque»', J:'«Saltar»'};
 const CONTENEDOR = {REP:1, IF:1, UNT:1};
 const MAX_ANIDADO = 3;          // un bloque con huecos puede ir dentro de otro, pero no más
 const HITOS_RACHA = [5,10,15,20,30,40,50,75,100];
@@ -2445,7 +2450,7 @@ const BIB=[
  {t:'L',w:1,txt:'Bit gira a la izquierda sin moverse de su casilla.',ej:()=>bq('F')+bq('L')+bq('F')},
  {t:'R',w:1,txt:'Bit gira a la derecha sin moverse de su casilla.',ej:()=>bq('F')+bq('R')+bq('F')},
  {t:'REP',w:3,txt:'Repite lo que metas dentro tantas veces como indiques con <b>+</b> y <b>−</b>. ¡Ahorras muchos bloques!',ej:()=>contEj('REP','<span>Repetir</span><span class="veces"><b>3</b></span><span>veces</span>',bq('F'))},
- {t:'IF',w:4,txt:'Bit mira a su alrededor y solo hace lo de dentro <b>si hay camino</b> hacia donde elijas (izquierda, delante o derecha). Lo de después del «Si» se hace siempre.',ej:()=>contEj('IF','<span class="etq">Si hay camino</span><span class="conds"><button class="on">mi derecha →</button></span>',bq('R'))+bq('F')},
+ {t:'IF',w:4,prac2:{i:3,t:'Practicar con giros a izquierda y derecha'},txt:'Bit mira a su alrededor y solo hace lo de dentro <b>si hay camino</b> hacia donde elijas (izquierda, delante o derecha). Lo de después del «Si» se hace siempre.',ej:()=>contEj('IF','<span class="etq">Si hay camino</span><span class="conds"><button class="on">mi derecha →</button></span>',bq('R'))+bq('F')},
  {t:'UNT',w:5,txt:'Repite sin contar las vueltas: Bit se para solo al llegar a la estrella ⭐.',ej:()=>contEj('UNT','<span class="etq">Repetir hasta llegar a la ⭐</span>',bq('F'),150)},
  {t:'FN',w:6,txt:'Inventas tu propio bloque: pones sus pasos en «Mi bloque hace esto» y lo usas todas las veces que quieras.',ej:()=>bq('FN')+bq('F')+bq('FN')},
  {t:'J',w:7,txt:'Bit salta un abismo 🕳️. Se usa justo antes del hueco, mirando hacia él.',ej:()=>bq('F')+bq('J')+bq('F')}
@@ -2457,7 +2462,7 @@ function vBiblio(){
      return ab?`<section class="panel bib-card" style="--mc2:${m.mc2};--mD:${m.mD}">
         <h3><span class="blk b-${b.t}" style="min-width:0"><span class="ico">${ICO[b.t]}</span>${LARGO[b.t]}</span></h3>
         <p>${b.txt}</p><div class="ejemplo-rep"><div class="col">${b.ej()}</div></div>
-        <button class="btn btn-ok" data-acc="bibprac" data-w="${b.w}">🧭<span>Practicar paso a paso</span></button>
+        <button class="btn btn-ok" data-acc="bibprac" data-w="${b.w}">🧭<span>Practicar paso a paso</span></button>${b.prac2?`<button class="btn btn-ok" data-acc="bibprac" data-w="${b.w}" data-i="${b.prac2.i}">🧭<span>${b.prac2.t}</span></button>`:''}
         <small>Mundo ${b.w} · ${m.nombre}</small></section>`
        :`<section class="panel bib-card cerrado"><h3><span class="blk b-${b.t}" style="min-width:0"><span class="ico">${ICO[b.t]}</span>¿?</span></h3>
         <p>🔒 Se desbloquea en el <b>Mundo ${b.w}: ${m.nombre}</b>.</p></section>`; }).join('')}</div>`;
@@ -2537,7 +2542,7 @@ function arrancarJuego(mundo,modo,idx,guia){
 function chipsJuego(){
   const p=S.prog[G.mundo];
   return G.modo==='fijo'
-    ? `<span class="chip oro ocultable" id="chipEst">${[0,1,2].map(k=>k<p.s[G.idx]?ICO.estrella:ICO.estrellaG).join('')}</span><span class="chip" id="chipMeta" title="Para conseguir 3 estrellas">${ICO.diana} ★★★ con ${G.lab.par} bloques o menos</span>`
+    ? `<span class="chip oro ocultable" id="chipEst">${[0,1,2].map(k=>k<p.s[G.idx]?ICO.estrella:ICO.estrellaG).join('')}</span><span class="chip" id="chipMeta" title="Para conseguir 3 estrellas">${ICO.diana} ★★★ con ${BLOQUE_CLAVE[G.mundo]?`<span class="mini-clave b-${BLOQUE_CLAVE[G.mundo]}" title="Usa ${NOM_CLAVE[BLOQUE_CLAVE[G.mundo]]}">${ICO[BLOQUE_CLAVE[G.mundo]]}</span> y `:''}${G.lab.par} bloques o menos</span>`
     : `<span class="chip fuego" id="chipRacha">${ICO.fuego} Racha: <b>${rachaSes}</b></span><span class="chip ocultable">🏆 Récord: ${p.r}</span>`;
 }
 function pintarChips(){ const e=$('.barra .extra'); if(!e||!G) return; e.innerHTML=chipsJuego(); }
@@ -2567,7 +2572,7 @@ function renderJuego(){
       <button class="btn mini" id="bpaso" data-acc="paso" title="Ejecutar una orden cada vez">${ICO.paso}<span>Paso a paso</span></button>
       <button class="btn mini" data-acc="reiniciar" title="Volver a la salida">${ICO.reiniciar}<span>Reiniciar</span></button>
       <button class="btn mini" id="bvel" data-acc="vel" title="Velocidad"><span class="em">${VELOCIDADES[P.vel].em}</span><span>${VELOCIDADES[P.vel].n}</span></button>
-      ${G.modo==='fijo'&&G.idx===0?`<button class="btn mini" data-acc="guia" title="Te guío paso a paso"><span class="em">🧭</span><span>Guíame</span></button>`:''}
+      ${G.modo==='fijo'&&(G.idx===0||(G.mundo===4&&G.idx===3))?`<button class="btn mini" data-acc="guia" title="Te guío paso a paso"><span class="em">🧭</span><span>Guíame</span></button>`:''}
       <button class="btn mini" data-acc="pista" title="Pedir una pista">${ICO.pista}<span>Pista</span></button>
       ${G.modo==='inf'?`<button class="btn mini" data-acc="otro" title="Otro laberinto">${ICO.dado}<span>Otro</span></button>`:''}
     </section>
@@ -2577,10 +2582,10 @@ function renderJuego(){
   let txt;
   if(G.modo==='inf') txt=rachaSes?`¡Laberinto nuevo! Llevas una racha de ${rachaSes} 🔥 ¡A por más!`:'Modo infinito: cada laberinto es nuevo. ¡Consigue la racha más larga!';
   else if(G.idx===0) txt=M.intro;
-  else txt=`Reto ${G.idx+1}. Llévame hasta la estrella. Para ★★★ usa ${G.lab.par} bloques o menos.`;
+  else txt=`Reto ${G.idx+1}. Llévame hasta la estrella. Para ★★★ usa ${BLOQUE_CLAVE[G.mundo]?NOM_CLAVE[BLOQUE_CLAVE[G.mundo]]+' y ':''}${G.lab.par} bloques o menos.`;
   decir(txt);
   if(G.guiaIni) setTimeout(()=>{ if(G&&!G.corriendo) iniciarGuia(); },600);
-  else if(G.modo==='fijo'&&G.idx===0&&G.mundo>=3&&!P.tutos['g'+G.mundo]){ P.tutos['g'+G.mundo]=true; guardarPrefs(); setTimeout(()=>{ if(G&&!G.corriendo&&!G.prog.length) iniciarGuia(); },900); }
+  else if(G.modo==='fijo'&&((G.idx===0&&G.mundo>=3&&!P.tutos['g'+G.mundo])||(G.mundo===4&&G.idx===3&&!P.tutos.g4b))){ P.tutos[G.idx===3?'g4b':'g'+G.mundo]=true; guardarPrefs(); setTimeout(()=>{ if(G&&!G.corriendo&&!G.prog.length) iniciarGuia(); },900); }
   if(G.mundo===1&&G.modo==='fijo'&&G.idx===0&&!P.tutos.w1){ G.tuto=1; setTimeout(()=>{ if(G&&G.tuto===1) MANO.mostrar('#paleta [data-t="F"]'); },700); }
 }
 function decir(txt,tipo){
@@ -2608,6 +2613,7 @@ const enFn = arr => { if(arr===G.fn) return true; if(arr===G.prog) return false;
 const contieneArr = (nodo,arr) => hijos(nodo).some(h=>h===arr||h.some(m=>contieneArr(m,arr)));
 const usa = (arr,t) => arr.some(n=>n.t===t||hijos(n).some(h=>usa(h,t)));
 const usaT = t => usa(G.prog,t)||usa(G.fn,t);
+const claveFalta = () => { const t=BLOQUE_CLAVE[G.mundo]; return t&&!usaT(t)?t:null; };
 const ETQ_COND = {izq:'← mi izquierda', del:'↑ delante', der:'mi derecha →'};
 
 // mantener pulsado + o − sube o baja rápido
@@ -2846,7 +2852,7 @@ function guiaFalta(ref,cur,ctx){
     const r=ref[i], c=cur[i];
     if(!c) return {a:'add',arr:cur,i,t:r.t,ctx};
     if(c.t!==r.t) return {a:'mal',nodo:c};
-    if(r.t==='REP'&&c.n!==r.n) return {a:'veces',nodo:c,n:r.n};
+    if(r.t==='REP'&&c.n<r.n) return {a:'veces',nodo:c,n:r.n};
     if(r.t==='IF'&&c.c!==r.c) return {a:'cond',nodo:c,c:r.c};
     if(CONTENEDOR[r.t]){
       let x=guiaFalta(r.body,c.body,{cont:NOMBRE_CONT[r.t],nodo:c,p:'b'}); if(x) return x;
@@ -2865,12 +2871,17 @@ function guiaPaso(){
   let msg, sel;
   if(!x){ msg='🎉 ¡Programa completo! Ahora pulsa <b>¡Ejecutar!</b> y mira cómo lo hago.'; sel='#brun'; }
   else if(x.a==='mal'){ msg='Este bloque no hace falta aquí. Toca la <b>×</b> para quitarlo (o arrástralo a la caja de bloques) y sigue.'; sel=selNodo(x.nodo); if(G.sel!==x.nodo.id){ /* se señala pero no se toca */ } }
-  else if(x.a==='veces'){ const mas=x.n>x.nodo.n; msg=`Pon <b>${x.n}</b> vueltas con los botones <b>+</b> y <b>−</b> (ahora hay ${x.nodo.n}). Mantén pulsado para ir más rápido.`; sel=`#pila [data-cab="${x.nodo.id}"] [data-acc="${mas?'mas':'menos'}"]`; }
+  else if(x.a==='veces'){ const mas=true; msg=`Pon <b>${x.n}</b> vueltas (o más) con los botones <b>+</b> y <b>−</b> (ahora hay ${x.nodo.n}). <b>Mantén pulsado</b> el + para subir rápido.`; sel=`#pila [data-cab="${x.nodo.id}"] [data-acc="${mas?'mas':'menos'}"]`; }
   else if(x.a==='cond'){ msg=`Elige hacia dónde mira el «Si»: <b>${ETQ_COND[x.c]}</b>. Quiere decir «si hay camino ${COND_FRASE[x.c]}».`; sel=`#pila .conds [data-id="${x.nodo.id}"][data-c="${x.c}"]`; }
   else { // añadir
     const cursorOk=G.cur.arr===x.arr&&G.cur.i===x.i;
     const donde=x.ctx.cont?` <i>(dentro de «${x.ctx.cont}»)</i>`:'';
-    if(cursorOk){ msg=`Toca ${TXT_ADD[x.t]} en la caja de bloques${donde}.${EXPL[x.t]?`<br><small>${EXPL[x.t]}</small>`:''}`; sel=`#paleta [data-t="${x.t}"]`; }
+    if(cursorOk){
+      const prev=x.i>0?x.arr[x.i-1]:null; let ex=EXPL[x.t]||'';
+      if(x.t==='IF'&&prev&&prev.t==='IF') ex='Un segundo «Si» vigila el <b>otro lado</b>: así Bit gira hacia donde haya camino, sea izquierda o derecha.';
+      else if(x.t==='F'&&prev&&prev.t==='IF') ex='«Avanzar» va <b>fuera</b> de los «Si»: Bit avanza siempre, y los «Si» solo deciden si gira antes.';
+      else if(x.t==='REP'&&G.mundo===4&&G.idx===3&&!G.prog.length) ex='Este camino tiene giros a <b>los dos lados</b>: usaremos <b>dos «Si»</b> dentro del Repetir. Pon muchas vueltas: Bit se para solo al llegar.';
+      msg=`Toca ${TXT_ADD[x.t]} en la caja de bloques${donde}.${ex?`<br><small>${ex}</small>`:''}`; sel=`#paleta [data-t="${x.t}"]`; }
     else if(x.i>0){ const p=x.arr[x.i-1];
       msg=CONTENEDOR[p.t]?`Ahora quiero seguir <b>fuera</b> de «${NOMBRE_CONT[p.t]}», debajo de él. Toca su <b>franja de color</b> (arriba) para poner ahí el cursor.`:`Toca el bloque ${TXT_ADD[p.t]} para poner el cursor justo después de él.`;
       sel=selNodo(p); }
@@ -2972,7 +2983,7 @@ async function victoria(id){
   if(!G||id!==G.runId) return;
   G.corriendo=false; G.paso=false; renderPila(); estadoCtrl();
   CONFETI.lanzar(150);
-  const bl=totalBloques(), par=G.lab.par, est=estrellas(bl,par), p=S.prog[G.mundo];
+  const bl=totalBloques(), par=G.lab.par, sinClave=claveFalta(), est=Math.min(estrellas(bl,par),sinClave?2:3), p=S.prog[G.mundo];
   if(G.tuto){ P.tutos.w1=true; guardarPrefs(); G.tuto=0; }
   if(G.modo==='fijo'){
     const antes=p.s[G.idx], mejora=est>antes, sig=MUNDOS[G.mundo];
@@ -2997,13 +3008,13 @@ async function victoria(id){
   }
 }
 function modalVictoria(est,bl,par,mejora,nuevoMundo,finJuego){
-  const ult=G.idx>=RETOS-1;
-  const txt=est===3?`¡Perfecto! Lo has hecho con <b>${bl}</b> ${bl===1?'bloque':'bloques'}.`:`Has usado <b>${bl}</b> bloques. Con <b>${par}</b> o menos consigues las 3 estrellas.`;
+  const ult=G.idx>=RETOS-1, sinClave=claveFalta();
+  const txt=sinClave?`¡Funciona! Pero para las 3 estrellas tienes que usar el bloque nuevo <b>${NOM_CLAVE[sinClave]}</b> (y ${par} bloques o menos). ¡Para eso está!`:est===3?`¡Perfecto! Lo has hecho con <b>${bl}</b> ${bl===1?'bloque':'bloques'}.`:`Has usado <b>${bl}</b> bloques. Con <b>${par}</b> o menos consigues las 3 estrellas.`;
   const botones=[];
   if(nuevoMundo) botones.push({txt:'Ir al Mundo '+nuevoMundo.id+': '+nuevoMundo.nombre,cls:'btn-oro',ico:ICO.mapa,fn:()=>{ const st={p:'mundo',params:{n:nuevoMundo.id}}; history.replaceState(st,''); mostrar(st); }});
   if(!ult) botones.push({txt:'Siguiente reto',cls:'btn-ok',ico:ICO.play,fn:()=>pasarA('fijo',G.idx+1)});
   else botones.push({txt:'¡Al modo infinito!',cls:'btn-pri',ico:ICO.dado,fn:()=>{ rachaSes=0; pasarA('inf',0); }});
-  if(est<3) botones.push({txt:'Mejorar mi programa',cls:'btn-oro',ico:ICO.reiniciar,fn:()=>{ tab.reset(); decir(`Intenta llegar con ${par} bloques o menos. Puedes tocar un bloque para borrarlo.`,'pista'); }});
+  if(est<3) botones.push({txt:'Mejorar mi programa',cls:'btn-oro',ico:ICO.reiniciar,fn:()=>{ tab.reset(); decir(sinClave?`Usa ${NOM_CLAVE[sinClave]} y llega con ${par} bloques o menos.`:`Intenta llegar con ${par} bloques o menos. Puedes tocar un bloque para borrarlo.`,'pista'); }});
   else botones.push({txt:'Repetir este reto',cls:'btn-gris',ico:ICO.reiniciar,fn:()=>arrancarJuego(G.mundo,'fijo',G.idx)});
   botones.push({txt:'Volver al mundo',cls:'btn-gris',ico:ICO.casa,fn:()=>history.back()});
   modal({titulo:finJuego?'¡Has terminado el juego!':est===3?'¡Increíble!':est===2?'¡Muy bien!':'¡Conseguido!',
@@ -3046,7 +3057,9 @@ function pista(){
   if(tr.fin==='choque'){ const e=tr.ev[tr.ev.length-1]; G.marca={id:e.id,cls:'marcado'}; renderPila(); scrollSuave(document.querySelector(`#pila [data-id="${e.id}"]`));
     decir(`💡 Mira el bloque «${CORTO[e.t]}» que parpadea: con él me choco. Cámbialo o bórralo.`+sol,'pista'); return; }
   if(tr.fin==='meta'){
-    if(total>lab.par) decir(G.mundo===3?`💡 ¡Tu programa funciona! Para ★★★ usa ${lab.par} bloques o menos: busca lo que se repite y mételo en «Repetir».`:`💡 ¡Tu programa funciona! Para ★★★ usa ${lab.par} bloques o menos.`+sol,'pista');
+    const sc=claveFalta();
+    if(sc) decir(`💡 ¡Tu programa funciona! Pero para ★★★ usa el bloque nuevo ${NOM_CLAVE[sc]}: con él necesitas ${lab.par} bloques o menos.`+sol,'pista');
+    else if(total>lab.par) decir(G.mundo===3?`💡 ¡Tu programa funciona! Para ★★★ usa ${lab.par} bloques o menos: busca lo que se repite y mételo en «Repetir».`:`💡 ¡Tu programa funciona! Para ★★★ usa ${lab.par} bloques o menos.`+sol,'pista');
     else decir('💡 ¡Tu programa ya funciona! Pulsa «¡Ejecutar!» y mira.','pista');
     return;
   }
@@ -3092,7 +3105,7 @@ const ACC = {
   salir2(){ SND.fx('whoosh'); cerrarSesion(); ir('home',{},true); },
   hof(){ SND.fx('tap'); ir('hof'); },
   biblio(){ SND.fx('tap'); ir('biblio'); },
-  bibprac(b){ SND.fx('tap'); ir('juego',{mundo:+b.dataset.w,modo:'fijo',idx:0,guia:1}); },
+  bibprac(b){ SND.fx('tap'); ir('juego',{mundo:+b.dataset.w,modo:'fijo',idx:+(b.dataset.i||0),guia:1}); },
   hofnivel(b){ SND.fx('tap'); hofSt.n=+b.dataset.n; pintarHofBase(); cargarHof(); },
   hoftipo(b){ SND.fx('tap'); hofSt.tipo=b.dataset.t; pintarHofBase(); cargarHof(); },
   hofambito(b){ SND.fx('tap'); hofSt.a=b.dataset.a; pintarHofBase(); cargarHof(); },
