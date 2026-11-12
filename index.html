@@ -270,6 +270,8 @@ body.en-juego #app{height:100vh;height:100dvh;padding-bottom:12px}
 .burbuja .avatar{width:52px;height:52px;flex:none;animation:flota 2.6s ease-in-out infinite}
 .burbuja .txt{flex:1;font-weight:500;font-size:1.06rem;line-height:1.3}
 .burbuja.bien{background:#dcfce7} .burbuja.mal{background:#ffe4e6} .burbuja.pista{background:#fef9c3}
+.burbuja.tuto{background:#eef2ff;box-shadow:0 0 0 3px #c7d2fe,var(--sombra)}
+.burbuja .guia-x{display:inline-block;margin-left:6px;border:0;background:transparent;color:var(--ink2);font:600 .78rem var(--font);text-decoration:underline;cursor:pointer;padding:2px 4px}
 .burbuja.pop{animation:pop .35s cubic-bezier(.2,.9,.3,1.5)}
 @keyframes pop{0%{transform:scale(.94)}60%{transform:scale(1.02)}}
 .btn-voz{width:44px;height:44px;border-radius:50%;border:0;background:#efeaff;color:var(--priD);cursor:pointer;display:grid;place-items:center;flex:none}
@@ -284,6 +286,19 @@ body.sin-voz .btn-voz{display:none}
 .paleta .blk:hover{transform:translateX(4px)}
 .paleta .blk:active{transform:scale(.96)}
 .paleta .blk.off{opacity:.4;filter:grayscale(.5)}
+.caja-limites{margin:6px 14px 8px;font-size:.82rem;color:var(--ink2);line-height:1.35}
+body.arrastrando-body{user-select:none;-webkit-user-select:none;cursor:grabbing}
+#pila .blk[data-id],#pila .rep-cab,#paleta .blk{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#pila .blk[data-id],#pila .rep-cab{cursor:grab}
+body>.fantasma{position:fixed!important;z-index:9999;pointer-events:none;opacity:.92;transform:rotate(-2deg) scale(1.04);filter:drop-shadow(0 10px 14px rgba(31,27,77,.35));margin:0}
+.fantasma.no{opacity:.5;filter:grayscale(.7)}
+.fantasma .blk{min-width:0}
+.arrastrado{opacity:.28}
+.drop-ind{width:210px;max-width:100%;height:8px;border-radius:8px;background:var(--pri);margin:4px 0;box-shadow:0 0 0 3px rgba(109,74,255,.2),0 0 14px rgba(109,74,255,.6)}
+.rep-cuerpo.drop-ok,.sino-mini.drop-ok{outline:3px dashed var(--pri);outline-offset:2px}
+.zona-caja.borrar{transition:box-shadow .15s}
+.zona-caja.borrar-on{box-shadow:0 0 0 4px var(--bad),0 0 24px rgba(244,63,94,.5);background:#fff1f3}
+.zona-caja.borrar-on h3::after{content:" 🗑️ suelta para borrar"}
 .caja-ayuda{margin:auto 14px 14px;font-size:.85rem;color:var(--ink2);background:#f6f4ff;border-radius:14px;padding:10px 12px}
 .caja-ayuda kbd{font:600 .8rem var(--font);background:#fff;border:2px solid var(--linea);border-bottom-width:3px;border-radius:6px;padding:0 5px}
 
@@ -409,6 +424,13 @@ body.sin-voz .btn-voz{display:none}
 .stats{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:8px}
 .stat{background:#f4f2ff;border-radius:16px;padding:8px 14px;font-weight:600;color:var(--ink)}
 .stat b{color:var(--priD)}
+.bib-intro{text-align:center;font-weight:500;margin:4px 0 14px;color:var(--ink)}
+.bib{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;padding-bottom:30px}
+.bib-card{padding:16px 18px;display:flex;flex-direction:column;gap:6px;align-items:flex-start;border-top:6px solid var(--mc2,#999)}
+.bib-card h3{margin:0 0 2px}.bib-card p{margin:0;line-height:1.35}
+.bib-card .ejemplo-rep{justify-content:flex-start;width:100%;background:#f6f4ff;border-radius:14px;padding:10px 12px;margin:6px 0}
+.bib-card small{color:var(--ink2)}
+.bib-card.cerrado{opacity:.6;filter:grayscale(.6);border-top-color:#aaa}
 .ejemplo-rep{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin:10px 0}
 .ejemplo-rep .col{display:flex;flex-direction:column;gap:4px;align-items:flex-start}
 .ejemplo-rep .blk{min-height:40px;font-size:.92rem;padding:6px 12px 9px;cursor:default;min-width:0}
@@ -570,7 +592,7 @@ const CORTO = {F:'Avanzar', L:'Girar izquierda', R:'Girar derecha', REP:'Repetir
 const LARGO = {F:'Avanzar', L:'Girar a la izquierda', R:'Girar a la derecha', REP:'Repetir', J:'Saltar un abismo', IF:'Si hay camino…', UNT:'Repetir hasta llegar a la estrella', FN:'Usar «Mi bloque»'};
 const TECLA = {F:'↑', L:'←', R:'→', J:'↓', REP:'R', IF:'S', UNT:'H', FN:'M'};
 const CONTENEDOR = {REP:1, IF:1, UNT:1};
-const MAX_ANIDADO = 2;          // un bloque con huecos puede ir dentro de otro, pero no más
+const MAX_ANIDADO = 3;          // un bloque con huecos puede ir dentro de otro, pero no más
 const HITOS_RACHA = [5,10,15,20,30,40,50,75,100];
 
 // ==== LOGICA ====
@@ -2192,8 +2214,9 @@ function mostrar(st){
   if(st.p==='login') vLogin();
   else if(st.p==='mapa') vMapa();
   else if(st.p==='mundo') vMundo(pr.n|0);
-  else if(st.p==='juego') arrancarJuego(pr.mundo|0,pr.modo,pr.idx|0);
+  else if(st.p==='juego') arrancarJuego(pr.mundo|0,pr.modo,pr.idx|0,pr.guia);
   else if(st.p==='hof') vHof();
+  else if(st.p==='biblio') vBiblio();
   else { vistaActual='home'; vHome(); }
   vista.classList.remove('entra'); void vista.offsetWidth; vista.classList.add('entra');
   window.scrollTo(0,0);
@@ -2268,10 +2291,12 @@ function vHome(){
       ${u?`<div class="saludo">¡Hola, <b>${esc(primerNombre(u.nombre))}</b>! · ${esc(u.clase)}</div>
         <button class="btn btn-ok grande" data-acc="jugar">${ICO.play}<span>Jugar</span></button>
         <button class="btn btn-oro" data-acc="hof">${ICO.trofeo}<span>Salón de la fama</span></button>
+        <button class="btn btn-pri" data-acc="biblio">📚<span>Biblioteca de bloques</span></button>
         <button class="btn btn-gris" data-acc="salir">${ICO.salir}<span>Salir</span></button>`
       :`<button class="btn btn-ok grande" data-acc="libre">${ICO.play}<span>Jugar sin entrar</span></button>
         <button class="btn btn-pri" data-acc="login">${ICO.llave}<span>Entrar con mi usuario</span></button>
         <button class="btn btn-oro" data-acc="hof">${ICO.trofeo}<span>Salón de la fama</span></button>
+        <button class="btn btn-pri" data-acc="biblio">📚<span>Biblioteca de bloques</span></button>
         <p class="nota">Si juegas sin entrar, tu progreso se guarda solo en este ordenador y no apareces en el Salón de la fama.</p>`}
       <button class="btn btn-gris" data-acc="instalar" id="binst"${(esApp()||!(avisoInstalar||esIOS()))?' hidden':''}>📲<span>Instalar la app</span></button>
     </div>
@@ -2331,6 +2356,7 @@ function vMapa(){
   `<div class="resumen"><span class="chip oro">${ICO.estrella} ${total} / ${max}</span><span class="chip fuego">${ICO.fuego} Mejor racha: ${mejor}</span>
    ${u?`<span class="chip">${ICO.usuario} ${esc(u.usuario)} · ${esc(u.clase)}</span><span class="chip nube-estado"></span>`:'<span class="chip">Modo libre</span>'}</div>
    <div class="mundos">${MUNDOS.map(tarjetaMundo).join('')}</div>
+   <div style="text-align:center;margin-bottom:10px"><button class="btn btn-pri" data-acc="biblio">📚<span>Biblioteca de bloques</span></button></div>
    <div style="text-align:center">${u?'<button class="enlace" data-acc="salir2">Cerrar sesión</button>':'<button class="enlace" data-acc="borrar">Borrar mi progreso de este ordenador</button>'}</div>`;
   pintarNube();
 }
@@ -2411,6 +2437,32 @@ function introRepetir(){
 }
 
 /* =========================================================
+   BIBLIOTECA DE BLOQUES
+   ========================================================= */
+const BIB=[
+ {t:'F',w:1,txt:'Bit da un paso hacia delante.',ej:()=>bq('F')},
+ {t:'L',w:1,txt:'Bit gira a la izquierda sin moverse de su casilla.',ej:()=>bq('F')+bq('L')+bq('F')},
+ {t:'R',w:1,txt:'Bit gira a la derecha sin moverse de su casilla.',ej:()=>bq('F')+bq('R')+bq('F')},
+ {t:'REP',w:3,txt:'Repite lo que metas dentro tantas veces como indiques con <b>+</b> y <b>−</b>. ¡Ahorras muchos bloques!',ej:()=>contEj('REP','<span>Repetir</span><span class="veces"><b>3</b></span><span>veces</span>',bq('F'))},
+ {t:'IF',w:4,txt:'Bit mira a su alrededor y solo hace lo de dentro <b>si hay camino</b> hacia donde elijas (izquierda, delante o derecha). Lo de después del «Si» se hace siempre.',ej:()=>contEj('IF','<span class="etq">Si hay camino</span><span class="conds"><button class="on">mi derecha →</button></span>',bq('R'))+bq('F')},
+ {t:'UNT',w:5,txt:'Repite sin contar las vueltas: Bit se para solo al llegar a la estrella ⭐.',ej:()=>contEj('UNT','<span class="etq">Repetir hasta llegar a la ⭐</span>',bq('F'),150)},
+ {t:'FN',w:6,txt:'Inventas tu propio bloque: pones sus pasos en «Mi bloque hace esto» y lo usas todas las veces que quieras.',ej:()=>bq('FN')+bq('F')+bq('FN')},
+ {t:'J',w:7,txt:'Bit salta un abismo 🕳️. Se usa justo antes del hueco, mirando hacia él.',ej:()=>bq('F')+bq('J')+bq('F')}
+];
+function vBiblio(){
+  vista.innerHTML=barra('<span class="pill">📚 Biblioteca de bloques</span>')+
+  `<p class="bib-intro">Aquí tienes todos los bloques que has desbloqueado. Pulsa <b>Practicar</b> y Bit te enseñará, paso a paso, cómo usarlo.</p>
+   <div class="bib">${BIB.map(b=>{ const m=MUNDOS[b.w-1], ab=mundoAbierto(b.w);
+     return ab?`<section class="panel bib-card" style="--mc2:${m.mc2};--mD:${m.mD}">
+        <h3><span class="blk b-${b.t}" style="min-width:0"><span class="ico">${ICO[b.t]}</span>${LARGO[b.t]}</span></h3>
+        <p>${b.txt}</p><div class="ejemplo-rep"><div class="col">${b.ej()}</div></div>
+        <button class="btn btn-ok" data-acc="bibprac" data-w="${b.w}">🧭<span>Practicar paso a paso</span></button>
+        <small>Mundo ${b.w} · ${m.nombre}</small></section>`
+       :`<section class="panel bib-card cerrado"><h3><span class="blk b-${b.t}" style="min-width:0"><span class="ico">${ICO[b.t]}</span>¿?</span></h3>
+        <p>🔒 Se desbloquea en el <b>Mundo ${b.w}: ${m.nombre}</b>.</p></section>`; }).join('')}</div>`;
+}
+
+/* =========================================================
    SALÓN DE LA FAMA
    ========================================================= */
 let hofSt={n:1,a:'todo',tipo:'est'};
@@ -2470,7 +2522,7 @@ function detenerJuego(){
   if(G){ G.runId++; liberarPaso(); }
   if(tab){ tab.parar(); tab=null; }
 }
-function arrancarJuego(mundo,modo,idx){
+function arrancarJuego(mundo,modo,idx,guia){
   const M=MUNDOS[mundo-1]; if(!M||!mundoAbierto(mundo)){ ir('mapa',{},true); return; }
   modo=modo==='inf'?'inf':'fijo'; idx=clamp(idx|0,0,RETOS-1);
   const num=(G&&G.modo==='inf'&&modo==='inf'&&G.mundo===mundo)?G.num+1:1;
@@ -2478,7 +2530,7 @@ function arrancarJuego(mundo,modo,idx){
   const semilla=modo==='fijo'?hashStr('N'+mundo+'R'+idx):(Math.random()*4294967296)>>>0;
   const lab=generar(mundo,modo==='fijo'?idx:-1,mulberry32(semilla));
   G={mundo,modo,idx,lab,prog:[],fn:[],cur:null,sel:null,corriendo:false,runId:0,paso:false,resolverPaso:null,pistas:0,nuevo:null,marca:null,num,tuto:0,msg:''};
-  G.cur={arr:G.prog,i:0};
+  G.cur={arr:G.prog,i:0}; G.guiaIni=!!guia;
   renderJuego();
 }
 function chipsJuego(){
@@ -2500,6 +2552,7 @@ function renderJuego(){
     </section>
     <section class="zona-caja panel"><h3>🧰 Bloques</h3>
       <div class="paleta${M.bloques.length>5?' muchos':''}" id="paleta">${M.bloques.map(t=>`<button class="blk b-${t}" data-acc="add" data-t="${t}" title="${LARGO[t]}"><span class="ico">${ICO[t]}</span><span>${CORTO[t]}</span><span class="tecla">${TECLA[t]}</span></button>`).join('')}</div>
+      <div class="caja-limites">👆 Toca o <b>arrastra</b> los bloques, también dentro de «Mi programa». Soltarlos aquí los borra.<br>Sin límite por tipo: máx. <b>${MAX_BLOQUES}</b> bloques en total${M.bloques.some(t=>CONTENEDOR[t])?` y ${MAX_ANIDADO} niveles de «Repetir»/«Si» uno dentro de otro`:''}.</div>
       <div class="caja-ayuda">Con teclado: ${M.bloques.map(t=>`<kbd>${TECLA[t]}</kbd>`).join(' ')} añaden bloques, <kbd>⌫</kbd> borra y <kbd>Intro</kbd> ejecuta.</div>
     </section>
     <section class="zona-prog panel">
@@ -2513,6 +2566,7 @@ function renderJuego(){
       <button class="btn mini" id="bpaso" data-acc="paso" title="Ejecutar una orden cada vez">${ICO.paso}<span>Paso a paso</span></button>
       <button class="btn mini" data-acc="reiniciar" title="Volver a la salida">${ICO.reiniciar}<span>Reiniciar</span></button>
       <button class="btn mini" id="bvel" data-acc="vel" title="Velocidad"><span class="em">${VELOCIDADES[P.vel].em}</span><span>${VELOCIDADES[P.vel].n}</span></button>
+      ${G.modo==='fijo'&&G.idx===0?`<button class="btn mini" data-acc="guia" title="Te guío paso a paso"><span class="em">🧭</span><span>Guíame</span></button>`:''}
       <button class="btn mini" data-acc="pista" title="Pedir una pista">${ICO.pista}<span>Pista</span></button>
       ${G.modo==='inf'?`<button class="btn mini" data-acc="otro" title="Otro laberinto">${ICO.dado}<span>Otro</span></button>`:''}
     </section>
@@ -2524,10 +2578,12 @@ function renderJuego(){
   else if(G.idx===0) txt=M.intro;
   else txt=`Reto ${G.idx+1}. Llévame hasta la estrella. Para ★★★ usa ${G.lab.par} bloques o menos.`;
   decir(txt);
+  if(G.guiaIni) setTimeout(()=>{ if(G&&!G.corriendo) iniciarGuia(); },600);
+  else if(G.modo==='fijo'&&G.idx===0&&G.mundo>=3&&!P.tutos['g'+G.mundo]){ P.tutos['g'+G.mundo]=true; guardarPrefs(); setTimeout(()=>{ if(G&&!G.corriendo&&!G.prog.length) iniciarGuia(); },900); }
   if(G.mundo===1&&G.modo==='fijo'&&G.idx===0&&!P.tutos.w1){ G.tuto=1; setTimeout(()=>{ if(G&&G.tuto===1) MANO.mostrar('#paleta [data-t="F"]'); },700); }
 }
 function decir(txt,tipo){
-  if(!G) return; G.msg=txt;
+  if(!G) return; if(G.tt&&tipo!=='tuto'&&tipo!=='mal') return; G.msg=txt;
   const b=$('#burbuja'), t=$('#burbujaTxt'); if(!b) return;
   t.innerHTML=txt; b.className='burbuja'+(tipo?' '+tipo:''); void b.offsetWidth; b.classList.add('pop');
 }
@@ -2551,8 +2607,17 @@ const enFn = arr => { if(arr===G.fn) return true; if(arr===G.prog) return false;
 const contieneArr = (nodo,arr) => hijos(nodo).some(h=>h===arr||h.some(m=>contieneArr(m,arr)));
 const usa = (arr,t) => arr.some(n=>n.t===t||hijos(n).some(h=>usa(h,t)));
 const usaT = t => usa(G.prog,t)||usa(G.fn,t);
-const ETQ_COND = {izq:'← izquierda', del:'↑ delante', der:'derecha →'};
+const ETQ_COND = {izq:'← mi izquierda', del:'↑ delante', der:'mi derecha →'};
 
+// mantener pulsado + o − sube o baja rápido
+let _held=false;
+const numRep=(b,n)=>{ const e=b.parentElement&&b.parentElement.querySelector('b'); if(e) e.textContent=n; };
+document.addEventListener('pointerdown',e=>{
+  const b=e.target.closest&&e.target.closest('.veces button'); if(!b) return;
+  let iv=null; const to=setTimeout(()=>{ iv=setInterval(()=>{ const nb=document.querySelector('.veces button[data-id="'+b.dataset.id+'"][data-acc="'+b.dataset.acc+'"]'); if(!nb) return stop(); _held=false; ACC[b.dataset.acc](nb); _held=true; },110); },380);
+  function stop(){ clearTimeout(to); if(iv) clearInterval(iv); ['pointerup','pointercancel'].forEach(t=>document.removeEventListener(t,stop)); }
+  ['pointerup','pointercancel'].forEach(t=>document.addEventListener(t,stop));
+});
 function renderPila(){
   const pila=$('#pila'); if(!pila||!G) return;
   const cursorVisible=!G.corriendo;
@@ -2585,8 +2650,9 @@ function renderPila(){
     (G.prog.length?'':'<div class="vacio-prog">Toca un bloque de la caja para empezar 👈</div>');
   G.nuevo=null;
   const n=totalBloques(), c=$('#contador');
-  if(c){ c.textContent=n+(n===1?' bloque':' bloques')+(n>=MAX_BLOQUES-8?' / '+MAX_BLOQUES:''); c.className='chip contador'+(G.modo==='fijo'&&n?(n<=G.lab.par?' ok':' sobra'):''); }
+  if(c){ c.textContent=n+(n===1?' bloque':' bloques')+' / '+MAX_BLOQUES; c.className='chip contador'+(G.modo==='fijo'&&n?(n<=G.lab.par?' ok':' sobra'):''); }
   $$('#paleta .blk').forEach(b=>{ const t=b.dataset.t; b.classList.toggle('off',(CONTENEDOR[t]&&profundidad(G.cur.arr)>=MAX_ANIDADO)||(t==='FN'&&enFn(G.cur.arr))); });
+  if(G.tt) guiaPaso();
 }
 function scrollSuave(el){
   const a=$('#area'); if(!a||!el) return;
@@ -2599,13 +2665,13 @@ function añadir(t){
   if(totalBloques()>=MAX_BLOQUES){ SND.fx('error'); toast('¡Ya no caben más bloques! (máximo '+MAX_BLOQUES+')'); return; }
   if(CONTENEDOR[t]&&profundidad(G.cur.arr)>=MAX_ANIDADO){ SND.fx('error'); toast('No se pueden meter tantos bloques unos dentro de otros'); return; }
   if(t==='FN'&&enFn(G.cur.arr)){ SND.fx('error'); toast('Dentro de «Mi bloque» no puedes usar «Mi bloque»'); return; }
-  const nn=t==='REP'?rep(G.mundo>=4?10:2,[]):t==='IF'?mkIf('izq'):t==='UNT'?unt([]):nodo(t);
+  const nn=t==='REP'?rep(2,[]):t==='IF'?mkIf('izq'):t==='UNT'?unt([]):nodo(t);
   G.cur.arr.splice(G.cur.i,0,nn);
   if(CONTENEDOR[t]) G.cur={arr:nn.body,i:0}; else G.cur.i++;
   G.sel=null; G.nuevo=nn.id; G.marca=null;
   SND.fx('add',t); renderPila();
   scrollSuave(document.querySelector(`#pila [data-id="${nn.id}"]`));
-  if(t==='REP') decir(G.mundo>=4?'¡Repetir añadido! Con + y − eliges las vueltas; si te pasas no pasa nada, me paro al llegar. Mete dentro los bloques y toca fuera cuando acabes.':'¡Repetir añadido! Ahora toca los bloques que quieras meter dentro. Cuando acabes, toca fuera del Repetir.');
+  if(t==='REP') decir(G.mundo>=4?'¡Repetir añadido! Con + y − eliges las vueltas (mantén pulsado para subir rápido). Si te pasas no pasa nada: me paro al llegar.':'¡Repetir añadido! Ahora toca los bloques que quieras meter dentro. Cuando acabes, toca fuera del Repetir.');
   else if(t==='IF') decir('¡«Si» añadido! Elige hacia dónde miro (← ↑ →) y mete dentro lo que hago si hay camino. «Si no» es opcional.');
   else if(t==='UNT') decir('¡Repetir hasta llegar! Mete dentro lo que quieras repetir: me paro solo al llegar a la estrella ⭐.');
   else if(t==='FN'&&!G.fn.length) decir('Primero enséñame qué hace «Mi bloque»: toca «Mi bloque hace esto» (arriba) y añade los pasos.');
@@ -2638,6 +2704,189 @@ function clickArea(e){
   if(t.closest('.def')){ G.cur={arr:G.fn,i:G.fn.length}; G.sel=null; renderPila(); return; }
   G.cur={arr:G.prog,i:G.prog.length}; G.sel=null; renderPila();
 }
+
+/* ---------- arrastrar bloques (ratón y dedo) ---------- */
+let _noClick=0, DR=null;
+const altura = n => CONTENEDOR[n.t]?1+Math.max(0,...hijos(n).flatMap(h=>h.filter(m=>CONTENEDOR[m.t]).map(altura))):0;
+const zonaArr = el => { // el contenedor DOM → array del programa
+  const cu=el.closest('.rep-cuerpo'); if(cu){ const r=buscarT(cu.dataset.cuerpo); return r?(cu.dataset.p==='o'?r.nodo.otro:r.nodo.body):null; }
+  if(el.closest('.def')) return G.fn;
+  return G.prog;
+};
+function huecoDrop(x,y){
+  const el=document.elementFromPoint(x,y); if(!el) return null;
+  if(el.closest('#paleta,.zona-caja')) return {borrar:true};
+  if(!el.closest('#area')) return null;
+  const sino=el.closest('.sino-mini'); // «Si no» plegado: soltar aquí lo abre
+  let arr, cont;
+  if(sino){ const r=buscarT(sino.dataset.cuerpo); if(!r) return null; arr=r.nodo.otro; cont=sino; }
+  else { arr=zonaArr(el); if(!arr) return null; cont=el.closest('.rep-cuerpo')||(el.closest('.def')||$('#pila')); }
+  const hs=sino?[]:[...cont.children].filter(c=>(c.matches('.blk[data-id],.rep[data-id]'))&&!c.matches('.hat')&&!c.classList.contains('arrastrado'));
+  let i=hs.length;
+  for(let k=0;k<hs.length;k++){ const r=hs[k].getBoundingClientRect(); if(y<r.top+r.height/2){ i=k; break; } }
+  // i cuenta solo los visibles: convertir a índice real (el nodo arrastrado puede estar en el mismo array)
+  const vis=arr.filter(n=>!DR||n.id!==DR.id);
+  return {arr,i:Math.min(i,vis.length),cont,hs,sino};
+}
+function validoDrop(h){
+  if(!h||h.borrar) return true;
+  const nodo=DR.nodo;
+  if(CONTENEDOR[nodo.t]&&contieneArr(nodo,h.arr)) return false;
+  if(nodo.t==='FN'&&enFn(h.arr)) return false;
+  if(CONTENEDOR[nodo.t]&&profundidad(h.arr)+altura(nodo)>MAX_ANIDADO) return false;
+  if(usa([nodo],'FN')&&enFn(h.arr)) return false;
+  return true;
+}
+function iniciarArrastre(ev,fuente){
+  const cab=fuente.closest('.rep-cab');
+  const id=fuente.dataset.id||(cab&&cab.dataset.cab);
+  let nodo=null, t=fuente.dataset.t;
+  if(id){ const r=buscarT(id); if(!r) return; nodo=r.nodo; t=nodo.t; } else nodo={t,body:[],otro:[]};
+  const origen=cab?cab.closest('.rep'):fuente;
+  DR={id:id||null,nodo,t,nuevo:!id,x0:ev.clientX,y0:ev.clientY,pid:ev.pointerId,tipo:ev.pointerType,activo:false,origen,sx:0,sy:0};
+  if(ev.pointerType!=='mouse'){ DR.to=setTimeout(()=>comenzar(),260); }
+}
+function comenzar(){
+  if(!DR||DR.activo) return; DR.activo=true; clearTimeout(DR.to);
+  const o=DR.origen, r=o.getBoundingClientRect();
+  const g=o.cloneNode(true); g.classList.add('fantasma'); g.querySelectorAll('.x,.cursor').forEach(e=>e.remove());
+  g.style.width=Math.min(r.width,300)+'px'; document.body.appendChild(g); DR.g=g;
+  DR.dx=Math.min(DR.x0-r.left,120); DR.dy=Math.min(DR.y0-r.top,30);
+  if(!DR.nuevo) o.classList.add('arrastrado');
+  document.body.classList.add('arrastrando-body');
+  const bor=$('.zona-caja'); if(bor) bor.classList.add('borrar');
+  G.sel=null; if(navigator.vibrate) try{navigator.vibrate(12);}catch(e){}
+  mover(DR.lx||DR.x0,DR.ly||DR.y0);
+  DR.iv=setInterval(()=>{ if(!DR||!DR.activo||!DR.sy) return; const a=$('#area'); if(a){ a.scrollTop+=DR.sy; marcarHueco(DR.lx,DR.ly); } },30);
+}
+function marcarHueco(x,y){
+  $$('.drop-ind').forEach(e=>e.remove()); $$('.drop-ok,.drop-no').forEach(e=>e.classList.remove('drop-ok','drop-no'));
+  const bor=$('.zona-caja'); if(bor) bor.classList.remove('borrar-on');
+  const h=huecoDrop(x,y); DR.h=h;
+  if(!h){ DR.g.classList.add('no'); return; }
+  const ok=validoDrop(h); DR.g.classList.toggle('no',!ok);
+  if(h.borrar){ if(!DR.nuevo&&bor) bor.classList.add('borrar-on'); if(DR.nuevo) DR.g.classList.add('no'); return; }
+  if(!ok) return;
+  const ind=document.createElement('div'); ind.className='drop-ind';
+  if(h.sino){ h.sino.classList.add('drop-ok'); return; }
+  const ref=h.hs[h.i]; ref?ref.before(ind):h.cont.appendChild(ind);
+  if(h.cont.classList.contains('rep-cuerpo')) h.cont.classList.add('drop-ok');
+}
+function mover(x,y){
+  DR.lx=x; DR.ly=y;
+  DR.g.style.left=(x-DR.dx)+'px'; DR.g.style.top=(y-DR.dy)+'px';
+  const a=$('#area').getBoundingClientRect();
+  DR.sy=(x>a.left&&x<a.right)?(y<a.top+46?-9:y>a.bottom-46?9:0):0;
+  marcarHueco(x,y);
+}
+function finArrastre(soltar){
+  if(!DR) return; const d=DR; DR=null;
+  clearTimeout(d.to); clearInterval(d.iv);
+  if(!d.activo) return;
+  if(d.movido) _noClick=Date.now();
+  d.g.remove(); $$('.drop-ind').forEach(e=>e.remove()); $$('.drop-ok,.drop-no,.arrastrado').forEach(e=>e.classList.remove('drop-ok','drop-no','arrastrado'));
+  document.body.classList.remove('arrastrando-body'); const bor=$('.zona-caja'); if(bor) bor.classList.remove('borrar','borrar-on');
+  if(!soltar||!G||G.corriendo){ renderPila(); return; }
+  const h=d.h;
+  if(!h){ renderPila(); return; }
+  if(h.borrar){
+    if(d.nuevo){ renderPila(); return; }
+    const r=buscarT(d.id); if(r){ quitarNodo(r); SND.fx('quitar'); G.marca=null; }
+    renderPila(); return;
+  }
+  DR=d; const ok=validoDrop(h); DR=null;
+  if(!ok){
+    SND.fx('error');
+    toast(d.nodo.t==='FN'?'Dentro de «Mi bloque» no puedes usar «Mi bloque»':CONTENEDOR[d.nodo.t]&&contieneArr(d.nodo,h.arr)?'No puedes meter un bloque dentro de sí mismo':'No caben tantos bloques unos dentro de otros (máximo '+MAX_ANIDADO+' niveles)');
+    renderPila(); return;
+  }
+  let nodo=d.nodo;
+  if(d.nuevo){
+    if(totalBloques()>=MAX_BLOQUES){ SND.fx('error'); toast('¡Ya no caben más bloques! (máximo '+MAX_BLOQUES+')'); renderPila(); return; }
+    const t=d.t; nodo=t==='REP'?rep(2,[]):t==='IF'?mkIf('izq'):t==='UNT'?unt([]):nodo_(t);
+    if(!MUNDOS[G.mundo-1].bloques.includes(t)){ renderPila(); return; }
+  } else { const r=buscarT(d.id); if(!r){ renderPila(); return; } r.arr.splice(r.i,1); if(CONTENEDOR[nodo.t]&&contieneArr(nodo,G.cur.arr)) G.cur={arr:r.arr,i:r.i}; }
+  // recalcular el índice con el array ya sin el nodo
+  let i=h.i; i=Math.min(i,h.arr.length);
+  h.arr.splice(i,0,nodo);
+  G.cur=CONTENEDOR[nodo.t]&&d.nuevo?{arr:nodo.body,i:0}:{arr:h.arr,i:i+1};
+  G.sel=null; G.nuevo=nodo.id; G.marca=null; SND.fx('add',nodo.t); renderPila();
+}
+const nodo_=t=>nodo(t);
+document.addEventListener('pointerdown',e=>{
+  if(!G||vistaActual!=='juego'||G.corriendo||modalAbierto()||(e.pointerType==='mouse'&&e.button!==0)) return;
+  const t=e.target; if(!t.closest) return;
+  if(t.closest('.x,.veces,.conds,.sino-mini,.hat')) return;
+  const fuente=t.closest('#pila .blk[data-id], #pila .rep-cab, #paleta .blk[data-t]'); if(!fuente) return;
+  iniciarArrastre(e,fuente);
+});
+document.addEventListener('pointermove',e=>{
+  if(!DR||e.pointerId!==DR.pid) return;
+  const dist=Math.hypot(e.clientX-DR.x0,e.clientY-DR.y0);
+  if(!DR.activo){
+    if(DR.tipo==='mouse'){ if(dist>7) comenzar(); else return; }
+    else { if(dist>9){ clearTimeout(DR.to); DR=null; } return; } // el dedo se movió antes de la pulsación larga: es un scroll
+  }
+  if(DR){ if(dist>9) DR.movido=true; DR.lx=e.clientX; DR.ly=e.clientY; mover(e.clientX,e.clientY); e.preventDefault(); }
+});
+document.addEventListener('pointerup',e=>{ if(DR&&e.pointerId===DR.pid) finArrastre(true); });
+document.addEventListener('pointercancel',e=>{ if(DR&&e.pointerId===DR.pid) finArrastre(false); });
+document.addEventListener('touchmove',e=>{ if(DR&&DR.activo) e.preventDefault(); },{passive:false});
+document.addEventListener('contextmenu',e=>{ if(DR) e.preventDefault(); });
+document.addEventListener('dragstart',e=>{ if(DR) e.preventDefault(); });
+
+/* ---------- guía paso a paso (tutorial que sigue lo que haces) ---------- */
+const NOMBRE_CONT={REP:'Repetir',IF:'Si',UNT:'Repetir hasta llegar'};
+const TXT_ADD={F:'«Avanzar»',L:'«Girar izquierda»',R:'«Girar derecha»',J:'«Saltar»',REP:'«Repetir»',IF:'«Si»',UNT:'«Repetir hasta llegar»',FN:'«Mi bloque»'};
+const EXPL={REP:'Repite lo que metas dentro.',IF:'Mira a su alrededor: lo que hay dentro solo se hace <b>si hay camino</b> hacia donde elijas.',UNT:'Repite sin contar, hasta que llegue a la ⭐.',FN:'Es el bloque que has inventado tú.',J:'Pasa al otro lado de un abismo.'};
+const COND_FRASE={izq:'a mi izquierda',del:'delante',der:'a mi derecha'};
+function guiaFalta(ref,cur,ctx){
+  for(let i=0;i<ref.length;i++){
+    const r=ref[i], c=cur[i];
+    if(!c) return {a:'add',arr:cur,i,t:r.t,ctx};
+    if(c.t!==r.t) return {a:'mal',nodo:c};
+    if(r.t==='REP'&&c.n!==r.n) return {a:'veces',nodo:c,n:r.n};
+    if(r.t==='IF'&&c.c!==r.c) return {a:'cond',nodo:c,c:r.c};
+    if(CONTENEDOR[r.t]){
+      let x=guiaFalta(r.body,c.body,{cont:NOMBRE_CONT[r.t],nodo:c,p:'b'}); if(x) return x;
+      if(r.t==='IF'){ if(r.otro.length){ x=guiaFalta(r.otro,c.otro,{cont:'Si no',nodo:c,p:'o'}); if(x) return x; } else if(c.otro.length) return {a:'mal',nodo:c.otro[0]}; }
+    }
+  }
+  if(cur.length>ref.length) return {a:'mal',nodo:cur[ref.length]};
+  return null;
+}
+const selNodo = n => CONTENEDOR[n.t]?`#pila [data-cab="${n.id}"]`:`#pila .blk[data-id="${n.id}"]`;
+function guiaPaso(){
+  if(!G||!G.tt||G.corriendo) return;
+  const l=G.lab; let x=null;
+  if(tieneFn()&&l.refFn&&l.refFn.length) x=guiaFalta(l.refFn,G.fn,{cont:'Mi bloque hace esto',fn:true});
+  if(!x) x=guiaFalta(l.ref,G.prog,{cont:null});
+  let msg, sel;
+  if(!x){ msg='🎉 ¡Programa completo! Ahora pulsa <b>¡Ejecutar!</b> y mira cómo lo hago.'; sel='#brun'; }
+  else if(x.a==='mal'){ msg='Este bloque no hace falta aquí. Toca la <b>×</b> para quitarlo (o arrástralo a la caja de bloques) y sigue.'; sel=selNodo(x.nodo); if(G.sel!==x.nodo.id){ /* se señala pero no se toca */ } }
+  else if(x.a==='veces'){ const mas=x.n>x.nodo.n; msg=`Pon <b>${x.n}</b> vueltas con los botones <b>+</b> y <b>−</b> (ahora hay ${x.nodo.n}). Mantén pulsado para ir más rápido.`; sel=`#pila [data-cab="${x.nodo.id}"] [data-acc="${mas?'mas':'menos'}"]`; }
+  else if(x.a==='cond'){ msg=`Elige hacia dónde mira el «Si»: <b>${ETQ_COND[x.c]}</b>. Quiere decir «si hay camino ${COND_FRASE[x.c]}».`; sel=`#pila .conds [data-id="${x.nodo.id}"][data-c="${x.c}"]`; }
+  else { // añadir
+    const cursorOk=G.cur.arr===x.arr&&G.cur.i===x.i;
+    const donde=x.ctx.cont?` <i>(dentro de «${x.ctx.cont}»)</i>`:'';
+    if(cursorOk){ msg=`Toca ${TXT_ADD[x.t]} en la caja de bloques${donde}.${EXPL[x.t]?`<br><small>${EXPL[x.t]}</small>`:''}`; sel=`#paleta [data-t="${x.t}"]`; }
+    else if(x.i>0){ const p=x.arr[x.i-1];
+      msg=CONTENEDOR[p.t]?`Ahora quiero seguir <b>fuera</b> de «${NOMBRE_CONT[p.t]}», debajo de él. Toca su <b>franja de color</b> (arriba) para poner ahí el cursor.`:`Toca el bloque ${TXT_ADD[p.t]} para poner el cursor justo después de él.`;
+      sel=selNodo(p); }
+    else if(x.arr===G.prog){ msg='Toca «Al pulsar Ejecutar» para empezar desde arriba.'; sel='#pila > .hat'; }
+    else if(x.arr===G.fn){ msg='Toca «Mi bloque hace esto» para añadir ahí los pasos.'; sel='#pila .def-hat'; }
+    else { msg=`Toca dentro de «${x.ctx.cont}» (la zona vacía) para poner ahí el cursor.`; sel=`#pila [data-cuerpo="${x.ctx.nodo.id}"][data-p="${x.ctx.p}"]`; }
+  }
+  const html=msg+' <button class="guia-x" data-acc="guiaSalir">Salir de la guía</button>';
+  if(G.tt.ult!==html){ G.tt.ult=html; decir(html,'tuto'); }
+  MANO.mostrar(sel);
+}
+function iniciarGuia(){
+  if(!G||G.corriendo) return;
+  G.tt={ult:''}; G.sel=null; G.cur={arr:tieneFn()&&G.lab.refFn&&G.lab.refFn.length&&!G.fn.length?G.fn:G.prog,i:0};
+  if(G.tuto){ G.tuto=0; } renderPila();
+}
+function salirGuia(){ if(!G) return; G.tt=null; MANO.ocultar(); decir('Vale, ahora tú solo. ¡Tú puedes! 💪'); }
 
 /* ---------- ejecución ---------- */
 function estadoCtrl(){
@@ -2673,7 +2922,7 @@ async function ejecutar(modoPaso){
     else decir('No hay ninguna orden que pueda hacer. Los bloques «Repetir» y «Si» necesitan órdenes dentro.','mal');
     return;
   }
-  MANO.ocultar(); if(G.tuto) G.tuto=3;
+  MANO.ocultar(); G.tt=null; if(G.tuto) G.tuto=3;
   const id=++G.runId; G.corriendo=true; G.paso=!!modoPaso; G.sel=null; G.marca=null;
   renderPila(); estadoCtrl(); tab.reset();
   SND.fx('run');
@@ -2841,6 +3090,8 @@ const ACC = {
   salir(){ SND.fx('whoosh'); cerrarSesion(); vHome(); },
   salir2(){ SND.fx('whoosh'); cerrarSesion(); ir('home',{},true); },
   hof(){ SND.fx('tap'); ir('hof'); },
+  biblio(){ SND.fx('tap'); ir('biblio'); },
+  bibprac(b){ SND.fx('tap'); ir('juego',{mundo:+b.dataset.w,modo:'fijo',idx:0,guia:1}); },
   hofnivel(b){ SND.fx('tap'); hofSt.n=+b.dataset.n; pintarHofBase(); cargarHof(); },
   hoftipo(b){ SND.fx('tap'); hofSt.tipo=b.dataset.t; pintarHofBase(); cargarHof(); },
   hofambito(b){ SND.fx('tap'); hofSt.a=b.dataset.a; pintarHofBase(); cargarHof(); },
@@ -2864,8 +3115,8 @@ const ACC = {
     if(totalBloques()<3){ hacer(); return; }
     modal({titulo:'¿Borrar todo el programa?',robot:'sorpresa',cancelable:true,html:'<p>Se quitarán todos los bloques.</p>',botones:[{txt:'Sí, borrar todo',cls:'btn-rojo',ico:ICO.papelera,fn:hacer},{txt:'No, cancelar',cls:'btn-gris'}]});
   },
-  menos(b){ if(!G||G.corriendo) return; const r=buscarT(b.dataset.id); if(r&&r.nodo.n>2){ r.nodo.n--; SND.fx('add','L'); renderPila(); } else SND.fx('error'); },
-  mas(b){ if(!G||G.corriendo) return; const r=buscarT(b.dataset.id); if(r&&r.nodo.n<30){ r.nodo.n++; SND.fx('add','R'); renderPila(); } else SND.fx('error'); },
+  menos(b){ if(_held){ _held=false; return; } if(!G||G.corriendo) return; const r=buscarT(b.dataset.id); if(r&&r.nodo.n>2){ r.nodo.n--; SND.fx('add','L'); numRep(b,r.nodo.n); if(G.tt) guiaPaso(); } else SND.fx('error'); },
+  mas(b){ if(_held){ _held=false; return; } if(!G||G.corriendo) return; const r=buscarT(b.dataset.id); if(r&&r.nodo.n<30){ r.nodo.n++; SND.fx('add','R'); numRep(b,r.nodo.n); if(G.tt) guiaPaso(); } else SND.fx('error'); },
   cond(b){ if(!G||G.corriendo) return; const r=buscarT(b.dataset.id); if(r&&r.nodo.t==='IF'){ r.nodo.c=b.dataset.c; G.marca=null; SND.fx('tap'); renderPila(); } },
   cerrado(b){
     SND.fx('error'); const n=+b.dataset.n; b.classList.remove('sacude'); void b.offsetWidth; b.classList.add('sacude');
@@ -2876,6 +3127,8 @@ const ACC = {
   reiniciar(){ if(!G) return; SND.fx('whoosh'); if(G.corriendo) parar(false); else { G.marca=null; tab.reset(); renderPila(); } decir('¡De vuelta a la salida!'); },
   vel(b){ P.vel=(P.vel+1)%VELOCIDADES.length; guardarPrefs(); const v=VELOCIDADES[P.vel]; b.innerHTML=`<span class="em">${v.em}</span><span>${v.n}</span>`; SND.fx('tap'); },
   pista(){ pista(); },
+  guia(){ iniciarGuia(); },
+  guiaSalir(){ salirGuia(); },
   voz(){ if(G) VOZ.decir(G.msg); },
   otro(){
     if(!G||G.corriendo) return;
@@ -2885,6 +3138,7 @@ const ACC = {
   }
 };
 document.addEventListener('click',e=>{
+  if(Date.now()-_noClick<350){ e.stopPropagation(); return; }
   const b=e.target.closest('[data-acc]');
   if(b){ const f=ACC[b.dataset.acc]; if(f) f(b,e); return; }
   if(G&&vistaActual==='juego'&&e.target.closest('#area')) clickArea(e);
