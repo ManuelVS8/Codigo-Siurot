@@ -426,6 +426,7 @@ body>.fantasma{position:fixed!important;z-index:9999;pointer-events:none;opacity
 .stat b{color:var(--priD)}
 .mini-clave{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:7px;background:var(--b);box-shadow:inset 0 -3px 0 var(--bd);vertical-align:middle;margin:0 2px}
 .mini-clave svg{width:16px;height:16px;color:#fff;fill:currentColor}
+.nota-sobra{font-size:.9rem;background:#eef2ff;border-radius:12px;padding:8px 12px;margin:8px 0 0}
 .bib-intro{text-align:center;font-weight:500;margin:4px 0 14px;color:var(--ink)}
 .bib{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;padding-bottom:30px}
 .bib-card{padding:16px 18px;display:flex;flex-direction:column;gap:6px;align-items:flex-start;border-top:6px solid var(--mc2,#999)}
@@ -509,6 +510,7 @@ body>.fantasma{position:fixed!important;z-index:9999;pointer-events:none;opacity
   body{font-size:16px}
   #app{padding:8px 10px 16px}
   .barra .chip.ocultable{display:none}
+  .barra .titulo .pill{white-space:normal;font-size:.92rem;padding:7px 13px;line-height:1.15;border-radius:18px}
   .portal{flex-wrap:wrap;gap:12px}
   .portal .record{margin-left:0}
   .cursor{width:150px}.cursor::after{left:158px}
@@ -605,7 +607,7 @@ const DX = [0,1,0,-1], DY = [-1,0,1,0];            // 0 arriba, 1 derecha, 2 aba
 const CFG = {
   1:{nF:[3,4,5,6,7],     nT:[1,1,2,2,3],   inf:{nF:[3,8],   nT:[1,4]}, maxS:7, minS:4},
   2:{nF:[8,9,10,11,12],  nT:[4,5,6,7,8],   inf:{nF:[8,13],  nT:[4,9]}, maxS:7, minS:5},
-  3:{pat:[1,2,4,3,4], k:[[5,5],[2,2],[3,3],[3,3],[4,4]], pre:[0,1,0,1,1], suf:[0,1,1,1,1],
+  3:{pat:[1,3,3,4,4], k:[[5,5],[2,2],[3,3],[3,3],[3,3]], pre:[0,0,2,0,2], suf:[0,0,0,2,2],
      kInf:{1:[3,6],2:[2,3],3:[2,3],4:[2,4]}, maxS:8, minS:5}
 };
 // patrones que se repiten (se eligen según su longitud); todos empiezan por avanzar
@@ -693,7 +695,10 @@ function genRepetir(rnd,pl,kmin,kmax,npre,nsuf,maxS,minS){
     const dir0=rint(rnd,0,3);
     const tz=trazar(pasos,dir0); if(!tz) continue;
     const col=colocar(tz,dir0,maxS,minS,rnd); if(!col) continue;
-    return Object.assign(col,{ref:[...pre.map(nodo), rep(k,pat.map(nodo)), ...suf.map(nodo)], refFn:[], par:npre+1+pat.length+nsuf});
+    const ref=[...pre.map(nodo), rep(k,pat.map(nodo)), ...suf.map(nodo)];
+    const par=contar(ref);
+    if(atajo(pasos,3)<par) continue;   // habría una solución más corta que la pedida
+    return Object.assign(col,{ref, refFn:[], par, pasos:pasos.slice()});
   }
   return null;
 }
@@ -706,11 +711,14 @@ const MAX_EV = 2500, MAX_ACC = 120, LIM = {lim:true};
 function sensor(est,lab,c){ const d=(est.d+SENS[c])%4; return lab.set.has((est.x+DX[d])+','+(est.y+DY[d])); }
 function* corrLista(arr,ctx,reps){
   const est=ctx.est, lab=ctx.lab;
+  const llego=()=>est.x===lab.meta.x&&est.y===lab.meta.y;
   for(const n of arr){
-    if(n.t==='REP'){ for(let k=0;k<n.n;k++) yield* corrLista(n.body,ctx,reps.concat([{id:n.id,k,n:n.n}])); }
+    if(ctx.unt&&llego()) return;                       // dentro de «Repetir hasta llegar»: al llegar se deja de repetir en el acto
+    if(n.t==='REP'){ for(let k=0;k<n.n;k++){ if(ctx.unt&&llego()) break; yield* corrLista(n.body,ctx,reps.concat([{id:n.id,k,n:n.n}])); } }
     else if(n.t==='UNT'){
-      let k=0;
-      while(!(est.x===lab.meta.x&&est.y===lab.meta.y)){ if(++ctx.n>MAX_EV) throw LIM; yield* corrLista(n.body,ctx,reps.concat([{id:n.id,k:k++,n:0}])); }
+      let k=0; ctx.unt=(ctx.unt||0)+1;
+      while(!llego()){ if(++ctx.n>MAX_EV) throw LIM; yield* corrLista(n.body,ctx,reps.concat([{id:n.id,k:k++,n:0}])); }
+      ctx.unt--;
     }
     else if(n.t==='IF'){ if(++ctx.n>MAX_EV) throw LIM; const res=sensor(est,lab,n.c); yield {t:'IF',id:n.id,reps,res}; yield* corrLista(res?n.body:n.otro,ctx,reps); }
     else if(n.t==='FN'){ if(++ctx.n>MAX_EV) throw LIM; yield {t:'CALL',id:n.id,reps}; yield* corrLista(ctx.fn,ctx,reps.concat([{id:'fn',k:0,n:1}])); }
@@ -721,18 +729,25 @@ function* correr(prog,fn,est,lab){
   const ctx={fn:fn||[],est,lab,n:0};
   try{ yield* corrLista(prog,ctx,[]); } catch(e){ if(e!==LIM) throw e; yield {t:'LIM'}; }
 }
-// recorre todo el programa de antemano: lista de pasos + cómo termina ('meta' | 'choque' | 'fin' | 'limite')
+// El programa tiene que TERMINAR justo en la estrella: si al llegar aún quedan órdenes, «sobran».
+// Devuelve la primera orden que sobra (o null). «it» es el intérprete ya detenido en la meta.
+function ordenQueSobra(it){
+  for(const s of it){ if(s.t==='LIM') return null; if(s.t!=='IF'&&s.t!=='CALL') return s; }
+  return null;
+}
+// recorre todo el programa de antemano: lista de pasos + cómo termina ('meta' | 'sobra' | 'choque' | 'fin' | 'limite')
 function trazaEjecucion(lab,prog,fn){
-  const est={x:lab.ini.x,y:lab.ini.y,d:lab.ini.dir}; const ev=[]; let fin='fin', acc=0;
-  for(const e of correr(prog,fn,est,lab)){
+  const est={x:lab.ini.x,y:lab.ini.y,d:lab.ini.dir}; const ev=[]; let fin='fin', acc=0, sobra=null;
+  const it=correr(prog,fn,est,lab);
+  for(const e of it){
     if(e.t==='LIM'){ fin='limite'; break; }
     if(e.t==='IF'||e.t==='CALL'){ ev.push(e); continue; }
     const r=dar(est,e.t,lab); e.r=r; ev.push(e);
     if(r==='choque'){ fin='choque'; break; }
-    if(r==='meta'){ fin='meta'; break; }
+    if(r==='meta'){ sobra=ordenQueSobra(it); fin=sobra?'sobra':'meta'; break; }
     if(++acc>=MAX_ACC){ fin='limite'; break; }
   }
-  return {ev,fin,est};
+  return {ev,fin,est,sobra};
 }
 
 /* =========================================================
@@ -743,11 +758,50 @@ function refSeguir(g){
   const b=[]; if(g!=='der') b.push(mkIf('izq',[nodo('L')])); if(g!=='izq') b.push(mkIf('der',[nodo('R')])); b.push(nodo('F')); return b;
 }
 function refSeguirJ(){ return [mkIf('izq',[nodo('L')]), mkIf('der',[nodo('R')]), mkIf('del',[nodo('F')],[nodo('J')])]; }
+
+/* ---- atajos: ¿hay un programa con MENOS bloques que la referencia? ----
+   (el programa debe terminar justo en la estrella: no vale pasarse)  */
+const igualTk=(tk,a,b,len)=>{ for(let q=0;q<len;q++) if(tk[a+q]!==tk[b+q]) return false; return true; };
+function costeRep(tk,fin){
+  const n=tk.length, dp=Array(n+1).fill(Infinity); dp[0]=0;
+  for(let i=0;i<n;i++){ if(dp[i]===Infinity) continue;
+    dp[i+1]=Math.min(dp[i+1],dp[i]+1);
+    for(let m=1;m<=8&&i+m<=n;m++){
+      let k=1; while(i+(k+1)*m<=n&&igualTk(tk,i,i+k*m,m)) k++;
+      for(let r=2;r<=k;r++) dp[i+r*m]=Math.min(dp[i+r*m],dp[i]+1+m);
+      if(fin){ const j=i+k*m, resto=n-j; if(resto>0&&resto<m&&igualTk(tk,i,j,resto)) dp[n]=Math.min(dp[n],dp[i]+1+m); }
+    }
+  }
+  return dp[n];
+}
+function costeFn(tk){
+  let best=Infinity; const n=tk.length, vistos=new Set();
+  for(let a=0;a<n;a++) for(let m=2;m<=10&&a+m<=n;m++){
+    const d=tk.slice(a,a+m), key=d.join(','); if(vistos.has(key)) continue; vistos.add(key);
+    const u=[]; let i=0;
+    while(i<n){
+      if(i+m<=n&&igualTk(tk,i,a,m)&&tk.slice(i,i+m).join(',')===key){ u.push('FN'); i+=m; }
+      else { u.push(tk[i]); i++; }
+    }
+    if(!u.includes('FN')) continue;
+    best=Math.min(best, costeRep(d,false)+costeRep(u,false));
+  }
+  return best;
+}
+// menor número de bloques que encontramos sin sensores (contando pasos)
+function atajo(pasos,nivel){
+  let c=pasos.length;
+  if(nivel>=3) c=Math.min(c,costeRep(pasos,false));
+  if(nivel>=6) c=Math.min(c,costeFn(pasos));
+  return c;
+}
+let NIVEL_GEN=0;
 function armar(pasos,rnd,maxS,minS,ref,refFn){
   const dir0=rint(rnd,0,3);
   const tz=trazar(pasos,dir0); if(!tz) return null;
   const col=colocar(tz,dir0,maxS,minS,rnd); if(!col) return null;
-  col.ref=ref; col.refFn=refFn||[]; col.par=contar(ref)+contar(col.refFn);
+  col.ref=ref; col.refFn=refFn||[]; col.par=contar(ref)+contar(col.refFn); col.pasos=pasos.slice();
+  if(NIVEL_GEN!==4&&NIVEL_GEN!==5&&atajo(pasos,NIVEL_GEN)<col.par) return null;   // habría una solución más corta que la pedida
   col.hset=new Set(col.huecos.map(p=>p[0]+','+p[1]));
   col.set=new Set(col.path.map(p=>p[0]+','+p[1]));
   if(!simular(col,ref,col.refFn).ok) return null;
@@ -859,7 +913,7 @@ function decorar(n,set,rnd,hset){ const d=[]; for(let y=0;y<n;y++) for(let x=0;x
 
 // idx >= 0: reto fijo; idx = -1: laberinto aleatorio del modo infinito
 function generar(nivel,idx,rnd){
-  let lab=null;
+  let lab=null; NIVEL_GEN=nivel;
   if(nivel>=4){
     const sp=idx>=0?ESPEC[nivel][idx]:espInfinito(nivel,rnd);
     for(let ampliar=0; ampliar<3 && !lab; ampliar++) lab=GEN[sp.t](rnd,sp,sp.maxS+ampliar);
@@ -908,12 +962,13 @@ function dar(est,t,lab){
 function simular(lab,prog,fn){
   const est={x:lab.ini.x,y:lab.ini.y,d:lab.ini.dir};
   let acc=0;
-  for(const e of correr(prog,fn||[],est,lab)){
+  const it=correr(prog,fn||[],est,lab);
+  for(const e of it){
     if(e.t==='LIM') return {ok:false,motivo:'limite'};
     if(e.t==='IF'||e.t==='CALL') continue;
     const r=dar(est,e.t,lab);
     if(r==='choque') return {ok:false,motivo:'choque'};
-    if(r==='meta') return {ok:true};
+    if(r==='meta') return ordenQueSobra(it)?{ok:false,motivo:'sobra'}:{ok:true};
     if(++acc>=MAX_ACC) return {ok:false,motivo:'limite'};
   }
   return {ok:false,motivo:'fin'};
@@ -2405,7 +2460,7 @@ function introSi(){
   modal({titulo:'¡Nuevo bloque: Si!',robot:'sorpresa',cancelable:true,
     html:`<p>Con <b>Si</b> miro a mi alrededor y decido. Lo que hay dentro solo lo hago <b>si hay camino</b> hacia donde me indicas.</p>
       <div class="ejemplo-rep"><div class="col">${contEj('IF','<span class="etq">Si hay camino</span><span class="conds"><button class="on">← izquierda</button></span>',bq('L'))}</div></div>
-      <p>Junto con <b>Repetir</b> y <b>Avanzar</b>, ¡un solo programa vale para cualquier camino! Si pones más vueltas de las necesarias no pasa nada: me paro al llegar.</p>`,
+      <p>Junto con <b>Repetir</b> y <b>Avanzar</b>, ¡un solo programa vale para cualquier camino! Eso sí: pon las vueltas justas (una por cada paso), porque el programa tiene que terminar al llegar a la estrella.</p>`,
     botones:[{txt:'¡Entendido!',cls:'btn-ok'}]});
 }
 function introHasta(){
@@ -2678,7 +2733,7 @@ function añadir(t){
   G.sel=null; G.nuevo=nn.id; G.marca=null;
   SND.fx('add',t); renderPila();
   scrollSuave(document.querySelector(`#pila [data-id="${nn.id}"]`));
-  if(t==='REP') decir(G.mundo>=4?'¡Repetir añadido! Con + y − eliges las vueltas (mantén pulsado para subir rápido). Si te pasas no pasa nada: me paro al llegar.':'¡Repetir añadido! Ahora toca los bloques que quieras meter dentro. Cuando acabes, toca fuera del Repetir.');
+  if(t==='REP') decir(G.mundo>=4?'¡Repetir añadido! Con + y − eliges las vueltas (mantén pulsado para subir rápido). Pon las justas: el programa debe terminar al llegar a la estrella.':'¡Repetir añadido! Ahora toca los bloques que quieras meter dentro. Cuando acabes, toca fuera del Repetir.');
   else if(t==='IF') decir('¡«Si» añadido! Elige hacia dónde miro (← ↑ →) y mete dentro lo que hago si hay camino.'+(G.mundo>=7?' «Si no» es opcional.':''));
   else if(t==='UNT') decir('¡Repetir hasta llegar! Mete dentro lo que quieras repetir: me paro solo al llegar a la estrella ⭐.');
   else if(t==='FN'&&!G.fn.length) decir('Primero enséñame qué hace «Mi bloque»: toca «Mi bloque hace esto» (arriba) y añade los pasos.');
@@ -2852,7 +2907,7 @@ function guiaFalta(ref,cur,ctx){
     const r=ref[i], c=cur[i];
     if(!c) return {a:'add',arr:cur,i,t:r.t,ctx};
     if(c.t!==r.t) return {a:'mal',nodo:c};
-    if(r.t==='REP'&&c.n<r.n) return {a:'veces',nodo:c,n:r.n};
+    if(r.t==='REP'&&c.n!==r.n) return {a:'veces',nodo:c,n:r.n};
     if(r.t==='IF'&&c.c!==r.c) return {a:'cond',nodo:c,c:r.c};
     if(CONTENEDOR[r.t]){
       let x=guiaFalta(r.body,c.body,{cont:NOMBRE_CONT[r.t],nodo:c,p:'b'}); if(x) return x;
@@ -2871,7 +2926,7 @@ function guiaPaso(){
   let msg, sel;
   if(!x){ msg='🎉 ¡Programa completo! Ahora pulsa <b>¡Ejecutar!</b> y mira cómo lo hago.'; sel='#brun'; }
   else if(x.a==='mal'){ msg='Este bloque no hace falta aquí. Toca la <b>×</b> para quitarlo (o arrástralo a la caja de bloques) y sigue.'; sel=selNodo(x.nodo); if(G.sel!==x.nodo.id){ /* se señala pero no se toca */ } }
-  else if(x.a==='veces'){ const mas=true; msg=`Pon <b>${x.n}</b> vueltas (o más) con los botones <b>+</b> y <b>−</b> (ahora hay ${x.nodo.n}). <b>Mantén pulsado</b> el + para subir rápido.`; sel=`#pila [data-cab="${x.nodo.id}"] [data-acc="${mas?'mas':'menos'}"]`; }
+  else if(x.a==='veces'){ const mas=x.n>x.nodo.n; msg=`Pon <b>${x.n}</b> vueltas justas con los botones <b>+</b> y <b>−</b> (ahora hay ${x.nodo.n}). <b>Mantén pulsado</b> para ir rápido.`; sel=`#pila [data-cab="${x.nodo.id}"] [data-acc="${mas?'mas':'menos'}"]`; }
   else if(x.a==='cond'){ msg=`Elige hacia dónde mira el «Si»: <b>${ETQ_COND[x.c]}</b>. Quiere decir «si hay camino ${COND_FRASE[x.c]}».`; sel=`#pila .conds [data-id="${x.nodo.id}"][data-c="${x.c}"]`; }
   else { // añadir
     const cursorOk=G.cur.arr===x.arr&&G.cur.i===x.i;
@@ -2880,7 +2935,7 @@ function guiaPaso(){
       const prev=x.i>0?x.arr[x.i-1]:null; let ex=EXPL[x.t]||'';
       if(x.t==='IF'&&prev&&prev.t==='IF') ex='Un segundo «Si» vigila el <b>otro lado</b>: así Bit gira hacia donde haya camino, sea izquierda o derecha.';
       else if(x.t==='F'&&prev&&prev.t==='IF') ex='«Avanzar» va <b>fuera</b> de los «Si»: Bit avanza siempre, y los «Si» solo deciden si gira antes.';
-      else if(x.t==='REP'&&G.mundo===4&&G.idx===3&&!G.prog.length) ex='Este camino tiene giros a <b>los dos lados</b>: usaremos <b>dos «Si»</b> dentro del Repetir. Pon muchas vueltas: Bit se para solo al llegar.';
+      else if(x.t==='REP'&&G.mundo===4&&G.idx===3&&!G.prog.length) ex='Este camino tiene giros a <b>los dos lados</b>: usaremos <b>dos «Si»</b> dentro del Repetir. Las vueltas tienen que ser justas: una por cada paso hasta la estrella.';
       msg=`Toca ${TXT_ADD[x.t]} en la caja de bloques${donde}.${ex?`<br><small>${ex}</small>`:''}`; sel=`#paleta [data-t="${x.t}"]`; }
     else if(x.i>0){ const p=x.arr[x.i-1];
       msg=CONTENEDOR[p.t]?`Ahora quiero seguir <b>fuera</b> de «${NOMBRE_CONT[p.t]}», debajo de él. Toca su <b>franja de color</b> (arriba) para poner ahí el cursor.`:`Toca el bloque ${TXT_ADD[p.t]} para poner el cursor justo después de él.`;
@@ -2954,7 +3009,7 @@ async function ejecutar(modoPaso){
     else if(p.t==='J'){ SND.fx('salto'); await tab.saltar(est.x,est.y,vel()); }
     else { SND.fx('giro',p.t==='R'); await tab.girar(p.t==='R',vel()); }
     if(!G||id!==G.runId) return;
-    if(r==='meta') return victoria(id);
+    if(r==='meta') return tr.fin==='sobra'?fin(id,'sobra',tr.sobra):victoria(id);
   }
   fin(id,tr.fin==='limite'?'limite':'fin');
 }
@@ -2965,6 +3020,11 @@ function fin(id,motivo,p,abismo){
     decir(abismo?'¡Cuidado, un abismo! 🕳️ Para cruzarlo hay que usar «Saltar» justo antes de él.'
       :p.t==='J'?'Solo puedo saltar cuando delante hay un abismo 🕳️ y al otro lado hay camino. Revisa el bloque en rojo.'
       :'¡Ay! Ahí no hay camino 💥 El bloque en rojo me hizo chocar. Cambialo y vuelve a probar.','mal'); }
+  else if(motivo==='sobra'){ tab.dudar(); SND.fx('fallo');
+    const rp=[...(p.reps||[])].reverse().find(r=>r.n>0&&r.id!=='fn'&&r.k>0);   // ¿sobra una vuelta de un «Repetir»?
+    G.marca={id:rp?rp.id:p.id,cls:'choca'};
+    decir(rp?'¡Casi! He llegado a la estrella ⭐, pero al «Repetir» en rojo le <b>sobran vueltas</b>. El programa tiene que terminar justo al llegar: baja las vueltas con <b>−</b>.'
+      :'¡Casi! He llegado a la estrella ⭐, pero todavía quedaban órdenes. El programa tiene que terminar justo al llegar: quita el bloque en rojo y lo que venga después.','mal'); }
   else if(motivo==='limite'){ tab.dudar(); SND.fx('fallo'); decir('Llevo muchísimo rato y no llego nunca ♾️ Revisa tu «Repetir hasta llegar»: ¿me hace avanzar hacia la estrella?','mal'); }
   else { tab.dudar(); SND.fx('fallo'); decir('Se acabaron las órdenes y no he llegado a la estrella. ¡Te faltan bloques!','mal'); }
   renderPila(); estadoCtrl();
@@ -3043,7 +3103,7 @@ function textoSolucion(){ const lab=G.lab; return lab.ref.map(descNodo).join(' �
 function pistaConcepto(){
   const n=G.mundo, lab=G.lab;
   if(n===4&&!usaT('IF')) return 'Los giros están en sitios distintos. Prueba: «Repetir» y dentro «Si hay camino a la izquierda → Girar izquierda», «Si hay camino a la derecha → Girar derecha» y «Avanzar».';
-  if(n===5&&!usaT('UNT')) return 'Prueba con «Repetir hasta llegar a la ⭐»: me paro solo al llegar y no hace falta contar nada.';
+  if(n===5&&!usaT('UNT')) return 'Prueba con «Repetir hasta llegar a la ⭐»: me paro solo al llegar y no hace falta contar las vueltas.';
   if(n===6&&!usaT('FN')) return 'Fíjate: hay un trozo de camino que se repite. Enséñalo una vez en «Mi bloque» y úsalo varias veces.';
   if(n===6&&!G.fn.length) return '«Mi bloque» está vacío: toca «Mi bloque hace esto» (arriba) y añade los pasos del trozo que se repite.';
   if(n===7&&lab.huecos.length&&!usaT('J')) return 'Hay un abismo 🕳️ en el camino: usa «Saltar» justo antes de él, mirando hacia el otro lado.';
@@ -3056,6 +3116,7 @@ function pista(){
   const sol=G.pistas>=3&&G.mundo>=3?` 🔎 Una solución posible: <b>${textoSolucion()}</b>`:'';
   if(tr.fin==='choque'){ const e=tr.ev[tr.ev.length-1]; G.marca={id:e.id,cls:'marcado'}; renderPila(); scrollSuave(document.querySelector(`#pila [data-id="${e.id}"]`));
     decir(`💡 Mira el bloque «${CORTO[e.t]}» que parpadea: con él me choco. Cámbialo o bórralo.`+sol,'pista'); return; }
+  if(tr.fin==='sobra'){ decir('💡 Llegas a la estrella, pero sobran órdenes. El programa tiene que terminar justo al llegar: quita lo que sobra o baja las vueltas de «Repetir».'+sol,'pista'); return; }
   if(tr.fin==='meta'){
     const sc=claveFalta();
     if(sc) decir(`💡 ¡Tu programa funciona! Pero para ★★★ usa el bloque nuevo ${NOM_CLAVE[sc]}: con él necesitas ${lab.par} bloques o menos.`+sol,'pista');
