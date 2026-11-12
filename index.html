@@ -2422,6 +2422,7 @@ function introGalaxia(){
   modal({titulo:'¡Último mundo!',robot:'sorpresa',cancelable:true,
     html:`<p>Hay <b>abismos</b> 🕳️ en el camino. Con <b>Saltar</b> paso al otro lado (justo antes de un abismo, mirando hacia él).</p>
       <div class="ejemplo-rep"><div class="col">${bq('F')}${bq('J')}${bq('F')}</div></div>
+      <p>Ahora el bloque <b>Si</b> tiene un extra: <b>«Si no…»</b>, lo que hago cuando <b>no</b> hay camino (por ejemplo, saltar el abismo).</p>
       <p>Aquí vale todo lo aprendido: Repetir, Si, Repetir hasta llegar y Mi bloque. ¡Combínalos!</p>`,
     botones:[{txt:'¡A por ello!',cls:'btn-ok'}]});
 }
@@ -2639,7 +2640,7 @@ function renderPila(){
   const contH=n=>`<div class="rep${n.t==='REP'?'':' c-'+n.t}${G.sel===n.id?' sel':''}${G.nuevo===n.id?' nuevo':''}" data-id="${n.id}">
       <div class="blk rep-cab b-${n.t}${marca(n)}" data-cab="${n.id}">${cabeza(n)}</div>
       ${cuerpo(n,n.body,'b','👆 Toca aquí y añade bloques dentro')}
-      ${n.t==='IF'?((n.otro.length||(cursorVisible&&G.cur.arr===n.otro))?`<div class="rep-sino">Si no</div>${cuerpo(n,n.otro,'o','👆 Toca aquí y añade lo que hago si NO hay camino')}`:`<div class="rep-sino sino-mini" data-cuerpo="${n.id}" data-p="o">＋ Si no… (opcional)</div>`):''}
+      ${n.t==='IF'&&G.mundo>=7?((n.otro.length||(cursorVisible&&G.cur.arr===n.otro))?`<div class="rep-sino">Si no</div>${cuerpo(n,n.otro,'o','👆 Toca aquí y añade lo que hago si NO hay camino')}`:`<div class="rep-sino sino-mini" data-cuerpo="${n.id}" data-p="o">＋ Si no… (opcional)</div>`):''}
       <div class="rep-pie"></div></div>`;
   const lista=arr=>{ let h=''; arr.forEach((n,i)=>{ if(cursorVisible&&G.cur.arr===arr&&G.cur.i===i) h+='<div class="cursor"></div>'; h+=CONTENEDOR[n.t]?contH(n):blq(n); });
     if(cursorVisible&&G.cur.arr===arr&&G.cur.i===arr.length) h+='<div class="cursor"></div>'; return h; };
@@ -2672,7 +2673,7 @@ function añadir(t){
   SND.fx('add',t); renderPila();
   scrollSuave(document.querySelector(`#pila [data-id="${nn.id}"]`));
   if(t==='REP') decir(G.mundo>=4?'¡Repetir añadido! Con + y − eliges las vueltas (mantén pulsado para subir rápido). Si te pasas no pasa nada: me paro al llegar.':'¡Repetir añadido! Ahora toca los bloques que quieras meter dentro. Cuando acabes, toca fuera del Repetir.');
-  else if(t==='IF') decir('¡«Si» añadido! Elige hacia dónde miro (← ↑ →) y mete dentro lo que hago si hay camino. «Si no» es opcional.');
+  else if(t==='IF') decir('¡«Si» añadido! Elige hacia dónde miro (← ↑ →) y mete dentro lo que hago si hay camino.'+(G.mundo>=7?' «Si no» es opcional.':''));
   else if(t==='UNT') decir('¡Repetir hasta llegar! Mete dentro lo que quieras repetir: me paro solo al llegar a la estrella ⭐.');
   else if(t==='FN'&&!G.fn.length) decir('Primero enséñame qué hace «Mi bloque»: toca «Mi bloque hace esto» (arriba) y añade los pasos.');
   if(G.tuto===1){ G.tuto=2; MANO.mostrar('#brun'); decir('¡Muy bien! Añade los bloques que falten y luego pulsa «¡Ejecutar!» para ver qué hago.'); }
