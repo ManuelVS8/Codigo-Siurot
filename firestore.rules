@@ -34,7 +34,8 @@ service cloud.firestore {
           && num(d,'e4',15) && num(d,'r4',1000)
           && num(d,'e5',15) && num(d,'r5',1000)
           && num(d,'e6',15) && num(d,'r6',1000)
-          && num(d,'e7',15) && num(d,'r7',1000);
+          && num(d,'e7',15) && num(d,'r7',1000)
+          && num(d,'e8',15) && num(d,'r8',1000);
     }
 
     // Clases y claves: solo el administrador
@@ -61,7 +62,7 @@ service cloud.firestore {
       allow read: if true;
       allow delete: if esAdmin();
       allow create, update: if esAdmin() || (soyYo(uid)
-        && request.resource.data.keys().hasOnly(['u','c','t','e1','r1','e2','r2','e3','r3','e4','r4','e5','r5','e6','r6','e7','r7'])
+        && request.resource.data.keys().hasOnly(['u','c','t','e1','r1','e2','r2','e3','r3','e4','r4','e5','r5','e6','r6','e7','r7','e8','r8'])
         && request.resource.data.u == ficha(uid).usuario
         && request.resource.data.c == ficha(uid).clase
         && request.resource.data.t == request.time

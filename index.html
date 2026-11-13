@@ -46,6 +46,7 @@ body[data-tema=selva]   {--c1:#2fc79b;--c2:#e3fbd0;--h1:#8fe0a0;--h2:#3cb872;--h
 body[data-tema=volcan]  {--c1:#2a1535;--c2:#ff9a5a;--h1:#6b3446;--h2:#4b2336;--h3:#34172a}
 body[data-tema=ciudad]  {--c1:#4a90ff;--c2:#ffe7c4;--h1:#c1cbe6;--h2:#9eaad0;--h3:#7e8bb8}
 body[data-tema=galaxia] {--c1:#0a0630;--c2:#5a3fb0;--h1:#3b2f85;--h2:#2b2268;--h3:#1d1750}
+body[data-tema=oceano]  {--c1:#7fe3ff;--c2:#0c6fa3;--h1:#2fb6d6;--h2:#1b8db3;--h3:#0e6a8f}
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;min-height:100%}
@@ -69,6 +70,7 @@ body[data-tema=desierto] #cielo .sol{transform:scale(1.5);background:radial-grad
 body[data-tema=hielo] #cielo .sol{opacity:.55}
 body[data-tema=volcan] #cielo .sol{transform:scale(1.7);background:radial-gradient(circle,#ffe29a 0 25%,#ff6a1a 45%,rgba(255,80,20,.35) 62%,rgba(255,80,20,0) 72%)}
 body[data-tema=galaxia] #cielo .sol{width:110px;height:110px;background:radial-gradient(circle at 38% 35%,#fff 0 28%,#dcd8ff 52%,rgba(200,190,255,.35) 64%,rgba(200,190,255,0) 74%)}
+body[data-tema=oceano] #cielo .sol{opacity:.7;transform:scale(1.2)}
 @keyframes latido{50%{filter:brightness(1.12)}}
 .nube{position:absolute;left:-300px;width:200px;height:58px;background:#fff;border-radius:60px;opacity:.9;
   animation:nube linear infinite;filter:drop-shadow(0 6px 0 rgba(120,110,200,.12))}
@@ -92,7 +94,9 @@ body[data-tema=hielo] .mota{width:9px;height:9px;border-radius:50%;background:#f
 body[data-tema=selva] .mota{width:12px;height:7px;border-radius:70% 0 70% 0;background:#7be08a;animation:petalo linear infinite}
 body[data-tema=volcan] .mota{width:6px;height:6px;border-radius:50%;background:#ffb02e;box-shadow:0 0 9px #ff7a1a;animation:brasa linear infinite}
 body[data-tema=ciudad] .mota{width:7px;height:7px;border-radius:50%;background:#fff6c9;box-shadow:0 0 10px #ffe58a;animation:brilla 4s ease-in-out infinite}
+body[data-tema=oceano] .mota{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.7);animation:burbuja linear infinite}
 body[data-tema=galaxia] .mota{width:5px;height:5px;border-radius:50%;background:#fff;box-shadow:0 0 9px #cbbcff;animation:brilla 3.2s ease-in-out infinite}
+@keyframes burbuja{0%{opacity:0;transform:translate(0,105vh) scale(.6)}15%{opacity:.9}100%{opacity:0;transform:translate(24px,-5vh) scale(1.2)}}
 @keyframes brasa{0%{opacity:0;transform:translate(0,105vh) scale(1)}12%{opacity:.95}100%{opacity:0;transform:translate(30px,4vh) scale(.4)}}
 @keyframes brilla{0%,100%{opacity:0;transform:translateY(var(--y)) scale(.4)}50%{opacity:.9;transform:translateY(var(--y)) scale(1)}}
 @keyframes petalo{0%{opacity:0;transform:translate(0,0) rotate(0)}10%{opacity:.9}100%{opacity:.8;transform:translate(120px,105vh) rotate(720deg)}}
@@ -587,17 +591,20 @@ const MUNDOS = [
   {id:6, nombre:'Ciudad Función', concepto:'Crea tus propios bloques', tema:'ciudad', mc1:'#c3d4ff', mc2:'#5b7cfa', mD:'#2e44b8', bloques:['F','L','R','REP','FN'],
    aprende:'Inventar tu propio bloque («Mi bloque») y usarlo muchas veces.',
    intro:'Hay un trozo de camino que se repite por la ciudad. Enséñame ese trozo una vez en «Mi bloque» y úsalo todas las veces que quieras.'},
-  {id:7, nombre:'Galaxia Final', concepto:'Retos combinados', tema:'galaxia', mc1:'#c9b6ff', mc2:'#6d3fe0', mD:'#3b1f94', bloques:['F','L','R','J','REP','IF','UNT','FN'],
+  {id:7, nombre:'Galaxia Salto', concepto:'Saltar abismos', tema:'galaxia', mc1:'#c9b6ff', mc2:'#6d3fe0', mD:'#3b1f94', bloques:['F','L','R','J','REP','IF','UNT','FN'],
    aprende:'Juntar todo lo aprendido y cruzar abismos con «Saltar».',
-   intro:'¡Último mundo! Hay abismos en el camino: con «Saltar» paso al otro lado. Combina todo lo que sabes.'}
+   intro:'Hay abismos en el camino: con «Saltar» paso al otro lado. Combina todo lo que sabes.'},
+  {id:8, nombre:'Océano Si no', concepto:'Decidir con «Si no…»', tema:'oceano', mc1:'#a6f0ff', mc2:'#0ea5c6', mD:'#0b6480', bloques:['F','L','R','J','REP','IF','UNT','FN'],
+   aprende:'Decidir: si hay camino delante avanzo; si no, hago otra cosa (¡como saltar!).',
+   intro:'¡Último mundo! Usa «Si… si no…» para que un solo programa sirva en cualquier camino, con o sin abismos.'}
 ];
 const NIVELES = MUNDOS;
 const CORTO = {F:'Avanzar', L:'Girar izquierda', R:'Girar derecha', REP:'Repetir', J:'Saltar', IF:'Si', UNT:'Repetir hasta llegar', FN:'Mi bloque'};
 const LARGO = {F:'Avanzar', L:'Girar a la izquierda', R:'Girar a la derecha', REP:'Repetir', J:'Saltar un abismo', IF:'Si hay camino…', UNT:'Repetir hasta llegar a la estrella', FN:'Usar «Mi bloque»'};
 const TECLA = {F:'↑', L:'←', R:'→', J:'↓', REP:'R', IF:'S', UNT:'H', FN:'M'};
 // bloque nuevo de cada mundo: para ★★★ hay que usarlo
-const BLOQUE_CLAVE = {3:'REP', 4:'IF', 5:'UNT', 6:'FN', 7:'J'};
-const NOM_CLAVE = {REP:'«Repetir»', IF:'«Si»', UNT:'«Repetir hasta llegar»', FN:'«Mi bloque»', J:'«Saltar»'};
+const BLOQUE_CLAVE = {3:'REP', 4:'IF', 5:'UNT', 6:'FN', 7:'J', 8:'SINO'};
+const NOM_CLAVE = {REP:'«Repetir»', IF:'«Si»', UNT:'«Repetir hasta llegar»', FN:'«Mi bloque»', J:'«Saltar»', SINO:'«Si no»'};
 const CONTENEDOR = {REP:1, IF:1, UNT:1};
 const MAX_ANIDADO = 3;          // un bloque con huecos puede ir dentro de otro, pero no más
 const HITOS_RACHA = [5,10,15,20,30,40,50,75,100];
@@ -757,7 +764,10 @@ function trazaEjecucion(lab,prog,fn){
 function refSeguir(g){
   const b=[]; if(g!=='der') b.push(mkIf('izq',[nodo('L')])); if(g!=='izq') b.push(mkIf('der',[nodo('R')])); b.push(nodo('F')); return b;
 }
-function refSeguirJ(){ return [mkIf('izq',[nodo('L')]), mkIf('der',[nodo('R')]), mkIf('del',[nodo('F')],[nodo('J')])]; }
+function refSeguirJ(g){   // seguidor con saltos: solo los «Si» de giro que hacen falta + «Si delante… Si no saltar»
+  const b=[]; if(g!=='der'&&g!=='ninguno') b.push(mkIf('izq',[nodo('L')])); if(g!=='izq'&&g!=='ninguno') b.push(mkIf('der',[nodo('R')]));
+  b.push(mkIf('del',[nodo('F')],[nodo('J')])); return b;
+}
 
 /* ---- atajos: ¿hay un programa con MENOS bloques que la referencia? ----
    (el programa debe terminar justo en la estrella: no vale pasarse)  */
@@ -829,7 +839,7 @@ function genSeguir(rnd,sp,maxS,modo){
     let ref;
     if(modo==='rep'){ const nF=pasos.length-nT; if(nF>20) continue; ref=[rep(Math.max(2,nF),refSeguir(sp.g))]; }
     else if(modo==='unt') ref=[unt(refSeguir(sp.g))];
-    else { if(!ponerSaltos(pasos,rnd,sp.nJ)) continue; ref=[unt(refSeguirJ())]; }
+    else { if(!ponerSaltos(pasos,rnd,sp.nJ)) continue; ref=[unt(refSeguirJ(sp.g))]; }
     const lab=armar(pasos,rnd,maxS,sp.minS||5,ref); if(lab) return lab;
   }
   return null;
@@ -869,9 +879,12 @@ function genFuncion(rnd,sp,maxS){
 const PATJ = [['F','J'],['J','F'],['F','J','R','F'],['F','L','J','F'],['J','R','F']];
 function genSaltoRep(rnd,sp,maxS){
   for(let t=0;t<1500;t++){
-    const pat=elegir(rnd,PATJ), k=rint(rnd,sp.k[0],sp.k[1]), pasos=[];
+    const pat=elegir(rnd,sp.pats||PATJ), k=rint(rnd,sp.k[0],sp.k[1]);
+    const pre=sp.pre?elegir(rnd,sp.pre):[], suf=sp.suf?elegir(rnd,sp.suf):[], pasos=pre.slice();
     for(let i=0;i<k;i++) pasos.push(...pat);
-    const lab=armar(pasos,rnd,maxS,sp.minS||5,[rep(k,pat.map(nodo))]); if(lab) return lab;
+    pasos.push(...suf);
+    const ref=[...pre.map(nodo), rep(k,pat.map(nodo)), ...suf.map(nodo)];
+    const lab=armar(pasos,rnd,maxS,sp.minS||5,ref); if(lab) return lab;
   }
   return null;
 }
@@ -893,10 +906,12 @@ const ESPEC = {
      {t:'si',g:'mix',nT:[3,4],nF:[10,12],maxS:8}, {t:'si',g:'mix',nT:[4,6],nF:[12,15],maxS:8}],
   5:[{t:'hasta',pl:1,k:[5,7],pre:0,maxS:7}, {t:'hasta',pl:2,k:[3,4],pre:0,maxS:7}, {t:'hasta',pl:3,k:[3,4],pre:1,maxS:8},
      {t:'seg',g:'mix',nT:[3,5],nF:[9,12],maxS:8}, {t:'seg',g:'mix',nT:[6,8],nF:[13,17],maxS:9}],
-  6:[{t:'fn',pool:MOTIVOS[3],c:[3,3],maxS:8}, {t:'fn',pool:MOTIVOS[4],c:[3,3],maxS:8}, {t:'fn',pool:MOTIVOS[5],c:[3,3],maxS:9},
-     {t:'fn',pool:MOTIVOS[4],c:[4,4],maxS:9}, {t:'fn',pool:MOTIVOS[6],c:[3,4],maxS:10}],
-  7:[{t:'salto',nT:[1,2],nF:[7,9],nJ:2,maxS:8}, {t:'salrep',k:[3,4],maxS:8}, {t:'segj',g:'mix',nT:[2,4],nF:[9,12],nJ:2,maxS:8},
-     {t:'fn',pool:MOTIVOS.j4.concat(MOTIVOS.j3),c:[3,3],maxS:9}, {t:'segj',g:'mix',nT:[4,6],nF:[12,16],nJ:3,maxS:10}]
+  6:[{t:'fn',pool:MOTIVOS[3],c:[2,2],maxS:7}, {t:'fn',pool:MOTIVOS[3],c:[3,3],maxS:8}, {t:'fn',pool:MOTIVOS[4],c:[3,3],maxS:8},
+     {t:'fn',pool:MOTIVOS[5],c:[3,3],maxS:9}, {t:'fn',pool:MOTIVOS[6],c:[3,4],maxS:10}],
+  8:[{t:'segj',g:'ninguno',nT:[0,0],nF:[5,7],nJ:2,maxS:8}, {t:'segj',g:'der',nT:[1,1],nF:[6,8],nJ:2,maxS:8}, {t:'segj',g:'izq',nT:[1,2],nF:[7,9],nJ:2,maxS:8},
+     {t:'segj',g:'mix',nT:[2,2],nF:[8,10],nJ:2,maxS:8}, {t:'segj',g:'mix',nT:[3,4],nF:[11,14],nJ:3,maxS:10}],
+  7:[{t:'salto',nT:[1,2],nF:[7,9],nJ:2,maxS:8}, {t:'salrep',pats:[['F','J','R'],['F','J','L']],k:[2,3],suf:[['F']],maxS:8}, {t:'salrep',k:[3,3],maxS:8},
+     {t:'fn',pool:MOTIVOS.j4.concat(MOTIVOS.j3),c:[3,3],maxS:9}, {t:'salrep',pats:[['F','J','R','F'],['F','L','J','F']],k:[3,3],pre:[['F'],['F','F']],suf:[['F'],['F','F']],maxS:9}]
 };
 function espInfinito(nivel,rnd){
   if(nivel===4) return {t:'si',g:elegir(rnd,['der','izq','mix','mix','mix']),nT:[2,5],nF:[7,13],maxS:8};
@@ -904,6 +919,8 @@ function espInfinito(nivel,rnd){
     if(rnd()<.5){ const pl=rint(rnd,1,4); return {t:'hasta',pl,k:{1:[5,7],2:[3,5],3:[2,4],4:[2,3]}[pl],pre:pl===1?0:rint(rnd,0,2),maxS:8}; }
     return {t:'seg',g:'mix',nT:[3,7],nF:[8,15],maxS:9};
   }
+  if(nivel===8){ const g=elegir(rnd,['ninguno','der','izq','mix','mix','mix']);
+    return {t:'segj',g,nT:g==='ninguno'?[0,0]:g==='mix'?[2,4]:[1,2],nF:g==='ninguno'?[5,8]:[7,13],nJ:rint(rnd,1,3),maxS:9}; }
   if(nivel===6){ const m=rint(rnd,3,6); return {t:'fn',pool:MOTIVOS[m],c:[2,m>=5?3:4],maxS:9}; }
   return Object.assign({},ESPEC[7][rint(rnd,0,4)]);
 }
@@ -1239,7 +1256,10 @@ const SND = (() => {
       ac:[[36,48,55],[41,53,60],[43,55,62],[36,48,55]]},
     galaxia:{bpm:78,tipo:'sine',vol:.085,perc:false,eco:true,
       mel:[76,0,0,79,83,0,0,86, 84,0,83,0,79,0,0,0, 76,0,0,81,84,0,0,88, 86,0,0,0,83,0,0,0],
-      ac:[[40,52,59],[36,48,55],[33,45,52],[35,47,54]]}
+      ac:[[40,52,59],[36,48,55],[33,45,52],[35,47,54]]},
+    oceano:{bpm:88,tipo:'sine',vol:.08,perc:false,eco:true,filtro:2200,
+      mel:[72,0,76,0,79,0,76,72, 74,0,77,0,81,0,77,74, 71,0,74,0,79,0,74,71, 72,0,76,79,84,0,0,0],
+      ac:[[36,48,55],[41,53,60],[43,55,62],[36,48,55]]}
   };
   let tema='menu', paso=0, sig=0, timer=null;
   function tocar(T,i,t,dur){
@@ -1519,7 +1539,9 @@ const ARTE = {
   ciudad:{suelo:['#dbe3f0','#d1dbea'],hierba:'#b3bfd6',borde:'#a8b5cf',camino:'#6c7893',caminoLado:'#3d4761',caminoDet:'#8d98b0',
     acant:['#8f9cba','#6a789f','#49567c'],estrato:'rgba(255,255,255,.28)',polvo:'#e8ecf4',meta:'#ffd23f'},
   galaxia:{suelo:['#2b2665','#262058'],hierba:'#4d45a6',borde:'#1b1646',camino:'#c0aeff',caminoLado:'#6a4dd8',caminoDet:'#e1d8ff',
-    acant:['#6e6d9a','#4c4b73','#323151'],estrato:'rgba(255,255,255,.13)',polvo:'#d3caff',meta:'#ffd23f'}
+    acant:['#6e6d9a','#4c4b73','#323151'],estrato:'rgba(255,255,255,.13)',polvo:'#d3caff',meta:'#ffd23f'},
+  oceano:{suelo:['#1f8fb5','#1b84a8'],hierba:'#2fb0cf',borde:'#0b4d6b',camino:'#f6e3b0',caminoLado:'#d6b878',caminoDet:'#fff3cf',
+    acant:['#3d8aa6','#2a6a86','#1a4a62'],estrato:'rgba(255,255,255,.2)',polvo:'#d9f6ff',meta:'#ffd23f'}
 };
 function texturaSuelo(c,tema,x,y,T,rnd,A){
   if(tema==='pradera'){
@@ -1548,6 +1570,10 @@ function texturaSuelo(c,tema,x,y,T,rnd,A){
   } else if(tema==='ciudad'){
     c.strokeStyle='rgba(120,135,168,.38)'; c.lineWidth=Math.max(1,T*.018); c.strokeRect(x+T*.04,y+T*.04,T*.92,T*.92);
     if(rnd()<.2){ c.fillStyle='rgba(120,135,168,.22)'; circ(c,x+T*(.25+rnd()*.5),y+T*(.25+rnd()*.5),T*.05); c.fill(); }
+  } else if(tema==='oceano'){
+    c.strokeStyle='rgba(255,255,255,.28)'; c.lineWidth=Math.max(1,T*.02); c.lineCap='round';
+    for(let k=0;k<2;k++){ const xx=x+T*(.15+rnd()*.5), yy=y+T*(.25+k*.4+rnd()*.1); c.beginPath(); c.moveTo(xx,yy); c.quadraticCurveTo(xx+T*.1,yy-T*.07,xx+T*.2,yy); c.quadraticCurveTo(xx+T*.3,yy+T*.07,xx+T*.4,yy); c.stroke(); }
+    if(rnd()<.25){ c.fillStyle='rgba(255,255,255,.5)'; circ(c,x+T*(.15+rnd()*.7),y+T*(.15+rnd()*.7),T*.025); c.fill(); }
   } else {
     for(let k=0;k<2;k++){ c.fillStyle='rgba(255,255,255,'+(.25+rnd()*.5)+')'; circ(c,x+T*(.08+rnd()*.84),y+T*(.08+rnd()*.84),T*(.012+rnd()*.014)); c.fill(); }
     if(rnd()<.22){ c.fillStyle=rnd()<.5?'rgba(190,170,255,.9)':'rgba(130,230,255,.85)'; destello(c,x+T*(.15+rnd()*.7),y+T*(.15+rnd()*.7),T*(.04+rnd()*.035)); c.fill(); }
@@ -1580,6 +1606,10 @@ function texturaCamino(c,tema,x,y,T,rnd,A){
     c.fillStyle='rgba(255,255,255,.07)'; for(let k=0;k<5;k++){ circ(c,x+T*(.2+rnd()*.6),y+T*(.2+rnd()*.6),T*.018); c.fill(); }
     c.fillStyle='#ffd43b'; rrect(c,x+T*.46,y+T*.46,T*.08,T*.08,T*.02); c.fill();
     c.fillStyle='rgba(255,255,255,.55)'; [[.28,.28],[.72,.28],[.28,.72],[.72,.72]].forEach(([a,b])=>{ circ(c,x+T*a,y+T*b,T*.016); c.fill(); });
+  } else if(tema==='oceano'){
+    c.fillStyle='rgba(190,150,80,.35)'; for(let k=0;k<5;k++){ circ(c,x+T*(.15+rnd()*.7),y+T*(.15+rnd()*.7),T*(.012+rnd()*.012)); c.fill(); }
+    if(rnd()<.4){ const sx=x+T*(.3+rnd()*.4), sy=y+T*(.3+rnd()*.4); c.fillStyle='#ffb8c6'; c.beginPath(); c.moveTo(sx-T*.05,sy+T*.03); c.quadraticCurveTo(sx,sy-T*.08,sx+T*.05,sy+T*.03); c.closePath(); c.fill();
+      c.strokeStyle='#e58aa0'; c.lineWidth=Math.max(1,T*.01); c.beginPath(); c.moveTo(sx,sy+T*.03); c.lineTo(sx,sy-T*.04); c.stroke(); }
   } else {
     c.strokeStyle='rgba(255,255,255,.75)'; c.lineWidth=Math.max(1,T*.026); rrect(c,x+T*.24,y+T*.24,T*.52,T*.52,T*.1); c.stroke();
     c.fillStyle='rgba(255,255,255,.85)'; destello(c,x+T*(.62+rnd()*.1),y+T*(.3+rnd()*.1),T*.06); c.fill();
@@ -1793,6 +1823,31 @@ const DECO = {
         [-1,0,1].forEach(d=>{ c.beginPath(); c.moveTo(x,y-T*.12); c.quadraticCurveTo(x+d*T*.1,y-T*.28,x+d*T*.16,y+T*.06); c.stroke(); });
     }
   },
+  oceano(c,tipo,x,y,T){
+    switch(tipo){
+      case 1: sombraSuelo(c,x,y+T*.24,T*.24,T*.07,.3);   // coral
+        c.strokeStyle='#ff6f91'; c.lineWidth=T*.07; c.lineCap='round';
+        [[0,-.3,0],[-.16,-.2,-.1],[.16,-.22,.1]].forEach(([dx,top,cx])=>{ c.beginPath(); c.moveTo(x+dx*T*.4,y+T*.22); c.quadraticCurveTo(x+(dx+cx)*T,y,x+dx*T*1.2,y+top*T); c.stroke(); });
+        c.fillStyle='#ffb0c4'; [[0,-.3],[-.19,-.2],[.19,-.22]].forEach(([dx,dy])=>{ circ(c,x+dx*T,y+dy*T,T*.045); c.fill(); }); break;
+      case 2: sombraSuelo(c,x,y+T*.24,T*.2,T*.06,.3);   // concha
+        c.fillStyle='#ffd9a8'; c.beginPath(); c.moveTo(x,y+T*.2); c.bezierCurveTo(x-T*.34,y+T*.1,x-T*.26,y-T*.24,x,y-T*.22); c.bezierCurveTo(x+T*.26,y-T*.24,x+T*.34,y+T*.1,x,y+T*.2); c.fill();
+        c.strokeStyle='#e8a86a'; c.lineWidth=T*.02; for(let k=-2;k<=2;k++){ c.beginPath(); c.moveTo(x,y+T*.2); c.lineTo(x+k*T*.09,y-T*.2); c.stroke(); }
+        c.fillStyle='#fff'; circ(c,x,y-T*.02,T*.05); c.fill(); break;
+      case 3: sombraSuelo(c,x,y+T*.24,T*.22,T*.06,.3);   // alga
+        c.strokeStyle='#2fae6b'; c.lineWidth=T*.06; c.lineCap='round';
+        [-.12,0,.12].forEach((d,i)=>{ c.beginPath(); c.moveTo(x+d*T,y+T*.24); c.bezierCurveTo(x+d*T-T*.12,y+T*.05,x+d*T+T*.12,y-T*.1,x+d*T,y-T*(.3+i*.04)); c.stroke(); }); break;
+      case 4: sombraSuelo(c,x,y+T*.24,T*.2,T*.06,.3);   // pez globo
+        c.fillStyle='#ffd23f'; elip(c,x,y,T*.2,T*.16); c.fill();
+        c.fillStyle='#ff9f1c'; c.beginPath(); c.moveTo(x+T*.17,y); c.lineTo(x+T*.32,y-T*.12); c.lineTo(x+T*.32,y+T*.12); c.closePath(); c.fill();
+        c.fillStyle='#fff'; circ(c,x-T*.09,y-T*.04,T*.05); c.fill(); c.fillStyle='#222'; circ(c,x-T*.1,y-T*.04,T*.025); c.fill(); break;
+      case 5: sombraSuelo(c,x,y+T*.26,T*.2,T*.06,.35);   // ancla
+        c.strokeStyle='#5d6b82'; c.lineWidth=T*.06; c.lineCap='round'; c.beginPath(); c.moveTo(x,y-T*.22); c.lineTo(x,y+T*.2); c.moveTo(x-T*.12,y-T*.1); c.lineTo(x+T*.12,y-T*.1); c.stroke();
+        c.beginPath(); c.arc(x,y+T*.06,T*.2,.15,Math.PI-.15); c.stroke(); c.beginPath(); c.arc(x,y-T*.27,T*.05,0,Math.PI*2); c.stroke(); break;
+      default: sombraSuelo(c,x,y+T*.24,T*.22,T*.07,.3);   // estrella de mar
+        c.fillStyle='#ff8a5c'; c.beginPath(); for(let k=0;k<10;k++){ const r=k%2?T*.09:T*.22, a=-Math.PI/2+k*Math.PI/5; c.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r); } c.closePath(); c.fill();
+        c.fillStyle='#ffc2a3'; circ(c,x,y,T*.04); c.fill();
+    }
+  },
   galaxia(c,tipo,x,y,T){
     switch(tipo){
       case 1: sombraSuelo(c,x,y+T*.26,T*.2,T*.06,.35);   // planeta con anillo
@@ -1910,6 +1965,9 @@ class Tablero{
     } else if(this.tema==='galaxia'){
       for(let i=0;i<n*2;i++){ const x=ox+W*(.08+rnd()*.84), y=oy+W+ch*(.2+rnd()*.3), L=T*(.14+rnd()*.3);
         c.fillStyle=rnd()<.5?'#8be9ff':'#c8a8ff'; c.beginPath(); c.moveTo(x-T*.045,y); c.lineTo(x,y+L); c.lineTo(x+T*.045,y); c.closePath(); c.fill(); }
+    } else if(this.tema==='oceano'){
+      c.strokeStyle='#5fd0e8'; c.lineWidth=Math.max(1.5,T*.04); c.lineCap='round';
+      for(let i=0;i<n;i++){ const x=ox+W*(.1+rnd()*.8), y=oy+W+ch*.3, L=T*(.25+rnd()*.4); c.beginPath(); c.moveTo(x,y); c.bezierCurveTo(x-T*.1,y+L*.35,x+T*.1,y+L*.65,x,y+L); c.stroke(); }
     } else if(this.tema==='hielo'){
       for(let i=0;i<n*2;i++){ const x=ox+W*(.08+rnd()*.84), y=oy+W+ch*(.2+rnd()*.2), L=T*(.15+rnd()*.3);
         c.fillStyle='rgba(220,240,255,.9)'; c.beginPath(); c.moveTo(x-T*.05,y); c.lineTo(x,y+L); c.lineTo(x+T*.05,y); c.closePath(); c.fill(); }
@@ -2451,7 +2509,7 @@ function vMundo(n){
     `<button class="nodo${s?' hecho':''}" data-acc="reto" data-n="${n}" data-i="${i}" aria-label="Reto ${i+1}">${i===actual?`<img class="aqui" src="${avatarRobot(P.color,60)}" alt="">`:''}${i+1}<span class="est">${[0,1,2].map(k=>k<s?ICO.estrella:ICO.estrellaG).join('')}</span></button>`).join('')}</div>
   <button class="portal" data-acc="inf" data-n="${n}"><span class="aro">∞</span><span><h3>Modo infinito</h3><p>Laberintos nuevos sin parar. ¿Hasta dónde llegará tu racha?</p></span>
     <span class="record">${ic(ICO.fuego)} ${p.r}<small>mejor racha</small></span></button>`;
-  const intro={3:['rep',introRepetir],4:['si',introSi],5:['hasta',introHasta],6:['fn',introFuncion],7:['gal',introGalaxia]}[n];
+  const intro={3:['rep',introRepetir],4:['si',introSi],5:['hasta',introHasta],6:['fn',introFuncion],7:['gal',introGalaxia],8:['sino',introSino]}[n];
   if(intro&&!P.tutos[intro[0]]){ P.tutos[intro[0]]=true; guardarPrefs(); setTimeout(intro[1],450); }
 }
 const bq=(t,txt)=>`<span class="blk b-${t}" style="min-width:0"><span class="ico">${ICO[t]}</span>${txt||CORTO[t]}</span>`;
@@ -2478,11 +2536,17 @@ function introFuncion(){
       <p>Si el trozo cambia, solo lo arreglas una vez.</p>`,
     botones:[{txt:'¡Entendido!',cls:'btn-ok'}]});
 }
+function introSino(){
+  modal({titulo:'¡Último mundo: «Si… si no…»!',robot:'sorpresa',cancelable:true,
+    html:`<p>Ahora el «Si» tiene una segunda parte: <b>«Si no»</b>. Lo de dentro se hace cuando <b>NO</b> hay camino.</p>
+      <div class="ejemplo-rep"><div class="col">${contEj('IF','<span class="etq">Si hay camino</span><span class="conds"><button class="on">delante ↑</button></span>',bq('F'))}<div class="rep-sino" style="color:#c0267f;font-weight:800">Si no</div><div class="rep-cuerpo" style="min-height:0;cursor:default">${bq('J')}</div></div></div>
+      <p>«Si hay camino delante, avanzo; <b>si no</b>, salto el abismo.» ¡Un solo programa vale para todos los caminos! Métela dentro de <b>Repetir hasta llegar</b>.</p>`,
+    botones:[{txt:'¡A por ello!',cls:'btn-ok'}]});
+}
 function introGalaxia(){
-  modal({titulo:'¡Último mundo!',robot:'sorpresa',cancelable:true,
+  modal({titulo:'¡Nuevo bloque: Saltar!',robot:'sorpresa',cancelable:true,
     html:`<p>Hay <b>abismos</b> 🕳️ en el camino. Con <b>Saltar</b> paso al otro lado (justo antes de un abismo, mirando hacia él).</p>
       <div class="ejemplo-rep"><div class="col">${bq('F')}${bq('J')}${bq('F')}</div></div>
-      <p>Ahora el bloque <b>Si</b> tiene un extra: <b>«Si no…»</b>, lo que hago cuando <b>no</b> hay camino (por ejemplo, saltar el abismo).</p>
       <p>Aquí vale todo lo aprendido: Repetir, Si, Repetir hasta llegar y Mi bloque. ¡Combínalos!</p>`,
     botones:[{txt:'¡A por ello!',cls:'btn-ok'}]});
 }
@@ -2508,14 +2572,15 @@ const BIB=[
  {t:'IF',w:4,prac2:{i:3,t:'Practicar con giros a izquierda y derecha'},txt:'Bit mira a su alrededor y solo hace lo de dentro <b>si hay camino</b> hacia donde elijas (izquierda, delante o derecha). Lo de después del «Si» se hace siempre.',ej:()=>contEj('IF','<span class="etq">Si hay camino</span><span class="conds"><button class="on">mi derecha →</button></span>',bq('R'))+bq('F')},
  {t:'UNT',w:5,txt:'Repite sin contar las vueltas: Bit se para solo al llegar a la estrella ⭐.',ej:()=>contEj('UNT','<span class="etq">Repetir hasta llegar a la ⭐</span>',bq('F'),150)},
  {t:'FN',w:6,txt:'Inventas tu propio bloque: pones sus pasos en «Mi bloque hace esto» y lo usas todas las veces que quieras.',ej:()=>bq('FN')+bq('F')+bq('FN')},
- {t:'J',w:7,txt:'Bit salta un abismo 🕳️. Se usa justo antes del hueco, mirando hacia él.',ej:()=>bq('F')+bq('J')+bq('F')}
+ {t:'J',w:7,txt:'Bit salta un abismo 🕳️. Se usa justo antes del hueco, mirando hacia él.',ej:()=>bq('F')+bq('J')+bq('F')},
+ {t:'IF',nom:'Si… si no…',w:8,txt:'«Si no» se hace cuando <b>NO</b> hay camino hacia donde mira el «Si». Con «Si hay camino delante → Avanzar» y «Si no → Saltar», Bit cruza abismos solo.',ej:()=>contEj('IF','<span class="etq">Si hay camino</span><span class="conds"><button class="on">delante ↑</button></span>',bq('F'))+'<div class="rep-sino" style="color:#c0267f;font-weight:800">Si no</div>'+bq('J')}
 ];
 function vBiblio(){
   vista.innerHTML=barra('<span class="pill">📚 Biblioteca de bloques</span>')+
   `<p class="bib-intro">Aquí tienes todos los bloques que has desbloqueado. Pulsa <b>Practicar</b> y Bit te enseñará, paso a paso, cómo usarlo.</p>
    <div class="bib">${BIB.map(b=>{ const m=MUNDOS[b.w-1], ab=mundoAbierto(b.w);
      return ab?`<section class="panel bib-card" style="--mc2:${m.mc2};--mD:${m.mD}">
-        <h3><span class="blk b-${b.t}" style="min-width:0"><span class="ico">${ICO[b.t]}</span>${LARGO[b.t]}</span></h3>
+        <h3><span class="blk b-${b.t}" style="min-width:0"><span class="ico">${ICO[b.t]}</span>${b.nom||LARGO[b.t]}</span></h3>
         <p>${b.txt}</p><div class="ejemplo-rep"><div class="col">${b.ej()}</div></div>
         <button class="btn btn-ok" data-acc="bibprac" data-w="${b.w}">🧭<span>Practicar paso a paso</span></button>${b.prac2?`<button class="btn btn-ok" data-acc="bibprac" data-w="${b.w}" data-i="${b.prac2.i}">🧭<span>${b.prac2.t}</span></button>`:''}
         <small>Mundo ${b.w} · ${m.nombre}</small></section>`
@@ -2597,7 +2662,7 @@ function arrancarJuego(mundo,modo,idx,guia){
 function chipsJuego(){
   const p=S.prog[G.mundo];
   return G.modo==='fijo'
-    ? `<span class="chip oro ocultable" id="chipEst">${[0,1,2].map(k=>k<p.s[G.idx]?ICO.estrella:ICO.estrellaG).join('')}</span><span class="chip" id="chipMeta" title="Para conseguir 3 estrellas">${ICO.diana} ★★★ con ${BLOQUE_CLAVE[G.mundo]?`<span class="mini-clave b-${BLOQUE_CLAVE[G.mundo]}" title="Usa ${NOM_CLAVE[BLOQUE_CLAVE[G.mundo]]}">${ICO[BLOQUE_CLAVE[G.mundo]]}</span> y `:''}${G.lab.par} bloques o menos</span>`
+    ? `<span class="chip oro ocultable" id="chipEst">${[0,1,2].map(k=>k<p.s[G.idx]?ICO.estrella:ICO.estrellaG).join('')}</span><span class="chip" id="chipMeta" title="Para conseguir 3 estrellas">${ICO.diana} ★★★ con ${BLOQUE_CLAVE[G.mundo]?`${BLOQUE_CLAVE[G.mundo]==='SINO'?'<b>«Si no»</b>':`<span class="mini-clave b-${BLOQUE_CLAVE[G.mundo]}" title="Usa ${NOM_CLAVE[BLOQUE_CLAVE[G.mundo]]}">${ICO[BLOQUE_CLAVE[G.mundo]]}</span>`} y `:''}${G.lab.par} bloques o menos</span>`
     : `<span class="chip fuego" id="chipRacha">${ICO.fuego} Racha: <b>${rachaSes}</b></span><span class="chip ocultable">🏆 Récord: ${p.r}</span>`;
 }
 function pintarChips(){ const e=$('.barra .extra'); if(!e||!G) return; e.innerHTML=chipsJuego(); }
@@ -2666,7 +2731,7 @@ const buscarCuerpoT = body => buscarCuerpo(G.prog,body)||buscarCuerpo(G.fn,body)
 const profundidad = arr => { if(arr===G.prog||arr===G.fn) return 0; const r=buscarCuerpoT(arr); return r?1+profundidad(r.arr):0; };
 const enFn = arr => { if(arr===G.fn) return true; if(arr===G.prog) return false; const r=buscarCuerpoT(arr); return r?enFn(r.arr):false; };
 const contieneArr = (nodo,arr) => hijos(nodo).some(h=>h===arr||h.some(m=>contieneArr(m,arr)));
-const usa = (arr,t) => arr.some(n=>n.t===t||hijos(n).some(h=>usa(h,t)));
+const usa = (arr,t) => arr.some(n=>n.t===t||(t==='SINO'&&n.t==='IF'&&n.otro.length>0)||hijos(n).some(h=>usa(h,t)));
 const usaT = t => usa(G.prog,t)||usa(G.fn,t);
 const claveFalta = () => { const t=BLOQUE_CLAVE[G.mundo]; return t&&!usaT(t)?t:null; };
 const ETQ_COND = {izq:'← mi izquierda', del:'↑ delante', der:'mi derecha →'};
@@ -2701,7 +2766,7 @@ function renderPila(){
   const contH=n=>`<div class="rep${n.t==='REP'?'':' c-'+n.t}${G.sel===n.id?' sel':''}${G.nuevo===n.id?' nuevo':''}" data-id="${n.id}">
       <div class="blk rep-cab b-${n.t}${marca(n)}" data-cab="${n.id}">${cabeza(n)}</div>
       ${cuerpo(n,n.body,'b','👆 Toca aquí y añade bloques dentro')}
-      ${n.t==='IF'&&G.mundo>=7?((n.otro.length||(cursorVisible&&G.cur.arr===n.otro))?`<div class="rep-sino">Si no</div>${cuerpo(n,n.otro,'o','👆 Toca aquí y añade lo que hago si NO hay camino')}`:`<div class="rep-sino sino-mini" data-cuerpo="${n.id}" data-p="o">＋ Si no… (opcional)</div>`):''}
+      ${n.t==='IF'&&G.mundo>=8?((n.otro.length||(cursorVisible&&G.cur.arr===n.otro))?`<div class="rep-sino">Si no</div>${cuerpo(n,n.otro,'o','👆 Toca aquí y añade lo que hago si NO hay camino')}`:`<div class="rep-sino sino-mini" data-cuerpo="${n.id}" data-p="o">＋ Si no…</div>`):''}
       <div class="rep-pie"></div></div>`;
   const lista=arr=>{ let h=''; arr.forEach((n,i)=>{ if(cursorVisible&&G.cur.arr===arr&&G.cur.i===i) h+='<div class="cursor"></div>'; h+=CONTENEDOR[n.t]?contH(n):blq(n); });
     if(cursorVisible&&G.cur.arr===arr&&G.cur.i===arr.length) h+='<div class="cursor"></div>'; return h; };
@@ -2734,7 +2799,7 @@ function añadir(t){
   SND.fx('add',t); renderPila();
   scrollSuave(document.querySelector(`#pila [data-id="${nn.id}"]`));
   if(t==='REP') decir(G.mundo>=4?'¡Repetir añadido! Con + y − eliges las vueltas (mantén pulsado para subir rápido). Pon las justas: el programa debe terminar al llegar a la estrella.':'¡Repetir añadido! Ahora toca los bloques que quieras meter dentro. Cuando acabes, toca fuera del Repetir.');
-  else if(t==='IF') decir('¡«Si» añadido! Elige hacia dónde miro (← ↑ →) y mete dentro lo que hago si hay camino.'+(G.mundo>=7?' «Si no» es opcional.':''));
+  else if(t==='IF') decir('¡«Si» añadido! Elige hacia dónde miro (← ↑ →) y mete dentro lo que hago si hay camino.'+(G.mundo>=8?' Después podrás añadir «Si no…» para cuando NO haya camino.':''));
   else if(t==='UNT') decir('¡Repetir hasta llegar! Mete dentro lo que quieras repetir: me paro solo al llegar a la estrella ⭐.');
   else if(t==='FN'&&!G.fn.length) decir('Primero enséñame qué hace «Mi bloque»: toca «Mi bloque hace esto» (arriba) y añade los pasos.');
   if(G.tuto===1){ G.tuto=2; MANO.mostrar('#brun'); decir('¡Muy bien! Añade los bloques que falten y luego pulsa «¡Ejecutar!» para ver qué hago.'); }
@@ -2933,7 +2998,8 @@ function guiaPaso(){
     const donde=x.ctx.cont?` <i>(dentro de «${x.ctx.cont}»)</i>`:'';
     if(cursorOk){
       const prev=x.i>0?x.arr[x.i-1]:null; let ex=EXPL[x.t]||'';
-      if(x.t==='IF'&&prev&&prev.t==='IF') ex='Un segundo «Si» vigila el <b>otro lado</b>: así Bit gira hacia donde haya camino, sea izquierda o derecha.';
+      if(x.ctx.cont==='Si no') ex='Esto se hace cuando <b>NO</b> hay camino delante: ¡toca saltar el abismo!';
+      else if(x.t==='IF'&&prev&&prev.t==='IF') ex='Un segundo «Si» vigila el <b>otro lado</b>: así Bit gira hacia donde haya camino, sea izquierda o derecha.';
       else if(x.t==='F'&&prev&&prev.t==='IF') ex='«Avanzar» va <b>fuera</b> de los «Si»: Bit avanza siempre, y los «Si» solo deciden si gira antes.';
       else if(x.t==='REP'&&G.mundo===4&&G.idx===3&&!G.prog.length) ex='Este camino tiene giros a <b>los dos lados</b>: usaremos <b>dos «Si»</b> dentro del Repetir. Las vueltas tienen que ser justas: una por cada paso hasta la estrella.';
       msg=`Toca ${TXT_ADD[x.t]} en la caja de bloques${donde}.${ex?`<br><small>${ex}</small>`:''}`; sel=`#paleta [data-t="${x.t}"]`; }
@@ -3080,7 +3146,7 @@ function modalVictoria(est,bl,par,mejora,nuevoMundo,finJuego){
   modal({titulo:finJuego?'¡Has terminado el juego!':est===3?'¡Increíble!':est===2?'¡Muy bien!':'¡Conseguido!',
     html:`<div class="estrellas-grandes">${[0,1,2].map(i=>`<span class="e" data-i="${i}">${ICO.estrella}</span>`).join('')}</div><p>${txt}</p>${mejora?'<p>🎉 ¡Has mejorado tu marca!</p>':''}
       ${nuevoMundo?`<div class="desbloqueo">🔓 ¡Has abierto el Mundo ${nuevoMundo.id}: ${nuevoMundo.nombre}!</div>`:''}
-      ${finJuego?'<div class="desbloqueo">🏆 ¡Has superado los 7 mundos de Código Siurot! Ahora puedes mejorar tus estrellas y batir tu racha en el modo infinito.</div>':''}`,botones});
+      ${finJuego?'<div class="desbloqueo">🏆 ¡Has superado los ${MUNDOS.length} mundos de Código Siurot! Ahora puedes mejorar tus estrellas y batir tu racha en el modo infinito.</div>':''}`,botones});
   [0,1,2].forEach(i=>setTimeout(()=>{ const e=$(`#modal .e[data-i="${i}"]`); if(!e) return; if(i<est){ e.classList.add('on'); SND.fx('estrella',i); } else e.classList.add('gris'); },450+i*380));
 }
 function pasarA(modo,idx){
@@ -3106,6 +3172,7 @@ function pistaConcepto(){
   if(n===5&&!usaT('UNT')) return 'Prueba con «Repetir hasta llegar a la ⭐»: me paro solo al llegar y no hace falta contar las vueltas.';
   if(n===6&&!usaT('FN')) return 'Fíjate: hay un trozo de camino que se repite. Enséñalo una vez en «Mi bloque» y úsalo varias veces.';
   if(n===6&&!G.fn.length) return '«Mi bloque» está vacío: toca «Mi bloque hace esto» (arriba) y añade los pasos del trozo que se repite.';
+  if(n===8&&!usaT('SINO')) return 'Prueba con «Repetir hasta llegar» y dentro un «Si hay camino delante → Avanzar» con «Si no → Saltar». Añade también los «Si» para girar.';
   if(n===7&&lab.huecos.length&&!usaT('J')) return 'Hay un abismo 🕳️ en el camino: usa «Saltar» justo antes de él, mirando hacia el otro lado.';
   return '';
 }

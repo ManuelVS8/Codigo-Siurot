@@ -133,7 +133,7 @@ function avisoGlobal(t){ let d=document.getElementById('diag');
 window.addEventListener('error',e=>avisoGlobal('Error en la página: '+(e.message||e.error)+(e.filename?' ('+String(e.filename).split('/').pop()+':'+e.lineno+')':'')));
 window.addEventListener('unhandledrejection',e=>{ const r=e.reason||{}; avisoGlobal('Error: '+(r.code?'['+r.code+'] ':'')+(r.message||String(r))); });
 const URL_JUEGO = new URL('index.html', location.href).href;
-const MUNDOS_N = 7;          // mundos con puntuación
+const MUNDOS_N = 8;          // mundos con puntuación
 const LIMITE_HORA = 100;     // Firebase: cuentas nuevas por hora desde un mismo ordenador
 
 /* ---------- utilidades ---------- */
