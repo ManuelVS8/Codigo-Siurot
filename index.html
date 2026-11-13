@@ -3319,7 +3319,7 @@ function pista(){
   if(!G||G.corriendo) return;
   G.pistas++; SND.fx('pista');
   const lab=G.lab, tr=trazaEjecucion(lab,G.prog,G.fn), total=totalBloques();
-  const sol=G.pistas>=3&&G.mundo>=3?` 🔎 Una solución posible: <b>${textoSolucion()}</b>`:'';
+  const sol='';   // las pistas orientan, pero nunca enseñan el programa completo
   if(tr.fin==='choque'){ const e=tr.ev[tr.ev.length-1]; G.marca={id:e.id,cls:'marcado'}; renderPila(); scrollSuave(document.querySelector(`#pila [data-id="${e.id}"]`));
     decir(`💡 Mira el bloque «${CORTO[e.t]}» que parpadea: con él me choco. Cámbialo o bórralo.`+sol,'pista'); return; }
   if(tr.fin==='sobra'){ decir('💡 Llegas a la estrella, pero sobran órdenes. El programa tiene que terminar justo al llegar: quita lo que sobra o baja las vueltas de «Repetir».'+sol,'pista'); return; }
@@ -3345,7 +3345,7 @@ function pista(){
              L:`${pre}el camino sigue a MI izquierda (la izquierda de Bit): añade «Girar izquierda».`,
              LL:`${pre}tengo que darme la vuelta: gira dos veces.`}[acc];
   let extra='';
-  if(G.mundo===3&&G.pistas>=2){ const rp=lab.ref.find(n=>n.t==='REP'); if(rp) extra=` Truco: «Repetir ${rp.n} veces» con ${rp.body.map(b=>'«'+CORTO[b.t]+'»').join(' + ')} dentro.`; }
+  if(G.mundo===3&&G.pistas>=2) extra=' Truco: busca un trozo de camino que se repite y mételo en «Repetir».';
   decir('💡 '+txt+extra+sol,'pista');
   const b=$(`#paleta [data-t="${acc==='LL'?'L':acc}"]`); if(b){ b.classList.add('resalta'); setTimeout(()=>b.classList.remove('resalta'),2600); }
 }
